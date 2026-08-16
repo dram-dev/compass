@@ -118,3 +118,21 @@ Numbered, append-only. Each entry: decision · rationale · phase.
     is the spend-weighted mean rating per principle mapped to 0–100 (unknown portions neutral). (P3)
 31. **Re-score timing** is measured in `computeScores` (`computeMs`) and shown in the dashboard header;
     Jordan runs in well under 1 ms in the store test and < 1 ms in-browser. (P3)
+
+## Added during P4
+
+32. **Plan route doubles as the print document.** `#/plan` is the interactive board on screen and,
+    under `@media print` (`src/plan/print.css`), a Letter/A4 document: controls hidden, gates stacked
+    full-width with cards kept whole, political before/after and the investments section on their own
+    page, provenance footnote last. Verified via headless Chrome print-to-PDF (5 clean pages for
+    Jordan). (P4)
+33. **Trajectory chart is plain SVG** (reference idiom) instead of Recharts: a ResizeObserver-driven
+    ResponsiveContainer rendered blank in headless print. Recharts stays for the dashboard-only radar
+    and Pareto scatter (with `initialDimension` fallbacks). (P4)
+34. **Manual placements are honored before greedy fill**, so dragging a small action into an early gate
+    can push a large auto-placed one to a later gate to respect the budget; the "moved by you" chip
+    and over-budget warning make this visible. "Auto-place" clears the manual placement. (P4)
+35. **Local multiplier note (EF7)** appears as a `local ≈2–3×*` chip on each local-shift action with one
+    footnote per plan (rather than a paragraph on every card). (P4)
+36. **Dev-only boot flag** `#/<route>?demo=1` loads Jordan synchronously before first render (used for
+    the headless print check); compiled out of production by `import.meta.env.DEV`. (P4)

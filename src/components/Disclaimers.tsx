@@ -15,9 +15,9 @@ export function InvestmentsDisclaimer({ className = '' }: { className?: string }
 export function MultiplierNote({ className = '' }: { className?: string }) {
   return (
     <p className={`text-[11.5px] text-faint ${className}`}>
-      <span className="text-brass">≈</span> Illustrative: studies commonly estimate roughly 2–3×
-      more local recirculation per dollar spent at independents than at national chains.
-      Directional, not precise.
+      <span className="text-brass">*</span> Local multiplier — illustrative: studies commonly
+      estimate roughly 2–3× more local recirculation per dollar spent at independents than at
+      national chains. Directional, not precise.
     </p>
   );
 }

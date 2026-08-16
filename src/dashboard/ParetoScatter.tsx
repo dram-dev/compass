@@ -90,7 +90,11 @@ export function ParetoScatter({
       <span className="pointer-events-none absolute bottom-[54px] right-[24px] z-10 font-mono text-[9px] tracking-[.16em] text-faint">
         RECONSIDER
       </span>
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer
+        width="100%"
+        height="100%"
+        initialDimension={{ width: 720, height: 300 }}
+      >
         <ScatterChart margin={{ top: 28, right: 20, bottom: 24, left: 8 }}>
           <CartesianGrid stroke="var(--rule)" strokeDasharray="0" vertical={false} />
           <XAxis

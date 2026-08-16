@@ -1,0 +1,70 @@
+/* R9 / §9.4 — print styles for the plan document (Letter / A4). */
+@page {
+  size: auto;
+  margin: 16mm 14mm;
+}
+
+@media print {
+  html,
+  body {
+    background: #fff !important;
+    color: #182018;
+    font-size: 11.5pt;
+  }
+  .wrap {
+    max-width: none;
+    padding: 0;
+  }
+  header,
+  nav,
+  .print\:hidden {
+    display: none !important;
+  }
+  .plan-doc {
+    color: #182018;
+  }
+  .plan-cover {
+    break-after: avoid;
+  }
+  .plan-gates {
+    display: block !important;
+  }
+  .plan-gate {
+    margin-top: 6mm;
+    break-inside: auto;
+  }
+  .plan-gate > div:first-child {
+    break-after: avoid;
+  }
+  .plan-gate article {
+    break-inside: avoid;
+  }
+  .plan-section {
+    break-inside: avoid;
+    margin-top: 10mm;
+  }
+  .plan-page-break {
+    break-before: page;
+  }
+  svg,
+  .recharts-wrapper,
+  .recharts-surface {
+    max-width: 100% !important;
+  }
+  .card {
+    background: #fff !important;
+    border-color: #c7cfc1 !important;
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  a[href^='http']::after {
+    content: '';
+  }
+  footer {
+    margin-top: 8mm;
+    font-size: 8.5pt;
+    color: #5c685c;
+  }
+}

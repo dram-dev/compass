@@ -40,7 +40,11 @@ export function PrinciplesRadar({
       role="img"
       aria-label={`Principles radar: ${data.map((d) => `${d.name} ${d.current} now, ${d.optimal} optimal`).join('; ')}`}
     >
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer
+        width="100%"
+        height="100%"
+        initialDimension={{ width: 720, height: 300 }}
+      >
         <RadarChart data={data} outerRadius="72%">
           <PolarGrid stroke="var(--rule)" />
           <PolarAngleAxis dataKey="name" tick={{ fill: 'var(--ink)', fontSize: 11 }} />
