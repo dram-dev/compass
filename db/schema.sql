@@ -157,12 +157,13 @@ CREATE TABLE IF NOT EXISTS political_committee (
   PRIMARY KEY (company_symbol, committee_id)
 );
 
--- Cycle-scoped facts. channel: 'pac' (company PAC → candidates/parties) | 'employee' (individuals listing the company as employer).
+-- Cycle-scoped facts. channel: 'pac' (company PAC → candidates/parties) | 'employee' (individuals listing the company as
+-- employer → candidates/parties/other committees) | 'pac-inflow' (those individuals' contributions to the company's own PAC).
 -- party: 'D' | 'R' | 'O' (third party) | 'U' (recipient not party-affiliated: PACs, super PACs, hybrids)
 CREATE TABLE IF NOT EXISTS political_contribution (
   company_symbol  TEXT NOT NULL,
   cycle           INTEGER NOT NULL,
-  channel         TEXT NOT NULL CHECK (channel IN ('pac','employee')),
+  channel         TEXT NOT NULL CHECK (channel IN ('pac','employee','pac-inflow')),
   party           TEXT NOT NULL CHECK (party IN ('D','R','O','U')),
   amount_usd      REAL NOT NULL,
   txn_count       INTEGER NOT NULL,

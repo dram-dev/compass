@@ -1,6 +1,1670 @@
 {
   "schema": "compass-data-pack",
   "version": 1,
-  "source": "FEC + Senate LDA via Compass seeder (not yet generated)",
-  "companies": []
+  "source": "FEC bulk 2022/2024 + Senate LDA via Compass seeder, 2026-08-16",
+  "sourceUrl": "https://www.fec.gov/data/browse-data/?tab=bulk-data",
+  "notes": "Political-support leans derived from public FEC PAC + employee contributions and Senate LDA lobbying totals (method in docs/political-seed.md). No values ratings are asserted. Verify before acting.",
+  "companies": [
+    {
+      "id": "co-nee",
+      "name": "NextEra Energy",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "NEE",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $3.8M to candidates/parties (D 46% / R 54%); employees $1.1M to candidates/parties (D 58% / R 42%). Lean 0 (r=0.02, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00064774/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-f",
+      "name": "Ford",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "F",
+      "political": {
+        "leanScore": 1,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $1.3M to candidates/parties (D 50% / R 50%); employees $2.1M to candidates/parties (D 88% / R 12%); lobbying $11.8M (2023–2025, Senate LDA). Lean +1 (r=-0.46, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00046474/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-ge",
+      "name": "General Electric",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "GE",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $1.4M to candidates/parties (D 51% / R 49%); employees $685k to candidates/parties (D 66% / R 34%). Lean 0 (r=-0.12, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00830208/ fec.gov/data/committee/C00024869/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-cop",
+      "name": "ConocoPhillips",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "COP",
+      "political": {
+        "leanScore": -1,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $630k to candidates/parties (D 21% / R 79%); employees $417k to candidates/parties (D 30% / R 70%); lobbying $23.4M (2023–2025, Senate LDA). Lean -1 (r=0.51, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00112896/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-ups",
+      "name": "UPS",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "UPS",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $5.8M to candidates/parties (D 38% / R 62%); employees $1.6M to candidates/parties (D 62% / R 38%). Lean 0 (r=0.13, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00064766/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-so",
+      "name": "Southern Company",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "SO",
+      "political": {
+        "leanScore": -1,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $3.1M to candidates/parties (D 34% / R 66%); employees $285k to candidates/parties (D 42% / R 58%). Lean -1 (r=0.31, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00077305/ fec.gov/data/committee/C00119776/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-cat",
+      "name": "Caterpillar",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "CAT",
+      "political": {
+        "leanScore": -1,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $1.8M to candidates/parties (D 33% / R 67%); employees $182k to candidates/parties (D 58% / R 42%); lobbying $13.0M (2023–2025, Senate LDA). Lean -1 (r=0.29, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00148031/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-lly",
+      "name": "Eli Lilly",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "LLY",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $2.0M to candidates/parties (D 50% / R 50%); employees $597k to candidates/parties (D 41% / R 59%). Lean 0 (r=0.04, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00082792/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-lmt",
+      "name": "Lockheed Martin",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "LMT",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $5.5M to candidates/parties (D 46% / R 54%); employees $2.1M to candidates/parties (D 59% / R 41%). Lean 0 (r=0.02, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00303024/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-axp",
+      "name": "American Express",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "AXP",
+      "political": {
+        "leanScore": 1,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $1.8M to candidates/parties (D 49% / R 51%); employees $881k to candidates/parties (D 94% / R 6%); lobbying $4.7M (2023–2025, Senate LDA). Lean +1 (r=-0.29, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00040535/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "wells-fargo",
+      "name": "Wells Fargo",
+      "sector": "Banking & insurance",
+      "bucketDefault": "major",
+      "ticker": "WFC",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $2.7M to candidates/parties (D 51% / R 49%); employees $3.2M to candidates/parties (D 64% / R 36%). Lean 0 (r=-0.16, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00034595/ fec.gov/data/committee/C00300178/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "home-depot",
+      "name": "The Home Depot",
+      "sector": "Home improvement",
+      "bucketDefault": "major",
+      "ticker": "HD",
+      "political": {
+        "leanScore": -1,
+        "confidence": "high",
+        "sourceHint": "Via listed parent Home Depot (HD). FEC 2021–2024: PAC $7.2M to candidates/parties (D 40% / R 60%); employees $1.7M to candidates/parties (D 24% / R 76%). Lean -1 (r=0.26, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00284885/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-bmy",
+      "name": "Bristol Myers Squibb",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "BMY",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $1.1M to candidates/parties (D 46% / R 54%); employees $290k to candidates/parties (D 79% / R 21%); lobbying $24.2M (2023–2025, Senate LDA). Lean 0 (r=-0.06, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00035675/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-googl",
+      "name": "Alphabet",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "GOOGL",
+      "political": {
+        "leanScore": 2,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $2.9M to candidates/parties (D 51% / R 49%); employees $21.6M to candidates/parties (D 95% / R 5%). Lean +2 (r=-0.80, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00428623/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-fdx",
+      "name": "FedEx",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "FDX",
+      "political": {
+        "leanScore": -1,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $3.4M to candidates/parties (D 48% / R 52%); employees $1.7M to candidates/parties (D 23% / R 77%); lobbying $35.0M (2023–2025, Senate LDA). Lean -1 (r=0.21, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00068692/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-gm",
+      "name": "General Motors",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "GM",
+      "political": {
+        "leanScore": 1,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $4.0M to candidates/parties (D 52% / R 48%); employees $2.6M to candidates/parties (D 88% / R 12%). Lean +1 (r=-0.32, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00076810/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-tmus",
+      "name": "T-Mobile",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "TMUS",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $3.0M to candidates/parties (D 50% / R 50%); employees $525k to candidates/parties (D 88% / R 12%). Lean 0 (r=-0.12, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00089342/ fec.gov/data/committee/C00361758/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-pfe",
+      "name": "Pfizer",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "PFE",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $2.9M to candidates/parties (D 52% / R 48%); employees $916k to candidates/parties (D 81% / R 19%). Lean 0 (r=-0.18, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00016683/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-duk",
+      "name": "Duke Energy",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "DUK",
+      "political": {
+        "leanScore": -1,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $1.6M to candidates/parties (D 32% / R 68%); employees $247k to candidates/parties (D 39% / R 61%); lobbying $21.1M (2023–2025, Senate LDA). Lean -1 (r=0.34, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00083535/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-avgo",
+      "name": "Broadcom",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "AVGO",
+      "political": {
+        "leanScore": 1,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $104k to candidates/parties (D 40% / R 60%); employees $846k to candidates/parties (D 82% / R 18%); lobbying $5.4M (2023–2025, Senate LDA). Lean +1 (r=-0.55, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00680504/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-pnc",
+      "name": "PNC Financial Services",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "PNC",
+      "political": {
+        "leanScore": -1,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $2.1M to candidates/parties (D 32% / R 68%); employees $503k to candidates/parties (D 65% / R 35%). Lean -1 (r=0.22, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00035519/ fec.gov/data/committee/C00186064/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "geico",
+      "name": "GEICO",
+      "parentCompanyId": "berkshire-hathaway",
+      "sector": "Banking & insurance",
+      "bucketDefault": "major",
+      "ticker": "BRK-B",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "Via listed parent Berkshire Hathaway (BRK-B). FEC 2021–2024: PAC $3.4M to candidates/parties (D 39% / R 61%); employees $1.1M to candidates/parties (D 59% / R 41%); lobbying $13.5M (2023–2025, Senate LDA). Lean 0 (r=0.12, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00235739/ fec.gov/data/committee/C00324483/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "berkshire-hathaway",
+      "name": "Berkshire Hathaway",
+      "sector": "Conglomerate (holding)",
+      "bucketDefault": "major",
+      "ticker": "BRK-B",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $3.4M to candidates/parties (D 39% / R 61%); employees $1.1M to candidates/parties (D 59% / R 41%); lobbying $13.5M (2023–2025, Senate LDA). Lean 0 (r=0.12, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00235739/ fec.gov/data/committee/C00324483/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-ma",
+      "name": "Mastercard",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "MA",
+      "political": {
+        "leanScore": 1,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $1.0M to candidates/parties (D 50% / R 50%); employees $440k to candidates/parties (D 85% / R 15%). Lean +1 (r=-0.20, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00410274/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-ms",
+      "name": "Morgan Stanley",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "MS",
+      "political": {
+        "leanScore": 1,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $1.4M to candidates/parties (D 56% / R 44%); employees $2.6M to candidates/parties (D 68% / R 32%). Lean +1 (r=-0.28, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00337626/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-c",
+      "name": "Citigroup",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "C",
+      "political": {
+        "leanScore": 1,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $1.6M to candidates/parties (D 46% / R 54%); employees $1.2M to candidates/parties (D 80% / R 20%). Lean +1 (r=-0.22, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00008474/ fec.gov/data/committee/C00039305/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "walmart",
+      "name": "Walmart",
+      "sector": "Retail & grocery",
+      "bucketDefault": "major",
+      "ticker": "WMT",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $3.3M to candidates/parties (D 45% / R 55%); employees $1.6M to candidates/parties (D 44% / R 56%). Lean 0 (r=0.11, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00093054/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "exxonmobil",
+      "name": "ExxonMobil",
+      "sector": "Fuel & auto",
+      "bucketDefault": "major",
+      "ticker": "XOM",
+      "political": {
+        "leanScore": -1,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $1.6M to candidates/parties (D 31% / R 69%); employees $713k to candidates/parties (D 29% / R 71%). Lean -1 (r=0.40, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00121368/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-mo",
+      "name": "Altria",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "MO",
+      "political": {
+        "leanScore": -1,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $2.9M to candidates/parties (D 38% / R 62%); employees $1.1M to candidates/parties (D 24% / R 76%). Lean -1 (r=0.32, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00089136/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-hon",
+      "name": "Honeywell",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "HON",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $8.7M to candidates/parties (D 50% / R 50%); employees $400k to candidates/parties (D 70% / R 30%). Lean 0 (r=-0.01, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00096156/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-t",
+      "name": "AT&T",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "T",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $7.5M to candidates/parties (D 45% / R 55%); employees $1.4M to candidates/parties (D 74% / R 26%). Lean 0 (r=0.01, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00109017/ fec.gov/data/committee/C00377044/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-cmcsa",
+      "name": "Comcast",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "CMCSA",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $7.1M to candidates/parties (D 51% / R 49%); employees $2.7M to candidates/parties (D 70% / R 30%); lobbying $40.2M (2023–2025, Senate LDA). Lean 0 (r=-0.12, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00248716/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-v",
+      "name": "Visa",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "V",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $2.4M to candidates/parties (D 51% / R 49%); employees $593k to candidates/parties (D 77% / R 23%). Lean 0 (r=-0.11, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00365122/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-gs",
+      "name": "Goldman Sachs",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "GS",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $1.2M to candidates/parties (D 48% / R 52%); employees $4.3M to candidates/parties (D 45% / R 55%). Lean 0 (r=0.09, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00350744/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-txn",
+      "name": "Texas Instruments",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "TXN",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $274k to candidates/parties (D 49% / R 51%); employees $189k to candidates/parties (D 56% / R 44%). Lean 0 (r=-0.04, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00007070/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "cvs-pharmacy",
+      "name": "CVS Pharmacy",
+      "parentCompanyId": "cvs-health",
+      "sector": "Retail & household",
+      "bucketDefault": "major",
+      "ticker": "CVS",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "Via listed parent CVS Health (CVS). FEC 2021–2024: PAC $2.0M to candidates/parties (D 51% / R 49%); employees $1.1M to candidates/parties (D 73% / R 27%); lobbying $30.7M (2023–2025, Senate LDA). Lean 0 (r=-0.17, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00384818/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "cvs-health",
+      "name": "CVS Health",
+      "sector": "Health & retail (holding)",
+      "bucketDefault": "major",
+      "ticker": "CVS",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $2.0M to candidates/parties (D 51% / R 49%); employees $1.1M to candidates/parties (D 73% / R 27%); lobbying $30.7M (2023–2025, Senate LDA). Lean 0 (r=-0.17, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00384818/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-qcom",
+      "name": "Qualcomm",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "QCOM",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $621k to candidates/parties (D 51% / R 49%); employees $1.2M to candidates/parties (D 64% / R 36%). Lean 0 (r=-0.19, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00339085/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-orcl",
+      "name": "Oracle",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "ORCL",
+      "political": {
+        "leanScore": -2,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $746k to candidates/parties (D 49% / R 51%); employees $36.5M to candidates/parties (D 9% / R 91%). Lean -2 (r=0.81, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00323048/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-de",
+      "name": "Deere & Company",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "DE",
+      "political": {
+        "leanScore": -1,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $1.3M to candidates/parties (D 28% / R 72%); employees $145k to candidates/parties (D 66% / R 34%); lobbying $5.0M (2023–2025, Senate LDA). Lean -1 (r=0.36, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00204099/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-mrk",
+      "name": "Merck",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "MRK",
+      "political": {
+        "leanScore": 1,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $1.9M to candidates/parties (D 38% / R 62%); employees $1.4M to candidates/parties (D 91% / R 9%). Lean +1 (r=-0.20, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00097485/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "disney-plus",
+      "name": "Disney+",
+      "parentCompanyId": "walt-disney-company",
+      "sector": "Subscriptions & media",
+      "bucketDefault": "major",
+      "ticker": "DIS",
+      "political": {
+        "leanScore": 2,
+        "confidence": "high",
+        "sourceHint": "Via listed parent Walt Disney (DIS). FEC 2021–2024: PAC $472k to candidates/parties (D 50% / R 50%); employees $2.1M to candidates/parties (D 93% / R 7%); lobbying $12.6M (2023–2025, Senate LDA). Lean +2 (r=-0.70, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00197749/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "hulu",
+      "name": "Hulu",
+      "parentCompanyId": "walt-disney-company",
+      "sector": "Subscriptions & media",
+      "bucketDefault": "major",
+      "ticker": "DIS",
+      "political": {
+        "leanScore": 2,
+        "confidence": "high",
+        "sourceHint": "Via listed parent Walt Disney (DIS). FEC 2021–2024: PAC $472k to candidates/parties (D 50% / R 50%); employees $2.1M to candidates/parties (D 93% / R 7%); lobbying $12.6M (2023–2025, Senate LDA). Lean +2 (r=-0.70, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00197749/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "walt-disney-company",
+      "name": "The Walt Disney Company",
+      "sector": "Media conglomerate",
+      "bucketDefault": "major",
+      "ticker": "DIS",
+      "political": {
+        "leanScore": 2,
+        "confidence": "high",
+        "sourceHint": "Via listed parent Walt Disney (DIS). FEC 2021–2024: PAC $472k to candidates/parties (D 50% / R 50%); employees $2.1M to candidates/parties (D 93% / R 7%); lobbying $12.6M (2023–2025, Senate LDA). Lean +2 (r=-0.70, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00197749/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-nke",
+      "name": "Nike",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "NKE",
+      "political": {
+        "leanScore": 1,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $875k to candidates/parties (D 78% / R 22%); employees $529k to candidates/parties (D 80% / R 20%). Lean +1 (r=-0.58, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00142786/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-all",
+      "name": "Allstate",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "ALL",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $810k to candidates/parties (D 50% / R 50%); employees $319k to candidates/parties (D 50% / R 50%); lobbying $8.9M (2023–2025, Senate LDA). Lean 0 (r=0.00, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00040253/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-hum",
+      "name": "Humana",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "HUM",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $2.1M to candidates/parties (D 50% / R 50%); employees $360k to candidates/parties (D 58% / R 42%). Lean 0 (r=-0.02, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00271007/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-csco",
+      "name": "Cisco",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "CSCO",
+      "political": {
+        "leanScore": 1,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $620k to candidates/parties (D 53% / R 47%); employees $1.8M to candidates/parties (D 73% / R 27%); lobbying $9.8M (2023–2025, Senate LDA). Lean +1 (r=-0.36, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00362707/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "walgreens",
+      "name": "Walgreens",
+      "parentCompanyId": "walgreens-boots-alliance",
+      "sector": "Retail & household",
+      "bucketDefault": "major",
+      "ticker": "WBA",
+      "political": {
+        "leanScore": 1,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $800k to candidates/parties (D 53% / R 47%); employees $588k to candidates/parties (D 73% / R 27%). Lean +1 (r=-0.22, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00160770/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "walgreens-boots-alliance",
+      "name": "Walgreens Boots Alliance",
+      "sector": "Retail (holding)",
+      "bucketDefault": "major",
+      "ticker": "WBA",
+      "political": {
+        "leanScore": 1,
+        "confidence": "high",
+        "sourceHint": "Via listed parent Walgreens (WBA). FEC 2021–2024: PAC $800k to candidates/parties (D 53% / R 47%); employees $588k to candidates/parties (D 73% / R 27%). Lean +1 (r=-0.22, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00160770/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-usb",
+      "name": "U.S. Bancorp",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "USB",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $1.4M to candidates/parties (D 47% / R 53%); employees $472k to candidates/parties (D 59% / R 41%). Lean 0 (r=0.00, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00018036/ fec.gov/data/committee/C00488882/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "lowes",
+      "name": "Lowe's",
+      "sector": "Home improvement",
+      "bucketDefault": "major",
+      "ticker": "LOW",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $1.5M to candidates/parties (D 53% / R 47%); employees $333k to candidates/parties (D 45% / R 55%). Lean 0 (r=-0.03, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00251751/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-msft",
+      "name": "Microsoft",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "MSFT",
+      "political": {
+        "leanScore": 2,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $3.1M to candidates/parties (D 50% / R 50%); employees $16.1M to candidates/parties (D 91% / R 9%). Lean +2 (r=-0.69, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00227546/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-rtx",
+      "name": "RTX",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "RTX",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $4.2M to candidates/parties (D 50% / R 50%); employees $1.5M to candidates/parties (D 58% / R 42%). Lean 0 (r=-0.04, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00097568/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-amgn",
+      "name": "Amgen",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "AMGN",
+      "political": {
+        "leanScore": -1,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $2.5M to candidates/parties (D 37% / R 63%); employees $771k to candidates/parties (D 38% / R 62%); lobbying $35.5M (2023–2025, Senate LDA). Lean -1 (r=0.26, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00251876/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-tmo",
+      "name": "Thermo Fisher Scientific",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "TMO",
+      "political": {
+        "leanScore": 1,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $397k to candidates/parties (D 55% / R 45%); employees $421k to candidates/parties (D 69% / R 31%). Lean +1 (r=-0.24, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00292318/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-ba",
+      "name": "Boeing",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "BA",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $5.9M to candidates/parties (D 45% / R 55%); employees $2.5M to candidates/parties (D 61% / R 39%); lobbying $37.7M (2023–2025, Senate LDA). Lean 0 (r=0.01, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00142711/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "capital-one",
+      "name": "Capital One",
+      "sector": "Banking & insurance",
+      "bucketDefault": "major",
+      "ticker": "COF",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $2.6M to candidates/parties (D 46% / R 54%); employees $638k to candidates/parties (D 83% / R 17%); lobbying $11.6M (2023–2025, Senate LDA). Lean 0 (r=-0.06, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00326595/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-jnj",
+      "name": "Johnson & Johnson",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "JNJ",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $1.6M to candidates/parties (D 50% / R 50%); employees $558k to candidates/parties (D 81% / R 19%). Lean 0 (r=-0.15, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00010983/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-mu",
+      "name": "Micron",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "MU",
+      "political": {
+        "leanScore": 1,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $245k to candidates/parties (D 57% / R 43%); employees $197k to candidates/parties (D 67% / R 33%). Lean +1 (r=-0.23, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00443671/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-meta",
+      "name": "Meta Platforms",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "META",
+      "political": {
+        "leanScore": 2,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $652k to candidates/parties (D 50% / R 50%); employees $4.8M to candidates/parties (D 89% / R 11%). Lean +2 (r=-0.70, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00502906/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "chevron",
+      "name": "Chevron",
+      "sector": "Fuel & auto",
+      "bucketDefault": "major",
+      "ticker": "CVX",
+      "political": {
+        "leanScore": -1,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $1.8M to candidates/parties (D 12% / R 88%); employees $1.0M to candidates/parties (D 38% / R 62%); lobbying $24.8M (2023–2025, Senate LDA). Lean -1 (r=0.58, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00035006/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-intc",
+      "name": "Intel",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "INTC",
+      "political": {
+        "leanScore": 1,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $1.7M to candidates/parties (D 51% / R 49%); employees $1.6M to candidates/parties (D 83% / R 17%). Lean +1 (r=-0.33, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00125641/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-lin",
+      "name": "Linde",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "LIN",
+      "political": {
+        "leanScore": 1,
+        "confidence": "med",
+        "sourceHint": "FEC 2021–2024: PAC $17k to candidates/parties (D 94% / R 6%); employees $41k to candidates/parties (D 49% / R 51%). Lean +1 (r=-0.24, med confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00283440/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "target",
+      "name": "Target",
+      "sector": "Retail & grocery",
+      "bucketDefault": "major",
+      "ticker": "TGT",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $1.3M to candidates/parties (D 50% / R 50%); employees $524k to candidates/parties (D 70% / R 30%). Lean 0 (r=-0.12, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00098061/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-pg",
+      "name": "Procter & Gamble",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "PG",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $606k to candidates/parties (D 49% / R 51%); employees $329k to candidates/parties (D 78% / R 22%). Lean 0 (r=-0.18, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00257329/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-tfc",
+      "name": "Truist",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "TFC",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $1.8M to candidates/parties (D 46% / R 54%); employees $314k to candidates/parties (D 53% / R 47%). Lean 0 (r=0.06, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00009639/ fec.gov/data/committee/C00386524/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-met",
+      "name": "MetLife",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "MET",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $945k to candidates/parties (D 47% / R 53%); employees $489k to candidates/parties (D 67% / R 33%). Lean 0 (r=-0.08, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00040923/ fec.gov/data/committee/C00493551/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-gild",
+      "name": "Gilead Sciences",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "GILD",
+      "political": {
+        "leanScore": 1,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $757k to candidates/parties (D 50% / R 50%); employees $510k to candidates/parties (D 76% / R 24%). Lean +1 (r=-0.21, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00396895/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-mdt",
+      "name": "Medtronic",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "MDT",
+      "political": {
+        "leanScore": 1,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $716k to candidates/parties (D 55% / R 45%); employees $396k to candidates/parties (D 74% / R 26%). Lean +1 (r=-0.24, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00311878/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "verizon",
+      "name": "Verizon",
+      "sector": "Subscriptions & media",
+      "bucketDefault": "major",
+      "ticker": "VZ",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $4.3M to candidates/parties (D 50% / R 50%); employees $1.3M to candidates/parties (D 69% / R 31%). Lean 0 (r=-0.09, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00186288/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "whole-foods",
+      "name": "Whole Foods Market",
+      "parentCompanyId": "amazon",
+      "sector": "Grocery",
+      "bucketDefault": "major",
+      "ticker": "AMZN",
+      "political": {
+        "leanScore": 1,
+        "confidence": "high",
+        "sourceHint": "Via listed parent Amazon (AMZN). FEC 2021–2024: PAC $3.2M to candidates/parties (D 50% / R 50%); employees $6.6M to candidates/parties (D 87% / R 13%); lobbying $53.5M (2023–2025, Senate LDA). Lean +1 (r=-0.50, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00360354/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "amazon",
+      "name": "Amazon",
+      "sector": "Retail & household",
+      "bucketDefault": "major",
+      "ticker": "AMZN",
+      "political": {
+        "leanScore": 1,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $3.2M to candidates/parties (D 50% / R 50%); employees $6.6M to candidates/parties (D 87% / R 13%); lobbying $53.5M (2023–2025, Senate LDA). Lean +1 (r=-0.50, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00360354/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-spgi",
+      "name": "S&P Global",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "SPGI",
+      "political": {
+        "leanScore": 1,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $367k to candidates/parties (D 52% / R 48%); employees $188k to candidates/parties (D 84% / R 16%). Lean +1 (r=-0.25, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00494682/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-amd",
+      "name": "Advanced Micro Devices",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "AMD",
+      "political": {
+        "leanScore": 2,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $113k to candidates/parties (D 52% / R 48%); employees $770k to candidates/parties (D 93% / R 7%); lobbying $10.9M (2023–2025, Senate LDA). Lean +2 (r=-0.76, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00404483/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-oxy",
+      "name": "Occidental Petroleum",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "OXY",
+      "political": {
+        "leanScore": -2,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $669k to candidates/parties (D 13% / R 87%); employees $649k to candidates/parties (D 6% / R 94%). Lean -2 (r=0.81, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00083857/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "chase",
+      "name": "Chase",
+      "parentCompanyId": "jpmorgan-chase",
+      "sector": "Banking & insurance",
+      "bucketDefault": "major",
+      "ticker": "JPM",
+      "political": {
+        "leanScore": 1,
+        "confidence": "high",
+        "sourceHint": "Via listed parent JPMorgan Chase (JPM). FEC 2021–2024: PAC $2.2M to candidates/parties (D 46% / R 54%); employees $2.5M to candidates/parties (D 83% / R 17%). Lean +1 (r=-0.31, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00104299/ fec.gov/data/committee/C00128512/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "jpmorgan-chase",
+      "name": "JPMorgan Chase & Co.",
+      "sector": "Financial holding",
+      "bucketDefault": "major",
+      "ticker": "JPM",
+      "political": {
+        "leanScore": 1,
+        "confidence": "high",
+        "sourceHint": "Via listed parent JPMorgan Chase (JPM). FEC 2021–2024: PAC $2.2M to candidates/parties (D 46% / R 54%); employees $2.5M to candidates/parties (D 83% / R 17%). Lean +1 (r=-0.31, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00104299/ fec.gov/data/committee/C00128512/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-elv",
+      "name": "Elevance Health",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "ELV",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $3.7M to candidates/parties (D 50% / R 50%); employees $647k to candidates/parties (D 68% / R 32%); lobbying $21.2M (2023–2025, Senate LDA). Lean 0 (r=-0.05, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00197228/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-abt",
+      "name": "Abbott Laboratories",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "ABT",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $2.6M to candidates/parties (D 51% / R 49%); employees $551k to candidates/parties (D 44% / R 56%); lobbying $12.9M (2023–2025, Senate LDA). Lean 0 (r=0.01, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00040279/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-amat",
+      "name": "Applied Materials",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "AMAT",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $182k to candidates/parties (D 57% / R 43%); employees $331k to candidates/parties (D 56% / R 44%); lobbying $7.7M (2023–2025, Senate LDA). Lean 0 (r=-0.13, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00406892/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-pru",
+      "name": "Prudential Financial",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "PRU",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $1.6M to candidates/parties (D 51% / R 49%); employees $302k to candidates/parties (D 82% / R 18%). Lean 0 (r=-0.12, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00127779/ fec.gov/data/committee/C00493304/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-ci",
+      "name": "The Cigna Group",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "CI",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $3.1M to candidates/parties (D 53% / R 47%); employees $520k to candidates/parties (D 64% / R 36%); lobbying $27.0M (2023–2025, Senate LDA). Lean 0 (r=-0.09, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00085316/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-abnb",
+      "name": "Airbnb",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "ABNB",
+      "political": {
+        "leanScore": 2,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $87k to candidates/parties (D 49% / R 51%); employees $1.1M to candidates/parties (D 96% / R 4%); lobbying $3.1M (2023–2025, Senate LDA). Lean +2 (r=-0.85, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00731000/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "kroger",
+      "name": "Kroger",
+      "sector": "Grocery",
+      "bucketDefault": "major",
+      "ticker": "KR",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $332k to candidates/parties (D 46% / R 54%); employees $465k to candidates/parties (D 47% / R 53%). Lean 0 (r=0.07, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00059238/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-mdlz",
+      "name": "Mondelez",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "MDLZ",
+      "political": {
+        "leanScore": 1,
+        "confidence": "med",
+        "sourceHint": "FEC 2021–2024: PAC $140k to candidates/parties (D 53% / R 47%); employees $69k to candidates/parties (D 97% / R 3%). Lean +1 (r=-0.35, med confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00529073/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "shell",
+      "name": "Shell",
+      "parentCompanyId": "shell-plc",
+      "sector": "Fuel & auto",
+      "bucketDefault": "major",
+      "ticker": "SHEL",
+      "political": {
+        "leanScore": 1,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $5k to candidates/parties (D 0% / R 100%); employees $283k to candidates/parties (D 80% / R 20%). Lean +1 (r=-0.56, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00039503/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "shell-plc",
+      "name": "Shell plc",
+      "sector": "Energy (holding)",
+      "bucketDefault": "major",
+      "ticker": "SHEL",
+      "political": {
+        "leanScore": 1,
+        "confidence": "high",
+        "sourceHint": "Via listed parent Shell (SHEL). FEC 2021–2024: PAC $5k to candidates/parties (D 0% / R 100%); employees $283k to candidates/parties (D 80% / R 20%). Lean +1 (r=-0.56, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00039503/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-abbv",
+      "name": "AbbVie",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "ABBV",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $2.0M to candidates/parties (D 50% / R 50%); employees $495k to candidates/parties (D 81% / R 19%); lobbying $13.8M (2023–2025, Senate LDA). Lean 0 (r=-0.12, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00536573/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "bank-of-america",
+      "name": "Bank of America",
+      "sector": "Banking & insurance",
+      "bucketDefault": "major",
+      "ticker": "BAC",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $1.1M to candidates/parties (D 41% / R 59%); employees $3.2M to candidates/parties (D 60% / R 40%); lobbying $8.2M (2023–2025, Senate LDA). Lean 0 (r=-0.11, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00043489/ fec.gov/data/committee/C00364778/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-pep",
+      "name": "PepsiCo",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "PEP",
+      "political": {
+        "leanScore": 1,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $255k to candidates/parties (D 56% / R 44%); employees $212k to candidates/parties (D 71% / R 29%). Lean +1 (r=-0.26, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00039321/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-unh",
+      "name": "UnitedHealth Group",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "UNH",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $3.3M to candidates/parties (D 47% / R 53%); employees $1.2M to candidates/parties (D 76% / R 24%). Lean 0 (r=-0.09, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00274431/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-ko",
+      "name": "Coca-Cola",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "KO",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $224k to candidates/parties (D 43% / R 57%); employees $259k to candidates/parties (D 53% / R 47%). Lean 0 (r=0.03, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00012468/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-intu",
+      "name": "Intuit",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "INTU",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $215k to candidates/parties (D 50% / R 50%); employees $699k to candidates/parties (D 55% / R 45%). Lean 0 (r=-0.08, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00361741/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "mcdonalds",
+      "name": "McDonald's",
+      "sector": "Dining & coffee",
+      "bucketDefault": "major",
+      "ticker": "MCD",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $824k to candidates/parties (D 46% / R 54%); employees $539k to candidates/parties (D 45% / R 55%). Lean 0 (r=0.09, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00063164/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "taco-bell",
+      "name": "Taco Bell",
+      "parentCompanyId": "yum-brands",
+      "sector": "Dining & coffee",
+      "bucketDefault": "major",
+      "ticker": "YUM",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "Via listed parent Yum! Brands (YUM). FEC 2021–2024: PAC $95k to candidates/parties (D 45% / R 55%); employees $213k to candidates/parties (D 46% / R 54%). Lean 0 (r=0.08, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00329474/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "yum-brands",
+      "name": "Yum! Brands",
+      "sector": "Restaurant holding",
+      "bucketDefault": "major",
+      "ticker": "YUM",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $95k to candidates/parties (D 45% / R 55%); employees $213k to candidates/parties (D 46% / R 54%). Lean 0 (r=0.08, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00329474/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-crm",
+      "name": "Salesforce",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "CRM",
+      "political": {
+        "leanScore": 2,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $204k to candidates/parties (D 52% / R 48%); employees $1.4M to candidates/parties (D 93% / R 7%); lobbying $10.2M (2023–2025, Senate LDA). Lean +2 (r=-0.76, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00511600/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "safeway",
+      "name": "Safeway",
+      "parentCompanyId": "albertsons",
+      "sector": "Grocery",
+      "bucketDefault": "major",
+      "ticker": "ACI",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "Via listed parent Albertsons (ACI). FEC 2021–2024: PAC $430k to candidates/parties (D 50% / R 50%); employees $294k to candidates/parties (D 55% / R 45%); lobbying $8.0M (2023–2025, Senate LDA). Lean 0 (r=-0.04, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00194084/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "albertsons",
+      "name": "Albertsons Companies",
+      "sector": "Grocery (holding)",
+      "bucketDefault": "major",
+      "ticker": "ACI",
+      "political": {
+        "leanScore": 0,
+        "confidence": "high",
+        "sourceHint": "Via listed parent Albertsons (ACI). FEC 2021–2024: PAC $430k to candidates/parties (D 50% / R 50%); employees $294k to candidates/parties (D 55% / R 45%); lobbying $8.0M (2023–2025, Senate LDA). Lean 0 (r=-0.04, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00194084/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-pm",
+      "name": "Philip Morris International",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "PM",
+      "political": {
+        "leanScore": 2,
+        "confidence": "med",
+        "sourceHint": "FEC 2021–2024: employees $68k to candidates/parties (D 81% / R 19%). Lean +2 (r=-0.63, med confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-uber",
+      "name": "Uber",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "UBER",
+      "political": {
+        "leanScore": 1,
+        "confidence": "med",
+        "sourceHint": "FEC 2021–2024: employees $1.0M to candidates/parties (D 74% / R 26%). Lean +1 (r=-0.49, med confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-ibm",
+      "name": "IBM",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "IBM",
+      "political": {
+        "leanScore": 1,
+        "confidence": "med",
+        "sourceHint": "FEC 2021–2024: employees $2.0M to candidates/parties (D 79% / R 21%). Lean +1 (r=-0.58, med confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-nvda",
+      "name": "NVIDIA",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "NVDA",
+      "political": {
+        "leanScore": 2,
+        "confidence": "med",
+        "sourceHint": "FEC 2021–2024: employees $1.5M to candidates/parties (D 92% / R 8%). Lean +2 (r=-0.84, med confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "netflix",
+      "name": "Netflix",
+      "sector": "Subscriptions & media",
+      "bucketDefault": "major",
+      "ticker": "NFLX",
+      "political": {
+        "leanScore": 2,
+        "confidence": "med",
+        "sourceHint": "FEC 2021–2024: employees $19.6M to candidates/parties (D 100% / R 0%). Lean +2 (r=-1.00, med confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00518233/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-tsla",
+      "name": "Tesla",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "TSLA",
+      "political": {
+        "leanScore": 1,
+        "confidence": "med",
+        "sourceHint": "FEC 2021–2024: employees $356k to candidates/parties (D 80% / R 20%). Lean +1 (r=-0.60, med confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-aapl",
+      "name": "Apple",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "AAPL",
+      "political": {
+        "leanScore": 2,
+        "confidence": "med",
+        "sourceHint": "FEC 2021–2024: employees $6.5M to candidates/parties (D 94% / R 6%); lobbying $27.7M (2023–2025, Senate LDA). Lean +2 (r=-0.87, med confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-mmm",
+      "name": "3M",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "MMM",
+      "political": {
+        "leanScore": 0,
+        "confidence": "med",
+        "sourceHint": "FEC 2021–2024: employees $281k to candidates/parties (D 57% / R 43%). Lean 0 (r=-0.14, med confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-tjx",
+      "name": "TJX Companies",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "TJX",
+      "political": {
+        "leanScore": 1,
+        "confidence": "med",
+        "sourceHint": "FEC 2021–2024: employees $132k to candidates/parties (D 73% / R 27%). Lean +1 (r=-0.46, med confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-acn",
+      "name": "Accenture",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "ACN",
+      "political": {
+        "leanScore": 2,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $78k to candidates/parties (D 49% / R 51%); employees $1.5M to candidates/parties (D 89% / R 11%); lobbying $8.4M (2023–2025, Senate LDA). Lean +2 (r=-0.74, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00300707/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "costco",
+      "name": "Costco",
+      "sector": "Retail & grocery",
+      "bucketDefault": "major",
+      "ticker": "COST",
+      "political": {
+        "leanScore": 1,
+        "confidence": "med",
+        "sourceHint": "FEC 2021–2024: employees $641k to candidates/parties (D 65% / R 35%). Lean +1 (r=-0.29, med confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-blk",
+      "name": "BlackRock",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "BLK",
+      "political": {
+        "leanScore": 1,
+        "confidence": "med",
+        "sourceHint": "FEC 2021–2024: employees $1.1M to candidates/parties (D 74% / R 26%). Lean +1 (r=-0.47, med confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-adbe",
+      "name": "Adobe",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "ADBE",
+      "political": {
+        "leanScore": 2,
+        "confidence": "med",
+        "sourceHint": "FEC 2021–2024: employees $749k to candidates/parties (D 92% / R 8%); lobbying $5.4M (2023–2025, Senate LDA). Lean +2 (r=-0.84, med confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-now",
+      "name": "ServiceNow",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "NOW",
+      "political": {
+        "leanScore": 2,
+        "confidence": "med",
+        "sourceHint": "FEC 2021–2024: employees $323k to candidates/parties (D 86% / R 14%). Lean +2 (r=-0.71, med confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "starbucks",
+      "name": "Starbucks",
+      "sector": "Dining & coffee",
+      "bucketDefault": "major",
+      "ticker": "SBUX",
+      "political": {
+        "leanScore": 2,
+        "confidence": "med",
+        "sourceHint": "FEC 2021–2024: employees $277k to candidates/parties (D 93% / R 7%). Lean +2 (r=-0.85, med confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-schw",
+      "name": "Charles Schwab",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "SCHW",
+      "political": {
+        "leanScore": -2,
+        "confidence": "med",
+        "sourceHint": "FEC 2021–2024: employees $24.0M to candidates/parties (D 1% / R 99%). Lean -2 (r=0.97, med confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00370114/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "spotify",
+      "name": "Spotify",
+      "sector": "Subscriptions & media",
+      "bucketDefault": "major",
+      "ticker": "SPOT",
+      "political": {
+        "leanScore": 2,
+        "confidence": "med",
+        "sourceHint": "FEC 2021–2024: employees $221k to candidates/parties (D 99% / R 1%). Lean +2 (r=-0.98, med confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-pgr",
+      "name": "Progressive",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "PGR",
+      "political": {
+        "leanScore": 1,
+        "confidence": "med",
+        "sourceHint": "FEC 2021–2024: employees $206k to candidates/parties (D 77% / R 23%). Lean +1 (r=-0.54, med confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "chipotle",
+      "name": "Chipotle",
+      "sector": "Dining & coffee",
+      "bucketDefault": "major",
+      "ticker": "CMG",
+      "political": {
+        "leanScore": 2,
+        "confidence": "med",
+        "sourceHint": "FEC 2021–2024: employees $85k to candidates/parties (D 89% / R 11%); lobbying $2.7M (2023–2025, Senate LDA). Lean +2 (r=-0.78, med confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-aig",
+      "name": "AIG",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "AIG",
+      "political": {
+        "leanScore": 1,
+        "confidence": "med",
+        "sourceHint": "FEC 2021–2024: employees $288k to candidates/parties (D 75% / R 25%); lobbying $3.6M (2023–2025, Senate LDA). Lean +1 (r=-0.49, med confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00097725/ fec.gov/data/committee/C00617944/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-pypl",
+      "name": "PayPal",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "PYPL",
+      "political": {
+        "leanScore": 2,
+        "confidence": "med",
+        "sourceHint": "FEC 2021–2024: employees $271k to candidates/parties (D 89% / R 11%). Lean +2 (r=-0.79, med confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00581686/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-dhr",
+      "name": "Danaher",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "DHR",
+      "political": {
+        "leanScore": 2,
+        "confidence": "med",
+        "sourceHint": "FEC 2021–2024: employees $93k to candidates/parties (D 84% / R 16%); lobbying $2.4M (2023–2025, Senate LDA). Lean +2 (r=-0.68, med confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-dg",
+      "name": "Dollar General",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "DG",
+      "political": {
+        "leanScore": -2,
+        "confidence": "med",
+        "sourceHint": "FEC 2021–2024: employees $39k to candidates/parties (D 11% / R 89%); lobbying $628k (2023–2025, Senate LDA). Lean -2 (r=0.78, med confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-isrg",
+      "name": "Intuitive Surgical",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "ISRG",
+      "political": {
+        "leanScore": 2,
+        "confidence": "med",
+        "sourceHint": "FEC 2021–2024: employees $122k to candidates/parties (D 91% / R 9%). Lean +2 (r=-0.82, med confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00462622/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-bkng",
+      "name": "Booking Holdings",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "BKNG",
+      "political": {
+        "leanScore": 2,
+        "confidence": "low",
+        "sourceHint": "FEC 2021–2024: employees $24k to candidates/parties (D 83% / R 17%); lobbying $3.6M (2023–2025, Senate LDA). Lean +2 (r=-0.67, low confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "planet-fitness",
+      "name": "Planet Fitness",
+      "sector": "Personal care & services",
+      "bucketDefault": "major",
+      "ticker": "PLNT",
+      "political": {
+        "leanScore": 1,
+        "confidence": "med",
+        "sourceHint": "FEC 2021–2024: employees $30k to candidates/parties (D 72% / R 28%). Lean +1 (r=-0.44, med confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    },
+    {
+      "id": "co-goog",
+      "name": "Alphabet (GOOG share class)",
+      "sector": "Public company",
+      "bucketDefault": "major",
+      "ticker": "GOOG",
+      "political": {
+        "leanScore": 2,
+        "confidence": "high",
+        "sourceHint": "FEC 2021–2024: PAC $2.9M to candidates/parties (D 51% / R 49%); employees $21.6M to candidates/parties (D 95% / R 5%). Lean +2 (r=-0.80, high confidence). Computed 2026-08-16 by Compass seeder (method: docs/political-seed.md). Verify: fec.gov/data/committee/C00428623/ OpenSecrets org search for cross-check."
+      },
+      "ratings": {}
+    }
+  ]
 }

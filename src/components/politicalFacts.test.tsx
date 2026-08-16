@@ -5,17 +5,36 @@ import { hasPoliticalFacts, POLITICAL_PACK_SIZE, type PoliticalFact } from '@/da
 import { parseDataPack } from '@/data/dataPack';
 import { POLITICAL_PACK_JSON } from '@/data/politicalFacts';
 
-describe('Political facts (placeholder export)', () => {
-  it('ships empty, well-formed placeholders until the seed runs', () => {
-    expect(hasPoliticalFacts()).toBe(false);
-    expect(POLITICAL_PACK_SIZE).toBe(0);
+describe('Political facts export', () => {
+  it('renders the not-seeded state, or real facts + a valid bundled pack when seeded', () => {
     render(<PoliticalFactsPanel />);
-    expect(screen.getByText(/Not seeded yet/)).toBeInTheDocument();
-    expect(screen.getByText(/seed:political/)).toBeInTheDocument();
-    // the bundled pack is a valid (if empty) data pack shape apart from the non-empty rule
-    const r = parseDataPack(POLITICAL_PACK_JSON);
-    expect(r.ok).toBe(false);
-    if (!r.ok) expect(r.error).toMatch(/non-empty/);
+    if (!hasPoliticalFacts()) {
+      expect(POLITICAL_PACK_SIZE).toBe(0);
+      expect(screen.getByText(/Not seeded yet/)).toBeInTheDocument();
+      expect(screen.getByText(/seed:political/)).toBeInTheDocument();
+      const r = parseDataPack(POLITICAL_PACK_JSON);
+      expect(r.ok).toBe(false);
+      if (!r.ok) expect(r.error).toMatch(/non-empty/);
+    } else {
+      expect(
+        screen.getByRole('button', { name: /bundled political-money pack/ }),
+      ).toBeInTheDocument();
+      const r = parseDataPack(POLITICAL_PACK_JSON);
+      expect(r.ok).toBe(true); // the shipped pack must pass the same validation users' packs do
+      if (r.ok) {
+        expect(r.companies.length).toBe(POLITICAL_PACK_SIZE);
+        // never asserts values ratings; every record cites the method doc and a lean or "not assigned"
+        expect(r.companies.every((c) => Object.keys(c.ratings).length === 0)).toBe(true);
+        expect(
+          r.companies.every((c) => /docs\/political-seed\.md/.test(c.political.sourceHint)),
+        ).toBe(true);
+        expect(
+          r.companies.every(
+            (c) => c.political.leanScore === null || Math.abs(c.political.leanScore) <= 2,
+          ),
+        ).toBe(true);
+      }
+    }
   });
 
   it('renders a fact card with neutral party splits, lobbying, and verify links', () => {

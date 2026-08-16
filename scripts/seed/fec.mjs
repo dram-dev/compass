@@ -212,7 +212,7 @@ const TRANSFER_TX = new Set(['24K', '24Z', '24G']); // contributions + transfers
  *          committees ("Harris Victory Fund", "Trump National Committee JFC") distribute to candidate and
  *          party committees this way and otherwise look non-partisan.
  */
-export async function inferCommitteeParties(cycle, ref, opts) {
+export async function inferCommitteeParties(cycle, ref, opts, { maxRounds = 4 } = {}) {
   const pas2 = await downloadBulk(cycle, 'pas2', opts);
   const oth = await downloadBulk(cycle, 'oth', opts);
   if (!pas2.path || !oth.path) return new Map();
@@ -220,12 +220,11 @@ export async function inferCommitteeParties(cycle, ref, opts) {
     const c = ref.committees.get(id);
     return !!c && partyOf(c.party) === 'U' && !c.candId && !ref.links.has(id);
   };
-  const base = makeRecipientPartyResolver(ref.committees, ref.candidates, ref.links);
-  const rows = [];
+  const pas2Rows = [];
   await streamZipLines(pas2.path, (f) => {
     const r = parsePas2(f);
     if (unresolved(r.cmteId))
-      rows.push({
+      pas2Rows.push({
         cmteId: r.cmteId,
         candId: r.candId,
         txType: r.txType,
@@ -233,18 +232,32 @@ export async function inferCommitteeParties(cycle, ref, opts) {
         memo: r.memo,
       });
   });
-  // oth recipients become pseudo-candidates carrying the party the base resolver gives them
-  const pseudo = new Map(ref.candidates);
+  const othRows = [];
   await streamZipLines(oth.path, (f) => {
     const r = parseOth(f);
-    if (!TRANSFER_TX.has(r.txType) || r.memo === 'X' || !r.otherId || !unresolved(r.cmteId)) return;
-    const p = base(r.otherId);
-    if (p !== 'D' && p !== 'R') return;
-    const key = `cmte:${r.otherId}`;
-    if (!pseudo.has(key)) pseudo.set(key, { party: p === 'D' ? 'DEM' : 'REP' });
-    rows.push({ cmteId: r.cmteId, candId: key, txType: '24K', amount: r.amount, memo: '' });
+    if (TRANSFER_TX.has(r.txType) && r.memo !== 'X' && r.otherId && unresolved(r.cmteId))
+      othRows.push({ cmteId: r.cmteId, otherId: r.otherId, amount: r.amount });
   });
-  return inferPartiesFromRows(rows, pseudo);
+  // Fixed point: a committee that transfers to an already-inferred committee (SMP → its affiliated
+  // spending arm) is inferred in the next round.
+  let inferred = new Map();
+  for (let round = 0; round < maxRounds; round++) {
+    const resolve = makeRecipientPartyResolver(ref.committees, ref.candidates, ref.links, inferred);
+    const pseudo = new Map(ref.candidates);
+    const rows = [...pas2Rows];
+    for (const r of othRows) {
+      const p = resolve(r.otherId);
+      if (p !== 'D' && p !== 'R') continue;
+      const key = `cmte:${r.otherId}`;
+      if (!pseudo.has(key)) pseudo.set(key, { party: p === 'D' ? 'DEM' : 'REP' });
+      rows.push({ cmteId: r.cmteId, candId: key, txType: '24K', amount: r.amount, memo: '' });
+    }
+    const next = inferPartiesFromRows(rows, pseudo);
+    const grew = next.size > inferred.size;
+    inferred = next;
+    if (!grew) break;
+  }
+  return inferred;
 }
 
 /** Load the small reference files for a cycle. */
@@ -384,7 +397,7 @@ export async function aggregateEmployees(
   aliasIndex,
   resolveParty,
   opts,
-  { excludeEmployers = new Set(), onProgress } = {},
+  { excludeEmployers = new Set(), onProgress, ownCommittees = new Map() } = {},
 ) {
   const totals = new Map();
   const employers = new Map(); // `${symbol}|${employerRaw}` → { amount, count }
@@ -405,7 +418,8 @@ export async function aggregateEmployees(
     }
     if (!m) return;
     const amount = r.txType === '22Y' ? -Math.abs(r.amount) : r.amount;
-    const party = resolveParty(r.cmteId);
+    // employees funding their own company PAC: that money is already counted as the PAC's outgoing gifts
+    const party = ownCommittees.get(r.cmteId) === m ? 'PAC' : resolveParty(r.cmteId);
     const k = `${m}|${party}`;
     const t = totals.get(k) ?? { amount: 0, count: 0 };
     t.amount += amount;

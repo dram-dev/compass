@@ -72,6 +72,12 @@ export function PoliticalFactCard({ f }: { f: PoliticalFact }) {
       <div className="mt-2 grid gap-1.5">
         <SplitBar s={f.totals.pac} label="Company PAC" />
         <SplitBar s={f.totals.employee} label="Employees*" />
+        {(f.totals.pacInflow ?? 0) > 0 && (
+          <div className="text-[11.5px] text-faint">
+            Employees also gave <span className="font-mono">{money(f.totals.pacInflow ?? 0)}</span>{' '}
+            to the company's own PAC (counted once, through the PAC's outgoing gifts above).
+          </div>
+        )}
         {f.totals.pac.D + f.totals.pac.R + f.totals.pac.O + f.totals.pac.U === 0 &&
           f.totals.employee.D + f.totals.employee.R + f.totals.employee.O + f.totals.employee.U ===
             0 && (

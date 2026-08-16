@@ -14,6 +14,20 @@ describe('data pack import (EF9)', () => {
     expect(r.companies[0]!.source).toBe('Example pack (edit me)');
     expect(r.overridesSample).toBe(0);
     expect(r.companies[1]!.political.leanScore).toBe(0);
+    const t = parseDataPack(
+      JSON.stringify({
+        ...EXAMPLE_DATA_PACK,
+        companies: [
+          { id: 'x', name: 'X', bucketDefault: 'major', ticker: ' amzn ' },
+          { id: 'y', name: 'Y', bucketDefault: 'major', ticker: 'not a ticker' },
+        ],
+      }),
+    );
+    expect(t.ok).toBe(true);
+    if (t.ok) {
+      expect(t.companies[0]!.ticker).toBe('AMZN');
+      expect(t.companies[1]!.ticker).toBeUndefined();
+    }
   });
 
   it('rejects malformed packs with specific messages (never partial)', () => {

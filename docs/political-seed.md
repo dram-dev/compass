@@ -12,7 +12,7 @@ pack). Nothing here is fetched by the app at runtime.
 | Channel | Source | Files / endpoints | Notes |
 |---|---|---|---|
 | Company PAC → candidates & parties | FEC bulk data | `cm` (committee master, incl. `CONNECTED_ORG_NM`), `cn` (candidate master, party), `ccl` (candidate↔committee links), `pas2` (committee→candidate contributions), `oth` (committee→committee) | Per two-year cycle (default 2022, 2024). Transaction types 24K/24Z only (direct contributions; independent expenditures 24A/24E excluded); memo rows skipped; SUB_ID de-duplicated across `pas2`/`oth`. |
-| Employees → candidates & parties | FEC bulk data | `indiv` (individual contributions, ~4 GB/cycle, streamed) | Rows whose `EMPLOYER` string equals (after normalization) a curated alias of the company. Types 15/15E/15J/10/11 counted, 22Y refunds subtracted, memo rows skipped, entity type IND only. |
+| Employees → candidates & parties | FEC bulk data | `indiv` (individual contributions, 4–5 GB/cycle, streamed) | Rows whose `EMPLOYER` string equals (after normalization) a curated alias of the company — this includes executives and founders, which is how FEC employer data works. Types 15/15E/15J/10/11 counted, 22Y refunds subtracted, memo rows skipped, entity type IND only. Conduit pass-through rows (24T/24I, ActBlue/WinRed) are excluded; the recipient's own 15E row carries the party. Contributions to the **company's own PAC** are split out as channel `pac-inflow` (already represented by the PAC's outgoing gifts). |
 | Lobbying | Senate LDA REST API (`lda.gov/api/v1`) | `clients/?client_name=` → `filings/?client_id=&filing_year=` | Quarterly reports Q1–Q4 (+ amendments; latest posting per registrant/client/period wins). Amount = `income` (hired firm) or `expenses` (in-house). **Per period, a company's own in-house expenses report already includes what it paid retained firms, so when one exists it is the number; otherwise the firms' income is summed** (`v_lobbying_period`; the same rule OpenSecrets uses — Apple 2023 reproduces its published $9.86M). Issue codes and agencies kept per filing. |
 
 Company ↔ entity matching (`scripts/seed/orgmatch.mjs`, `data/employer-aliases.json`,
@@ -39,11 +39,13 @@ Recipient party = the recipient committee's `CMTE_PTY_AFFILIATION` (DEM/DFL → 
 parties → O), else its linked candidate's party (`cn`/`ccl`), else the party **inferred from the
 recipient's own behavior in the same cycle** — leadership PACs, party-aligned super PACs (CLF, SLF,
 SMP, HMP…) and caucus PACs carry no party code and no candidate link in the bulk files, so a committee
-is assigned D or R when ≥ $10k and ≥ 80% of its own contributions (24K/24Z) and independent expenditures
-(24E for / 24A against, flipped) point one way (`inferPartiesFromRows`; ~2,000 committees per cycle) —
-else **U** (genuinely non-party recipients: corporate/trade PACs, bipartisan groups). FEC codes
-UNK/NNE/NON/NPA/blank all mean "no party", not "third party". Effect on 2024 corporate PAC dollars:
-U fell from ~35% to ~4%.
+is assigned D or R when ≥ $10k and ≥ 80% of its own contributions (24K/24Z), transfers to affiliated
+committees (24G — how joint fundraising committees distribute) and independent expenditures (24E for /
+24A against, flipped) point one way; the rule iterates to a fixed point so a committee that funds an
+already-inferred committee (Senate Majority PAC → its spending arm) resolves too (`inferCommitteeParties`;
+~3,000 committees per cycle) — else **U** (genuinely non-party recipients: bipartisan groups, other
+corporate/trade PACs). FEC codes UNK/NNE/NON/NPA/blank all mean "no party", not "third party".
+Result on 2022+2024 dollars: PAC channel 2% U, employee channel 3% U.
 
 ## Lean (the only derived number)
 

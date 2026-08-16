@@ -53,6 +53,7 @@ Compass never fetches packs from the network — you download the file yourself 
 | `companies[].name` | yes | Non-empty. |
 | `companies[].parentCompanyId` | no | Must resolve to a record in the pack or in the sample set. |
 | `companies[].sector` | no | Free text; default `Unspecified`. |
+| `companies[].ticker` | no | Exchange ticker (uppercase); links the record to research-DB facts (financials, political money) in the app. |
 | `companies[].bucketDefault` | yes | One of `local`, `regional`, `major`, `unknown`. |
 | `companies[].political.leanScore` | no | `null` or a number in `[-2, 2]`. Sign convention: negative = conservative/Republican-leaning giving, positive = progressive/Democratic-leaning giving (see ASSUMPTIONS #17). Missing → `null` (Unknown). |
 | `companies[].political.confidence` | no | `low` (default), `med`, or `high`. |

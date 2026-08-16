@@ -14,7 +14,8 @@ export interface PoliticalFact {
   sameAs?: string;
   pac: Record<string, PartySplit>; // by cycle
   employee: Record<string, PartySplit>;
-  totals: { pac: PartySplit; employee: PartySplit };
+  pacInflow?: Record<string, number>; // employees' contributions to the company's own PAC, by cycle
+  totals: { pac: PartySplit; employee: PartySplit; pacInflow?: number };
   lobbying: Record<string, number>; // by year, USD
   topIssues: { name: string; filings: number }[];
   committees: { id: string; name: string; method: string }[];

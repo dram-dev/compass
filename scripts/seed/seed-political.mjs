@@ -167,6 +167,7 @@ export async function seedFec(
         { offline, log: out },
         {
           excludeEmployers,
+          ownCommittees: committeeToSymbol,
           onProgress: (n) => out(`    … ${(n / 1e6).toFixed(0)}M individual rows scanned`),
         },
       );
@@ -176,18 +177,33 @@ export async function seedFec(
           "DELETE FROM political_contribution WHERE cycle = ? AND channel = 'employee'",
         ).run(cycle);
         db.prepare('DELETE FROM political_employer_match WHERE cycle = ?').run(cycle);
+        db.prepare(
+          "DELETE FROM political_contribution WHERE cycle = ? AND channel = 'pac-inflow'",
+        ).run(cycle);
         for (const [k, t] of emp.totals) {
           const [symbol, party] = k.split('|');
-          insContribution.run(
-            symbol,
-            cycle,
-            'employee',
-            party,
-            Math.round(t.amount),
-            t.count,
-            `fec-bulk:indiv${String(cycle).slice(-2)}`,
-            computedAt,
-          );
+          if (party === 'PAC')
+            insContribution.run(
+              symbol,
+              cycle,
+              'pac-inflow',
+              'U',
+              Math.round(t.amount),
+              t.count,
+              `fec-bulk:indiv${String(cycle).slice(-2)}`,
+              computedAt,
+            );
+          else
+            insContribution.run(
+              symbol,
+              cycle,
+              'employee',
+              party,
+              Math.round(t.amount),
+              t.count,
+              `fec-bulk:indiv${String(cycle).slice(-2)}`,
+              computedAt,
+            );
         }
         // keep the top 40 raw employer strings per company for audit
         const perSymbol = new Map();
@@ -302,6 +318,7 @@ export function computePoliticalFacts(db, { cycles = [2022, 2024] } = {}) {
       name: uni.names.get(s) ?? s,
       pac: {},
       employee: {},
+      pacInflow: {},
       lobbying: {},
       topIssues: [],
       committees: [],
@@ -312,6 +329,10 @@ export function computePoliticalFacts(db, { cycles = [2022, 2024] } = {}) {
     });
   for (const r of contrib) {
     const f = get(r.company_symbol);
+    if (r.channel === 'pac-inflow') {
+      f.pacInflow[r.cycle] = (f.pacInflow[r.cycle] ?? 0) + r.amount_usd;
+      continue;
+    }
     const bucket = (f[r.channel][r.cycle] ??= { D: 0, R: 0, O: 0, U: 0, txns: 0 });
     bucket[r.party] += r.amount_usd;
     bucket.txns += r.txn_count;
@@ -365,7 +386,11 @@ export function computePoliticalFacts(db, { cycles = [2022, 2024] } = {}) {
     const pac = sum('pac');
     const emp = sum('employee');
     const lean = computeLean({ pacD: pac.D, pacR: pac.R, empD: emp.D, empR: emp.R });
-    f.totals = { pac, employee: emp };
+    f.totals = {
+      pac,
+      employee: emp,
+      pacInflow: Object.values(f.pacInflow).reduce((a, b) => a + b, 0),
+    };
     f.lean = {
       ...lean,
       cycles,
@@ -437,6 +462,7 @@ export function exportPoliticalPack(result, outPath = PACK_EXPORT) {
           ...(s.parentCompanyId ? { parentCompanyId: s.parentCompanyId } : {}),
           sector: s.sector,
           bucketDefault: s.bucketDefault,
+          ticker: f.symbol,
           political: { ...political, sourceHint: (viaParent + political.sourceHint).slice(0, 500) },
           ratings: {},
         });
@@ -447,6 +473,7 @@ export function exportPoliticalPack(result, outPath = PACK_EXPORT) {
         name: f.name,
         sector: 'Public company',
         bucketDefault: 'major',
+        ticker: f.symbol,
         political,
         ratings: {},
       });

@@ -12,6 +12,14 @@ export function openDb(dbPath = CONFIG.dbPath) {
     db = new DatabaseSync(dbPath);
   }
   db.exec(readFileSync(CONFIG.schemaPath, 'utf8'));
+  // Derived tables whose CHECK constraints evolved: rebuild (their contents are recomputed by the seeder).
+  const pc = db
+    .prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name='political_contribution'")
+    .get();
+  if (pc && !String(pc.sql).includes('pac-inflow')) {
+    db.exec('DROP TABLE political_contribution');
+    db.exec(readFileSync(CONFIG.schemaPath, 'utf8'));
+  }
   return db;
 }
 
