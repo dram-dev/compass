@@ -56,7 +56,7 @@ describe('Political facts (placeholder export)', () => {
       }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('img', { name: /Employees: to Democrats 90%, Republicans 10%/ }),
+      screen.getByRole('img', { name: /Employees\*: to Democrats 90%, Republicans 10%/ }),
     ).toBeInTheDocument();
     expect(screen.getByText(/\$19\.0M/)).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /FEC/ })).toHaveAttribute(
