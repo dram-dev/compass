@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="only light">
+<title>Compass — field demo · Jordan persona</title>
+<style>
+:root{
+  --paper:#EEF1EA; --ink:#182018; --rule:#C7CFC1; --faint:#5C685C;
+  --aligned:#2F6045; --opposed:#96482B; --mixed:#6C7480; --unknown:#A6AC9F;
+  --brass:#9A7B2D; --card:#F4F6F0;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent;color-scheme:only light}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  font-size:15px; line-height:1.55;
+}
+.serif{font-family:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif}
+.mono{font-family:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px calc(64px + env(safe-area-inset-bottom))}
+
+/* ---------- masthead ---------- */
+header{padding:34px 0 20px;border-bottom:1px solid var(--ink)}
+.wordmark{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:30px;letter-spacing:.34em;font-weight:600}
+.wordmark .nrm{color:var(--brass)}
+.tag{margin-top:6px;color:var(--faint);font-size:12.5px}
+.tag .mono{font-size:11.5px}
+nav{margin-top:14px;display:flex;gap:22px;font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+nav span{color:var(--faint)} nav .on{color:var(--ink);border-bottom:2px solid var(--brass);padding-bottom:2px}
+
+/* ---------- sections ---------- */
+section{margin-top:44px}
+.sechead{display:flex;align-items:baseline;gap:14px;border-top:1px solid var(--rule);padding-top:14px}
+.secno{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--brass);letter-spacing:.1em}
+.sechead h2{font-family:"Iowan Old Style",Palatino,Georgia,serif;font-size:21px;font-weight:600;letter-spacing:.01em}
+.sub{color:var(--faint);font-size:13px;margin-top:5px;max-width:64ch}
+
+/* ---------- segmented controls ---------- */
+.seg{display:inline-flex;border:1px solid var(--ink);border-radius:3px;overflow:hidden;flex-wrap:wrap}
+.seg button{appearance:none;border:0;background:transparent;color:var(--ink);
+  font:600 12px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;letter-spacing:.04em;
+  padding:9px 13px;cursor:pointer;border-right:1px solid var(--ink)}
+.seg button:last-child{border-right:0}
+.seg button.on{background:var(--ink);color:var(--paper)}
+.seg button:focus-visible{outline:2px solid var(--brass);outline-offset:-2px}
+.seg.small button{padding:7px 12px;font-size:11.5px}
+
+/* ---------- hero / dial ---------- */
+.hero{display:flex;flex-wrap:wrap;gap:8px 40px;align-items:flex-start;margin-top:26px}
+.dialbox{flex:1 1 340px;min-width:300px}
+.heroside{flex:1 1 300px;min-width:270px;padding-top:8px}
+.heroside .modecap{font-size:13.5px;margin-top:14px;min-height:64px}
+.readrow{display:flex;gap:26px;margin-top:16px;border-top:1px solid var(--rule);padding-top:14px}
+.readrow .lbl{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
+.readrow .val{font-family:ui-monospace,Menlo,monospace;font-size:21px;margin-top:2px}
+.readrow .val.brass{color:var(--brass)} .readrow .val.up{color:var(--aligned)}
+.privacy{margin-top:16px;font-size:11.5px;color:var(--faint)}
+.privacy::before{content:"⌂ ";color:var(--brass)}
+
+/* ---------- chips & badges ---------- */
+.chip{display:inline-block;border:1px solid var(--rule);border-radius:999px;
+  font-family:ui-monospace,Menlo,monospace;font-size:10.5px;padding:2.5px 9px;color:var(--faint);white-space:nowrap}
+.chip.delta{color:var(--aligned);border-color:var(--aligned)}
+.chip.fw{background:rgba(154,123,45,.14);border-color:var(--brass);color:var(--brass);font-weight:700}
+.chip.verify{color:var(--faint);text-decoration:none}
+.chip.verify:hover{border-color:var(--ink);color:var(--ink)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;vertical-align:1px}
+
+/* ---------- wizard glimpse / dual range ---------- */
+.wizcard{background:var(--card);border:1px solid var(--rule);border-radius:3px;padding:18px 20px;margin-top:18px}
+.wizcard h3{font-size:13px;letter-spacing:.05em}
+.wizcard .cathdr{display:flex;justify-content:space-between;align-items:baseline}
+.wizcard .cathdr .amt{font-family:ui-monospace,Menlo,monospace;font-size:13px;color:var(--faint)}
+.dr{margin-top:16px}
+.dr .drlbl{display:flex;justify-content:space-between;font-size:12px;margin-bottom:7px}
+.dr .drlbl b{font-weight:600}
+.dr .drval{font-family:ui-monospace,Menlo,monospace;color:var(--faint);font-size:11.5px}
+.dr2{position:relative;height:34px;touch-action:none;cursor:pointer}
+.dr2 .rail{position:absolute;left:0;right:0;top:15px;height:4px;border-radius:2px;background:var(--rule)}
+.dr2 .fill{position:absolute;top:15px;height:4px;border-radius:2px}
+.dr2 .th{position:absolute;top:50%;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;
+  background:var(--paper);border:2.5px solid var(--ink);cursor:grab;touch-action:none}
+.dr2 .th:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+.dr2 .th:active{cursor:grabbing}
+.wiznote{margin-top:12px;font-size:11.5px;color:var(--faint)}
+
+/* ---------- charts ---------- */
+.chartbox{margin-top:18px}
+svg{display:block;width:100%;height:auto}
+svg text{font-family:ui-monospace,"SF Mono",Menlo,monospace}
+.axis{stroke:var(--rule);stroke-width:1}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:12px;font-size:11.5px;color:var(--faint)}
+.ctlrow{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-top:16px}
+.fade{transition:opacity .35s ease}
+
+/* ---------- political bars ---------- */
+.polrow{margin-top:18px}
+.pollbl{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:6px}
+.polbar{display:flex;height:36px;border-radius:2px;overflow:hidden;border:1px solid var(--rule)}
+.polseg{display:flex;align-items:center;justify-content:center;color:var(--paper);
+  font-family:ui-monospace,Menlo,monospace;font-size:11px;min-width:0}
+.polseg.u{background:repeating-linear-gradient(45deg,var(--unknown) 0 5px,#b8bdb0 5px 10px);color:var(--ink)}
+.drill{margin-top:16px;border:1px solid var(--rule);border-radius:3px;background:var(--card)}
+.drill .dhead{padding:10px 16px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);border-bottom:1px solid var(--rule)}
+.drow{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--rule);flex-wrap:wrap;font-size:13px}
+.drow:last-child{border-bottom:0}
+.drow .parent{color:var(--faint);font-size:12px}
+.drow .sp{flex:1}
+.callout{margin-top:14px;border-left:3px solid var(--brass);background:var(--card);padding:12px 16px;font-size:12.5px;color:var(--faint)}
+
+/* ---------- plan ---------- */
+.gates{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-top:20px}
+.gate{border:1px solid var(--rule);border-radius:3px;background:var(--card);display:flex;flex-direction:column}
+.gate .ghead{padding:14px 16px 10px;border-bottom:1px solid var(--rule)}
+.gate .gday{font-family:"Iowan Old Style",Palatino,Georgia,serif;font-size:19px;font-weight:600}
+.gate .gmeta{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--faint);margin-top:3px}
+.gate .gproj{font-family:ui-monospace,Menlo,monospace;font-size:12px;margin-top:3px}
+.gate .gproj b{color:var(--aligned)}
+.act{padding:12px 16px;border-bottom:1px solid var(--rule);font-size:13px}
+.act:last-child{border-bottom:0}
+.act .chips{margin-top:7px;display:flex;flex-wrap:wrap;gap:6px}
+.eff{font-family:ui-monospace,Menlo,monospace;letter-spacing:1px}
+
+/* ---------- footer ---------- */
+footer{margin-top:56px;border-top:1px solid var(--ink);padding-top:18px;font-size:11.5px;color:var(--faint)}
+footer p{margin-top:6px}
+footer a{color:var(--faint)}
+footer .src a{color:var(--ink)}
+
+/* ---------- phone hardening ---------- */
+.scrollx{overflow-x:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;scrollbar-width:thin}
+.chartbox::after{content:none}
+@media (max-width:640px){
+  .chartbox{margin-left:-20px;margin-right:-20px}
+  .scrollx{padding-left:20px;padding-right:20px}
+  #sankey{min-width:660px} #slope{min-width:660px} #pareto{min-width:620px} #traj{min-width:600px}
+  .chartbox::after{content:"\2190\2002 SWIPE TO PAN \2002\2192";display:block;text-align:center;
+    font-family:ui-monospace,Menlo,monospace;font-size:9.5px;letter-spacing:.18em;color:var(--faint);padding:8px 20px 0}
+}
+@media (pointer:coarse){
+  .seg button{padding:12px 14px}
+  .seg.small button{padding:11px 13px}
+}
+@media (max-width:560px){ .wordmark{font-size:24px;letter-spacing:.26em} .hero{gap:4px}
+  .dialbox,.heroside{min-width:0;flex-basis:100%} }
+@media (prefers-reduced-motion:reduce){ *{transition:none!important;animation:none!important} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="wordmark">C<span class="nrm">O</span>MPASS</div>
+  <div class="tag">Align your spending and investments with your own principles.
+    <span class="mono">field demo · Jordan persona · all company data illustrative</span></div>
+  <nav><span class="on">Dashboard</span><span>Plan</span><span>Wizard</span><span>Data sources</span></nav>
+</header>
+
+<!-- ================= HERO / DIAL ================= -->
+<section aria-label="Alignment dial">
+  <div class="ctlrow" style="margin-top:26px">
+    <div>
+      <div class="pollbl">What do you want to accomplish?</div>
+      <div class="seg" role="tablist" id="modeSeg">
+        <button class="on" data-mode="local">Local-first</button>
+        <button data-mode="political">Political alignment</button>
+        <button data-mode="cost">Cost-conscious</button>
+        <button data-mode="divest">Divest &amp; redirect</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="dialbox">
+      <svg id="dial" viewBox="0 0 360 232" role="img" aria-label="Alignment index dial"></svg>
+    </div>
+    <div class="heroside">
+      <div class="readrow" style="border-top:0;padding-top:0">
+        <div><div class="lbl">Current index</div><div class="val" id="rdCur">—</div></div>
+        <div><div class="lbl">Your optimal</div><div class="val brass" id="rdTgt">—</div></div>
+        <div><div class="lbl">Gap</div><div class="val up" id="rdGap">—</div></div>
+      </div>
+      <div class="modecap serif" id="modeCap"></div>
+      <div class="readrow">
+        <div><div class="lbl">Monthly discretionary</div><div class="val">$3,800</div></div>
+        <div><div class="lbl">Portfolio</div><div class="val">$86.0k</div></div>
+        <div><div class="lbl">Categories</div><div class="val">8</div></div>
+      </div>
+      <div class="privacy">All data stays on this device. Export anytime as JSON.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 01 WIZARD GLIMPSE ================= -->
+<section>
+  <div class="sechead"><span class="secno">01</span><h2 class="serif">Your current mix</h2></div>
+  <p class="sub">The wizard captures each category as a <em>range</em>, not a guess dressed up as
+     precision. Drag the thumbs — the engine scores on midpoints and shows the uncertainty band on the dial.</p>
+  <div class="wizcard">
+    <div class="cathdr"><h3>GROCERIES</h3><span class="amt">$900 / mo</span></div>
+    <div class="dr">
+      <div class="drlbl"><b><span class="dot" style="background:var(--aligned)"></span>% Local independent</b>
+        <span class="drval" id="v1">20 – 35% · midpoint 27.5</span></div>
+      <div id="dr1"></div>
+    </div>
+    <div class="dr">
+      <div class="drlbl"><b><span class="dot" style="background:var(--opposed)"></span>% Major corporation</b>
+        <span class="drval" id="v2">40 – 55% · midpoint 47.5</span></div>
+      <div id="dr2"></div>
+    </div>
+    <div class="wiznote">Regional chain and Unknown/Other complete the partition. Naming merchants
+      (co-op, NationalMart…) sharpens the political mapping in §04.</div>
+  </div>
+</section>
+
+<!-- ================= 02 SANKEY ================= -->
+<section>
+  <div class="sechead"><span class="secno">02</span><h2 class="serif">Where the money flows</h2></div>
+  <div class="ctlrow">
+    <p class="sub" style="margin-top:0">Every dollar, traced to its destination — monthly spending
+       or the portfolio itself. Switch the lens, then the state.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <div class="seg small" id="assetSeg">
+        <button class="on" data-asset="spend">Spending</button>
+        <button data-asset="invest">Investments</button>
+      </div>
+      <div class="seg small" id="flowSeg">
+        <button class="on" data-flow="cur">Current</button>
+        <button data-flow="opt">Optimal</button>
+      </div>
+    </div>
+  </div>
+  <div class="chartbox"><div class="scrollx"><svg id="sankey" viewBox="0 0 760 470" role="img" aria-label="Spend flow diagram"></svg></div></div>
+  <div class="legend" id="skLegend">
+    <span><span class="dot" style="background:var(--aligned)"></span><span class="leglbl">Local independent</span></span>
+    <span><span class="dot" style="background:var(--mixed)"></span><span class="leglbl">Regional chain</span></span>
+    <span><span class="dot" style="background:var(--opposed)"></span><span class="leglbl">Major corporation</span></span>
+    <span><span class="dot" style="background:var(--unknown)"></span><span class="leglbl">Unknown / other</span></span>
+  </div>
+  <div class="callout" id="skDisc" style="display:none">Holdings are grouped into sleeves and reallocated by
+     <b>vehicle class only</b> (community deposits, screened funds the user selects) — educational scenario, not
+     financial or investment advice.</div>
+</section>
+
+<!-- ================= 03 SLOPE ================= -->
+<section>
+  <div class="sechead"><span class="secno">03</span><h2 class="serif">Category gaps</h2></div>
+  <p class="sub">Alignment index per category, current <span class="mono">●</span> to optimal
+     <span class="mono" style="color:var(--brass)">◆</span>, under the selected goal mode. Sorted by distance to close.</p>
+  <div class="chartbox"><div class="scrollx"><svg id="slope" viewBox="0 0 760 330" role="img" aria-label="Category slope chart"></svg></div></div>
+</section>
+
+<!-- ================= 04 POLITICAL ================= -->
+<section>
+  <div class="sechead"><span class="secno">04</span><h2 class="serif">Political exposure</h2></div>
+  <p class="sub">Share of assessed spend by political-support profile, <em>relative to Jordan's stated
+     preference</em> — the app never assumes a direction, and never hides what it can't assess.</p>
+  <div class="polrow"><div class="pollbl">Current</div>
+    <div class="polbar" id="polCur" role="img" aria-label="Current political exposure"></div></div>
+  <div class="polrow"><div class="pollbl">Optimal</div>
+    <div class="polbar" id="polOpt" role="img" aria-label="Optimal political exposure"></div></div>
+  <div class="legend">
+    <span><span class="dot" style="background:var(--aligned)"></span>Aligned</span>
+    <span><span class="dot" style="background:var(--mixed)"></span>Mixed</span>
+    <span><span class="dot" style="background:var(--opposed)"></span>Opposed</span>
+    <span><span class="dot" style="background:var(--unknown)"></span>Unknown</span>
+  </div>
+  <div class="drill">
+    <div class="dhead">Largest opposed exposures · current</div>
+    <div class="drow"><span class="dot" style="background:var(--opposed)"></span><b>NationalMart</b>
+      <span class="parent">→ parent: Omnicorp Holdings</span><span class="sp"></span>
+      <span class="chip">$405/mo</span>
+      <a class="chip verify" href="https://www.opensecrets.org/orgs" target="_blank" rel="noopener">Sample — verify ↗</a></div>
+    <div class="drow"><span class="dot" style="background:var(--opposed)"></span><b>Colossus Bank</b>
+      <span class="parent">→ parent: Colossus Financial Group</span><span class="sp"></span>
+      <span class="chip">$273/mo</span>
+      <a class="chip verify" href="https://www.opensecrets.org/orgs" target="_blank" rel="noopener">Sample — verify ↗</a></div>
+    <div class="drow"><span class="dot" style="background:var(--opposed)"></span><b>StreamBox Media</b>
+      <span class="parent">→ parent: Meridian Entertainment</span><span class="sp"></span>
+      <span class="chip">$144/mo</span>
+      <a class="chip verify" href="https://www.opensecrets.org/orgs" target="_blank" rel="noopener">Sample — verify ↗</a></div>
+  </div>
+  <div class="callout"><b>25% of spend can't be assessed yet.</b> Unknown is never redistributed or hidden —
+     naming merchants in the wizard is how this band tightens.</div>
+</section>
+
+<!-- ================= 05 TRADEOFFS ================= -->
+<section>
+  <div class="sechead"><span class="secno">05</span><h2 class="serif">Tradeoffs</h2></div>
+  <p class="sub">Every recommended swap, plotted: what it gains you against what it costs.
+     Bubble size is dollars affected. Free wins are exactly what they sound like.</p>
+  <div class="chartbox"><div class="scrollx"><svg id="pareto" viewBox="0 0 760 350" role="img" aria-label="Tradeoff scatter"></svg></div></div>
+</section>
+
+<!-- ================= 06 PLAN ================= -->
+<section>
+  <div class="sechead"><span class="secno">06</span><h2 class="serif">The plan</h2></div>
+  <p class="sub">Swaps are packed into stage gates by priority (impact ÷ effort) within each gate's
+     effort budget. The trajectory shows the index Jordan should expect at each checkpoint.</p>
+  <div class="chartbox"><div class="scrollx"><svg id="traj" viewBox="0 0 760 220" role="img" aria-label="Projected trajectory"></svg></div></div>
+  <div class="gates" id="gates"></div>
+</section>
+
+<footer>
+  <p><b>Educational scenario tool — not financial, investment, or tax advice.</b></p>
+  <p>Company political data varies by source and time; verify before acting. Sample ratings in this demo are
+     illustrative placeholders on fictional archetypes.</p>
+  <p class="src">Data sources &amp; how to verify:
+     <a href="https://www.opensecrets.org" target="_blank" rel="noopener">OpenSecrets</a> ·
+     <a href="https://www.fec.gov" target="_blank" rel="noopener">FEC.gov</a> ·
+     <a href="https://www.goodsuniteus.com" target="_blank" rel="noopener">Goods Unite Us</a></p>
+  <p class="mono" style="margin-top:14px">COMPASS v0.1 demo · schema v1 · stored locally</p>
+</footer>
+
+</div>
+<script>
+/* ============ ENGINE (mirrors the build-spec formulas) ============ */
+var BK = ['local','regional','major','unknown'];
+var RAT = {
+  local:    {le: 2, la: 1,  en: 1,  po: 1},
+  regional: {le: 0, la: 0,  en: 0,  po: 0},
+  major:    {le:-2, la:-1,  en:-1,  po:-1.5},
+  unknown:  {le: 0, la: 0,  en: 0,  po: 0}
+};
+var MODES = {
+  local:     {label:'Local-first',        w:{le:.60, la:.25, en:.15, po:0},
+    cap:'Weights: Local economy 60 · Labor 25 · Environment 15. Optimal targets shown are the Local-first preset — every target stays user-editable.'},
+  political: {label:'Political alignment', w:{le:.15, la:.15, en:.10, po:.60},
+    cap:'Weights shift hard toward political-support profiles (60). Same dollars, same targets — re-scored through a different lens.'},
+  cost:      {label:'Cost-conscious',      w:{le:.40, la:.20, en:.20, po:.20},
+    cap:'Balanced weights with cost held in view — free wins and money-saving swaps rise to the top of the plan.'},
+  divest:    {label:'Divest & redirect',   w:{le:.30, la:.20, en:.20, po:.30},
+    cap:'Emphasis on moving money out of misaligned destinations and into aligned ones, across spend and holdings alike.'}
+};
+var CATS = [
+ {id:'gro', label:'Groceries',            sh:'Groceries', spend:900, cur:[25,20,45,10], tgt:[55,20,20, 5], effort:2, cost:'neutral',
+  desc:'Shift ~30% of groceries from national chains to the co-op & farmers market'},
+ {id:'din', label:'Dining & coffee',      sh:'Dining',    spend:450, cur:[55,15,20,10], tgt:[70,10,15, 5], effort:1, cost:'neutral',
+  desc:'Default to independent caf\u00e9s for weekday coffee'},
+ {id:'fue', label:'Fuel & auto',          sh:'Fuel',      spend:350, cur:[10,25,55,10], tgt:[25,30,40, 5], effort:2, cost:'small',
+  desc:'Fuel at the regional co-op station; local garage for service'},
+ {id:'ret', label:'Retail & household',   sh:'Retail',    spend:550, cur:[15,15,60,10], tgt:[35,15,45, 5], effort:2, cost:'small',
+  desc:'Route household basics through the local hardware & general store'},
+ {id:'sub', label:'Subscriptions & media',sh:'Subs',      spend:180, cur:[ 5, 5,80,10], tgt:[15, 5,70,10], effort:1, cost:'saves',
+  desc:'Cancel two overlapping streamers; keep one independent platform'},
+ {id:'ban', label:'Banking & insurance',  sh:'Banking',   spend:420, cur:[20,10,65, 5], tgt:[60,10,28, 2], effort:4, cost:'neutral',
+  desc:'Move checking + auto policy to First Prairie Credit Union'},
+ {id:'per', label:'Personal care',        sh:'Care',      spend:250, cur:[60,10,20,10], tgt:[75,10,10, 5], effort:1, cost:'small',
+  desc:'Move haircuts & gym to neighborhood businesses'},
+ {id:'hom', label:'Home improvement',     sh:'Home',      spend:700, cur:[30,20,45, 5], tgt:[55,15,28, 2], effort:3, cost:'moderate',
+  desc:'Bid the deck project to two local contractors'}
+];
+var TOTAL = 3800;
+var GATES = [
+  {id:'g1', day:'Day 30', budget:8, cats:['gro','sub','din','per']},
+  {id:'g2', day:'Day 60', budget:8, cats:['ret','fue','hom']},
+  {id:'g3', day:'Day 90', budget:8, cats:['ban']}
+];
+var COSTLBL = {saves:'saves $', neutral:'cost-neutral', small:'small cost', moderate:'moderate cost'};
+
+function bucketA(b, w){ var r = RAT[b];
+  return w.le*r.le/2 + w.la*r.la/2 + w.en*r.en/2 + w.po*r.po/2; }
+function catIdx(mix, w){ var s = 0;
+  for (var i=0;i<4;i++) s += (mix[i]/100) * bucketA(BK[i], w);
+  return (s+1)*50; }
+function score(mode){
+  var w = MODES[mode].w, out = {cats:{}, cur:0, tgt:0};
+  CATS.forEach(function(c){
+    var ci = catIdx(c.cur,w), ti = catIdx(c.tgt,w);
+    out.cats[c.id] = {cur:ci, tgt:ti, delta:(c.spend/TOTAL)*(ti-ci)};
+    out.cur += c.spend/TOTAL*ci; out.tgt += c.spend/TOTAL*ti;
+  });
+  return out;
+}
+var f1 = function(n){ return (Math.round(n*10)/10).toFixed(1); };
+
+/* ============ SVG helpers ============ */
+var NS='http://www.w3.org/2000/svg';
+function el(t,a,parent){ var e=document.createElementNS(NS,t);
+  for(var k in a) e.setAttribute(k,a[k]);
+  if(parent) parent.appendChild(e); return e; }
+function txt(p,x,y,s,a){ a=a||{}; a.x=x; a.y=y; var e=el('text',a,p);
+  e.textContent=s; return e; }
+var css = getComputedStyle(document.documentElement);
+var C = { ink:css.getPropertyValue('--ink').trim(), rule:css.getPropertyValue('--rule').trim(),
+  faint:css.getPropertyValue('--faint').trim(), al:css.getPropertyValue('--aligned').trim(),
+  op:css.getPropertyValue('--opposed').trim(), mx:css.getPropertyValue('--mixed').trim(),
+  un:css.getPropertyValue('--unknown').trim(), br:css.getPropertyValue('--brass').trim() };
+var BKC = [C.al, C.mx, C.op, C.un];
+
+/* ============ DIAL (signature element) ============ */
+var dial = document.getElementById('dial');
+var DCX=180, DCY=178, DR=150;
+function ang(v){ return (180 - 1.8*v) * Math.PI/180; }
+function pt(v,r){ return [DCX + r*Math.cos(ang(v)), DCY - r*Math.sin(ang(v))]; }
+function arcPath(v1,v2,r){ var a=pt(v1,r), b=pt(v2,r);
+  return 'M'+f1(a[0])+' '+f1(a[1])+' A'+r+' '+r+' 0 0 1 '+f1(b[0])+' '+f1(b[1]); }
+(function buildDial(){
+  el('path',{d:arcPath(0,100,DR),fill:'none',stroke:C.ink,'stroke-width':1.4},dial);
+  for(var v=0; v<=100; v+=5){
+    var major = v%25===0, a=pt(v,DR), b=pt(v, major?132:141);
+    el('line',{x1:f1(a[0]),y1:f1(a[1]),x2:f1(b[0]),y2:f1(b[1]),
+      stroke:C.ink,'stroke-width':major?1.4:0.7,opacity:major?1:.55},dial);
+    if(major){ var t=pt(v,118);
+      txt(dial,f1(t[0]),f1(t[1]+3),String(v),{'font-size':'10','text-anchor':'middle',fill:C.faint}); }
+  }
+  el('path',{id:'dBand',fill:'none',stroke:C.al,'stroke-width':9,'stroke-opacity':.28,'stroke-linecap':'round'},dial);
+  el('path',{id:'dTick',fill:'none',stroke:C.br,'stroke-width':2.5},dial);
+  el('path',{id:'dDia',fill:C.br},dial);
+  var ng = el('g',{id:'dNeedle'},dial);
+  el('line',{x1:DCX,y1:DCY,x2:DCX-104,y2:DCY,stroke:C.ink,'stroke-width':2.6},ng);
+  el('line',{x1:DCX,y1:DCY,x2:DCX+16,y2:DCY,stroke:C.ink,'stroke-width':2.6},ng);
+  el('circle',{cx:DCX,cy:DCY,r:5.5,fill:C.ink},ng);
+  el('circle',{cx:DCX,cy:DCY,r:2,fill:'#EEF1EA'},ng);
+  ng.style.transformOrigin = DCX+'px '+DCY+'px';
+  ng.style.transformBox = 'view-box';
+  ng.style.transition = 'transform .7s cubic-bezier(.35,1.3,.4,1)';
+  txt(dial,DCX,DCY+34,'42.0',{id:'dNum','font-size':'34','text-anchor':'middle','font-weight':'600',fill:C.ink});
+  txt(dial,DCX,DCY+52,'ALIGNMENT INDEX · 0\u2013100',{'font-size':'8.5','letter-spacing':'.18em','text-anchor':'middle',fill:C.faint});
+})();
+var shownNum = 42.0;
+function setDial(cur,tgt){
+  document.getElementById('dNeedle').style.transform = 'rotate('+(cur*1.8)+'deg)';
+  document.getElementById('dBand').setAttribute('d', arcPath(Math.max(0,cur-2.5), Math.min(100,cur+2.5), 126));
+  var a=pt(tgt,DR), b=pt(tgt,126);
+  document.getElementById('dTick').setAttribute('d','M'+f1(a[0])+' '+f1(a[1])+' L'+f1(b[0])+' '+f1(b[1]));
+  var d=pt(tgt,DR+8);
+  document.getElementById('dDia').setAttribute('d','M'+f1(d[0])+' '+f1(d[1]-5)+' l5 5 l-5 5 l-5 -5 Z');
+  var from = shownNum, t0 = null, numEl = document.getElementById('dNum');
+  function step(ts){ if(!t0) t0=ts; var p=Math.min(1,(ts-t0)/600); p=1-Math.pow(1-p,3);
+    numEl.textContent = f1(from+(cur-from)*p);
+    if(p<1) requestAnimationFrame(step); else shownNum=cur; }
+  requestAnimationFrame(step);
+}
+
+/* ============ SANKEY (spend + investments) ============ */
+(function buildSankey(){
+  var svg=document.getElementById('sankey');
+  var LX=176,RX=590,BW=12,TOP=14,H=442,BARSUM=350;
+  var VIEWS={
+    spend:{ total:3800,
+      right:['Local independent','Regional chain','Major corporation','Unknown / other'],
+      fmt:function(v){ return '$'+Math.round(v); },
+      items:CATS.map(function(c){ return {label:c.label, amt:c.spend, cur:c.cur, tgt:c.tgt}; }) },
+    invest:{ total:86000,
+      right:['Community-aligned','Broad-market / mixed','Major-corp concentrated','Unknown / unrated'],
+      fmt:function(v){ return '$'+(v/1000).toFixed(v<9500?1:0)+'k'; },
+      items:[
+        {label:'Cash & deposits',       amt:18000, cur:[33.3,0,66.7,0], tgt:[88.9,0,11.1,0]},
+        {label:'Retirement funds',      amt:52000, cur:[0,35,62,3],     tgt:[8,62,27,3]},
+        {label:'Individual equities',   amt:9000,  cur:[0,0,100,0],     tgt:[0,45,55,0]},
+        {label:'Community notes',       amt:2000,  cur:[100,0,0,0],     tgt:[100,0,0,0]},
+        {label:'Alternatives / crypto', amt:5000,  cur:[0,0,0,100],     tgt:[0,0,0,100]} ] }
+  };
+  function layout(vk,mk){
+    var V=VIEWS[vk], g=el('g',{'class':'fade',id:'flow-'+vk+'-'+mk,opacity:0},svg);
+    var k=BARSUM/V.total, n=V.items.length;
+    var lg=(H-BARSUM)/(n-1), y=TOP, L=[];
+    V.items.forEach(function(c){ L.push({y:y,off:0,h:c.amt*k}); y+=c.amt*k+lg; });
+    var tot=[0,0,0,0];
+    V.items.forEach(function(c){ c[mk].forEach(function(p,i){ tot[i]+=c.amt*p/100; }); });
+    var rg=(H-BARSUM)/3; y=TOP; var R=[];
+    tot.forEach(function(t){ R.push({y:y,off:0,h:t*k}); y+=t*k+rg; });
+    V.items.forEach(function(c,ci){
+      c[mk].forEach(function(p,i){ var d=c.amt*p/100; if(d<=0) return;
+        var th=d*k, sy=L[ci].y+L[ci].off, ty=R[i].y+R[i].off, mx=(LX+BW+RX)/2;
+        el('path',{d:'M'+(LX+BW)+' '+f1(sy)+' C'+mx+' '+f1(sy)+' '+mx+' '+f1(ty)+' '+RX+' '+f1(ty)
+          +' L'+RX+' '+f1(ty+th)+' C'+mx+' '+f1(ty+th)+' '+mx+' '+f1(sy+th)+' '+(LX+BW)+' '+f1(sy+th)+' Z',
+          fill:BKC[i],'fill-opacity': i===3? .28 : .42},g);
+        L[ci].off+=th; R[i].off+=th; });
+    });
+    V.items.forEach(function(c,ci){ var nd=L[ci];
+      el('rect',{x:LX,y:f1(nd.y),width:BW,height:f1(nd.h),fill:C.ink},g);
+      txt(g,LX-10,f1(nd.y+nd.h/2+1),c.label,{'font-size':'11','text-anchor':'end',fill:C.ink});
+      txt(g,LX-10,f1(nd.y+nd.h/2+13),V.fmt(c.amt),{'font-size':'9.5','text-anchor':'end',fill:C.faint}); });
+    tot.forEach(function(t,i){ var nd=R[i];
+      el('rect',{x:RX,y:f1(nd.y),width:BW,height:f1(nd.h),fill:BKC[i]},g);
+      txt(g,RX+BW+10,f1(nd.y+nd.h/2+1),V.right[i],{'font-size':'11',fill:C.ink});
+      txt(g,RX+BW+10,f1(nd.y+nd.h/2+13),V.fmt(t)+' \u00b7 '+Math.round(t/V.total*100)+'%',
+        {'font-size':'9.5',fill:C.faint}); });
+  }
+  ['spend','invest'].forEach(function(vk){ layout(vk,'cur'); layout(vk,'tgt'); });
+  var st={asset:'spend', mode:'cur'};
+  function show(){
+    ['spend','invest'].forEach(function(vk){ ['cur','tgt'].forEach(function(mk){
+      var on = (vk===st.asset) && (mk === (st.mode==='cur' ? 'cur' : 'tgt'));
+      document.getElementById('flow-'+vk+'-'+mk).setAttribute('opacity', on?1:0); }); });
+    var lbls=document.querySelectorAll('#skLegend .leglbl');
+    VIEWS[st.asset].right.forEach(function(t,i){ lbls[i].textContent=t; });
+    document.getElementById('skDisc').style.display = st.asset==='invest' ? 'block' : 'none';
+  }
+  document.getElementById('assetSeg').addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b) return;
+    this.querySelectorAll('button').forEach(function(x){x.classList.remove('on');});
+    b.classList.add('on'); st.asset=b.dataset.asset; show(); });
+  document.getElementById('flowSeg').addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b) return;
+    this.querySelectorAll('button').forEach(function(x){x.classList.remove('on');});
+    b.classList.add('on'); st.mode=b.dataset.flow; show(); });
+  show();
+})();
+
+/* ============ SLOPE ============ */
+var slope = document.getElementById('slope');
+var SL={x0:196,x1:724,rh:34,top:34};
+function sx(v){ return SL.x0 + v/100*(SL.x1-SL.x0); }
+(function buildSlope(){
+  [0,25,50,75,100].forEach(function(v){
+    el('line',{x1:sx(v),y1:SL.top-14,x2:sx(v),y2:SL.top+8*SL.rh-6,'class':'axis'},slope);
+    txt(slope,sx(v),SL.top-20,String(v),{'font-size':'9.5','text-anchor':'middle',fill:C.faint});
+  });
+  CATS.forEach(function(c,i){
+    var y=SL.top+i*SL.rh+10;
+    txt(slope,10,y+4,c.label,{'font-size':'11.5',fill:C.ink});
+    el('line',{id:'ln-'+c.id,y1:y,y2:y,stroke:C.rule,'stroke-width':2.5},slope);
+    el('circle',{id:'cd-'+c.id,cy:y,r:5,fill:C.ink},slope);
+    var d=el('path',{id:'td-'+c.id,fill:C.br},slope); d.dataset.y=y;
+    txt(slope,SL.x1+8,y+4,'',{id:'sv-'+c.id,'font-size':'10',fill:C.faint});
+  });
+})();
+function setSlope(s){
+  CATS.forEach(function(c){ var v=s.cats[c.id], y=+document.getElementById('td-'+c.id).dataset.y;
+    var a=sx(v.cur), b=sx(v.tgt);
+    var ln=document.getElementById('ln-'+c.id);
+    ln.setAttribute('x1',f1(Math.min(a,b))); ln.setAttribute('x2',f1(Math.max(a,b)));
+    document.getElementById('cd-'+c.id).setAttribute('cx',f1(a));
+    document.getElementById('td-'+c.id).setAttribute('d',
+      'M'+f1(b)+' '+(y-6)+' l6 6 l-6 6 l-6 -6 Z');
+    document.getElementById('sv-'+c.id).textContent = f1(v.cur)+' \u2192 '+f1(v.tgt);
+  });
+}
+
+/* ============ POLITICAL BARS ============ */
+(function buildPol(){
+  var data = { polCur:[['Aligned',18,C.al],['Mixed',24,C.mx],['Opposed',33,C.op],['Unknown',25,null]],
+               polOpt:[['Aligned',41,C.al],['Mixed',22,C.mx],['Opposed',14,C.op],['Unknown',23,null]] };
+  Object.keys(data).forEach(function(id){
+    var bar=document.getElementById(id);
+    data[id].forEach(function(sg){
+      var d=document.createElement('div'); d.className='polseg'+(sg[2]?'':' u');
+      d.style.width=sg[1]+'%'; if(sg[2]) d.style.background=sg[2];
+      d.textContent = sg[1]>=12 ? sg[0]+' '+sg[1]+'%' : sg[1]+'%';
+      d.title = sg[0]+' '+sg[1]+'%'; bar.appendChild(d);
+    });
+  });
+})();
+
+/* ============ PARETO ============ */
+var pareto = document.getElementById('pareto');
+var PX={saves:150,neutral:305,small:460,moderate:615}, PT=36, PB=296, YMAX=6;
+function py(v){ return PB - v/YMAX*(PB-PT); }
+(function buildPareto(){
+  [0,1.5,3,4.5,6].forEach(function(v){
+    el('line',{x1:96,y1:py(v),x2:724,y2:py(v),'class':'axis'},pareto);
+    txt(pareto,88,py(v)+3.5,f1(v),{'font-size':'9.5','text-anchor':'end',fill:C.faint});
+  });
+  txt(pareto,14,PT+((PB-PT)/2),'\u0394 index pts',{'font-size':'9.5',fill:C.faint,
+    transform:'rotate(-90 14 '+(PT+(PB-PT)/2)+')','text-anchor':'middle'});
+  Object.keys(PX).forEach(function(k){
+    txt(pareto,PX[k],PB+22,COSTLBL[k],{'font-size':'10','text-anchor':'middle',fill:C.ink}); });
+  el('line',{x1:382,y1:PT-8,x2:382,y2:PB,stroke:C.ink,'stroke-dasharray':'3 4',opacity:.5},pareto);
+  el('line',{x1:96,y1:py(1.5),x2:724,y2:py(1.5),stroke:C.ink,'stroke-dasharray':'3 4',opacity:.5},pareto);
+  txt(pareto,102,PT-16,'FREE WINS',{'font-size':'9','letter-spacing':'.16em',fill:C.br,'font-weight':'700'});
+  txt(pareto,392,PT-16,'PAY TO ALIGN',{'font-size':'9','letter-spacing':'.16em',fill:C.faint});
+  txt(pareto,102,PB-8,'LOW STAKES',{'font-size':'9','letter-spacing':'.16em',fill:C.faint});
+  txt(pareto,392,PB-8,'RECONSIDER',{'font-size':'9','letter-spacing':'.16em',fill:C.faint});
+  CATS.forEach(function(c){
+    var x=PX[c.cost]+(c.id.charCodeAt(0)%3-1)*26, r=Math.min(20,Math.sqrt(c.spend)*0.62);
+    var fw = c.cost==='saves'||c.cost==='neutral';
+    el('circle',{id:'pb-'+c.id,cx:x,r:f1(r),fill:fw?C.al:C.mx,'fill-opacity':.45,
+      stroke:fw?C.al:C.mx,'stroke-width':1.4},pareto);
+    txt(pareto,x,0,c.sh,{id:'pl-'+c.id,'font-size':'9.5','text-anchor':'middle',fill:C.ink});
+  });
+})();
+function setPareto(s){
+  CATS.forEach(function(c){ var d=Math.max(0.12,s.cats[c.id].delta);
+    var b=document.getElementById('pb-'+c.id), r=+b.getAttribute('r');
+    b.setAttribute('cy',f1(py(d)));
+    document.getElementById('pl-'+c.id).setAttribute('y',f1(py(d)-r-5)); });
+}
+
+/* ============ TRAJECTORY ============ */
+var traj=document.getElementById('traj');
+var TXP=[110,318,526,724], TT=28, TBm=168;
+function ty(v){ return TBm-(v-38)/26*(TBm-TT); }
+(function buildTraj(){
+  ['Today','Day 30','Day 60','Day 90'].forEach(function(l,i){
+    el('line',{x1:TXP[i],y1:TT-6,x2:TXP[i],y2:TBm+6,'class':'axis'},traj);
+    txt(traj,TXP[i],TBm+26,l,{'font-size':'10.5','text-anchor':'middle',fill:C.faint}); });
+  el('line',{id:'tOpt',x1:86,x2:748,stroke:C.br,'stroke-dasharray':'4 5','stroke-width':1.4},traj);
+  txt(traj,748,0,'optimal',{id:'tOptL','font-size':'9.5','text-anchor':'end',fill:C.br});
+  el('path',{id:'tLine',fill:'none',stroke:C.ink,'stroke-width':2},traj);
+  for(var i=0;i<4;i++){
+    el('circle',{id:'tp'+i,r:4.5,cx:TXP[i],fill: i===0?C.ink:'#EEF1EA',stroke:C.ink,'stroke-width':2},traj);
+    txt(traj,TXP[i],0,'',{id:'tv'+i,'font-size':'11','text-anchor':'middle','font-weight':'700',fill:C.ink});
+  }
+})();
+function setTraj(vals,tgt){
+  var d='';
+  vals.forEach(function(v,i){ d+=(i?' L':'M')+TXP[i]+' '+f1(ty(v));
+    document.getElementById('tp'+i).setAttribute('cy',f1(ty(v)));
+    var t=document.getElementById('tv'+i); t.setAttribute('y',f1(ty(v)-12)); t.textContent=f1(v); });
+  document.getElementById('tLine').setAttribute('d',d);
+  document.getElementById('tOpt').setAttribute('y1',f1(ty(tgt)));
+  document.getElementById('tOpt').setAttribute('y2',f1(ty(tgt)));
+  document.getElementById('tOptL').setAttribute('y',f1(ty(tgt)-6));
+}
+
+/* ============ GATE CARDS ============ */
+(function buildGates(){
+  var wrap=document.getElementById('gates');
+  GATES.forEach(function(g){
+    var used=g.cats.reduce(function(s,id){ return s+CATS.find(function(c){return c.id===id;}).effort; },0);
+    var card=document.createElement('div'); card.className='gate';
+    var h='<div class="ghead"><div class="gday serif">'+g.day+'</div>'
+      +'<div class="gmeta">effort '+used+' / '+g.budget+' budget</div>'
+      +'<div class="gproj">projected index <b id="proj-'+g.id+'">\u2014</b></div></div>';
+    g.cats.forEach(function(id){ var c=CATS.find(function(x){return x.id===id;});
+      var fw=c.cost==='saves'||c.cost==='neutral';
+      h+='<div class="act">'+c.desc
+        +'<div class="chips"><span class="chip delta" id="d-'+c.id+'">+\u2014 pts</span>'
+        +'<span class="chip eff">'+'\u25cf'.repeat(c.effort)+'\u25cb'.repeat(5-c.effort)+'</span>'
+        +'<span class="chip">'+COSTLBL[c.cost]+'</span>'
+        +(fw?'<span class="chip fw">FREE WIN</span>':'')+'</div></div>'; });
+    card.innerHTML=h; wrap.appendChild(card);
+  });
+})();
+
+/* ============ MODE ORCHESTRATION ============ */
+function apply(mode){
+  var s=score(mode);
+  setDial(s.cur,s.tgt); setSlope(s); setPareto(s);
+  document.getElementById('rdCur').textContent=f1(s.cur);
+  document.getElementById('rdTgt').textContent=f1(s.tgt);
+  document.getElementById('rdGap').textContent='+'+f1(s.tgt-s.cur);
+  document.getElementById('modeCap').textContent=MODES[mode].cap;
+  var run=s.cur, vals=[s.cur];
+  GATES.forEach(function(g){ var d=0;
+    g.cats.forEach(function(id){ d+=s.cats[id].delta; });
+    run+=d; vals.push(run);
+    document.getElementById('proj-'+g.id).textContent=f1(run);
+    g.cats.forEach(function(id){
+      document.getElementById('d-'+id).textContent='+'+f1(s.cats[id].delta)+' pts'; });
+  });
+  setTraj(vals,s.tgt);
+}
+document.getElementById('modeSeg').addEventListener('click',function(e){
+  var b=e.target.closest('button'); if(!b) return;
+  this.querySelectorAll('button').forEach(function(x){x.classList.remove('on');});
+  b.classList.add('on'); apply(b.dataset.mode);
+});
+
+/* ============ DUAL-RANGE (pointer-based, cross-platform) ============ */
+function makeDual(host, lo, hi, color, onChange){
+  host.classList.add('dr2');
+  host.innerHTML='<div class="rail"></div><div class="fill"></div>'
+    +'<div class="th" tabindex="0" role="slider"></div>'
+    +'<div class="th" tabindex="0" role="slider"></div>';
+  var fill=host.children[1], th=[host.children[2],host.children[3]], v=[lo,hi];
+  function clamp(i,val){ val=Math.max(0,Math.min(100,Math.round(val)));
+    if(i===0) val=Math.min(val,v[1]-2); else val=Math.max(val,v[0]+2); return val; }
+  function render(){
+    fill.style.background=color; fill.style.left=v[0]+'%'; fill.style.width=(v[1]-v[0])+'%';
+    th[0].style.left=v[0]+'%'; th[1].style.left=v[1]+'%';
+    th[0].setAttribute('aria-valuemin',0);      th[0].setAttribute('aria-valuemax',v[1]-2);
+    th[1].setAttribute('aria-valuemin',v[0]+2); th[1].setAttribute('aria-valuemax',100);
+    th[0].setAttribute('aria-valuenow',v[0]);   th[1].setAttribute('aria-valuenow',v[1]);
+    onChange(v[0],v[1]);
+  }
+  function pct(x){ var r=host.getBoundingClientRect(); return (x-r.left)/r.width*100; }
+  var drag=-1;
+  host.addEventListener('pointerdown',function(e){
+    var p=pct(e.clientX);
+    drag = Math.abs(p-v[0])<=Math.abs(p-v[1]) ? 0 : 1;
+    v[drag]=clamp(drag,p); render();
+    if(host.setPointerCapture) host.setPointerCapture(e.pointerId);
+    try{ th[drag].focus({preventScroll:true}); }catch(x){ th[drag].focus(); }
+    e.preventDefault();
+  });
+  host.addEventListener('pointermove',function(e){
+    if(drag<0) return; v[drag]=clamp(drag,pct(e.clientX)); render(); });
+  function up(){ drag=-1; }
+  host.addEventListener('pointerup',up); host.addEventListener('pointercancel',up);
+  th.forEach(function(t,i){ t.addEventListener('keydown',function(e){
+    var d=0;
+    if(e.key==='ArrowLeft'||e.key==='ArrowDown')d=-1;
+    else if(e.key==='ArrowRight'||e.key==='ArrowUp')d=1;
+    else if(e.key==='PageDown')d=-10; else if(e.key==='PageUp')d=10;
+    else if(e.key==='Home'){v[i]=clamp(i,0);render();e.preventDefault();return;}
+    else if(e.key==='End'){v[i]=clamp(i,100);render();e.preventDefault();return;}
+    else return;
+    v[i]=clamp(i,v[i]+d); render(); e.preventDefault(); }); });
+  render();
+  return {set:function(a,b){v=[a,b];render();}};
+}
+function wireDual(hostId,valId,color,lo,hi,name){
+  var host=document.getElementById(hostId), vl=document.getElementById(valId);
+  makeDual(host,lo,hi,color,function(x,y){
+    vl.textContent=x+' \u2013 '+y+'% \u00b7 midpoint '+((x+y)/2).toFixed(1); });
+  var th=host.querySelectorAll('.th');
+  th[0].setAttribute('aria-label',name+' minimum share');
+  th[1].setAttribute('aria-label',name+' maximum share');
+}
+wireDual('dr1','v1',C.al,20,35,'Local independent');
+wireDual('dr2','v2',C.op,40,55,'Major corporation');
+
+apply('local');
+</script>
+</body>
+</html>
