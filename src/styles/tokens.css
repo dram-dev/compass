@@ -1,0 +1,15 @@
+/* Canonical design tokens — extracted from reference/compass-demo.html :root (spec §11). */
+:root {
+  --paper: #eef1ea;
+  --ink: #182018;
+  --rule: #c7cfc1;
+  --faint: #5c685c;
+  --aligned: #2f6045;
+  --opposed: #96482b;
+  --mixed: #6c7480;
+  --unknown: #a6ac9f;
+  --brass: #9a7b2d;
+  --card: #f4f6f0;
+  --unknown-hatch: repeating-linear-gradient(45deg, var(--unknown) 0 5px, #b8bdb0 5px 10px);
+  --unknown-hatch-fine: repeating-linear-gradient(45deg, var(--unknown) 0 2px, #c4c9bc 2px 4px);
+}
