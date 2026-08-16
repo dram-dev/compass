@@ -36,6 +36,10 @@ describe('org-name normalization + matching', () => {
     expect(normOrg('Microsoft Corp')).toBe('MICROSOFT');
     expect(normOrg('  ')).toBe('');
     expect(normOrg('Inc')).toBe('INC'); // never strip the only word
+    expect(normOrg('MERCK & CO., INC.')).toBe('MERCK');
+    expect(normOrg('JPMORGAN CHASE & CO.')).toBe('JPMORGAN CHASE');
+    expect(normOrg('Johnson & Johnson')).toBe('JOHNSON AND JOHNSON');
+    expect(normOrg('AT&T Inc')).toBe('AT AND T');
   });
   it('defaultAliases derives sensible variants', () => {
     expect(defaultAliases('Amazon.com Inc')).toEqual(

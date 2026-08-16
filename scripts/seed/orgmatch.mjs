@@ -33,8 +33,14 @@ export function normOrg(s) {
     .replace(/\s+/g, ' ')
     .trim();
   const words = t.split(' ').filter(Boolean);
-  // strip trailing corporate suffixes (repeatedly) and a leading THE
-  while (words.length > 1 && SUFFIXES.has(words[words.length - 1])) words.pop();
+  // strip trailing corporate suffixes and dangling connectors (repeatedly: "MERCK & CO INC" → MERCK), and a leading THE
+  while (
+    words.length > 1 &&
+    (SUFFIXES.has(words[words.length - 1]) ||
+      words[words.length - 1] === 'AND' ||
+      words[words.length - 1] === 'OF')
+  )
+    words.pop();
   if (words.length > 1 && words[0] === 'THE') words.shift();
   t = words.join(' ');
   return t;

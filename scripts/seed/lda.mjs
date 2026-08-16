@@ -64,6 +64,46 @@ export async function findClients(
   return [...found.values()];
 }
 
+/**
+ * All filings for a set of matched clients in the given years. The `client_name` filter spans every
+ * registrant's client record with that name, so one query per distinct name × year replaces one per
+ * client id × year (Apple: 26 client rows → ~7 names). Results are filtered back to the matched ids.
+ */
+export async function fetchFilingsForClients(clients, years, { offline = false } = {}) {
+  const ids = new Set(clients.map((c) => Number(c.id)));
+  const names = [
+    ...new Set(clients.map((c) => c.name).filter((n) => n && !n.startsWith('(override'))),
+  ];
+  const seen = new Set();
+  const out = [];
+  for (const name of names) {
+    for (const y of years) {
+      let page = 1;
+      while (page <= 20) {
+        const body = await ldaGet(
+          `filings/?client_name=${encodeURIComponent(name)}&filing_year=${y}&page_size=100&page=${page}`,
+          { offline },
+        );
+        if (!body) break;
+        for (const f of body.results ?? []) {
+          const cid = Number(f.client?.id ?? f.client?.client_id);
+          if (ids.has(cid) && !seen.has(f.filing_uuid)) {
+            seen.add(f.filing_uuid);
+            out.push(f);
+          }
+        }
+        if (!body.next) break;
+        page++;
+      }
+    }
+  }
+  // override-only ids (no name known) fall back to per-id queries
+  for (const c of clients)
+    if (String(c.name).startsWith('(override'))
+      out.push(...(await fetchClientFilings(c.id, years, { offline })));
+  return out;
+}
+
 /** All filings for a client in the given years (paginated). */
 export async function fetchClientFilings(clientId, years, { offline = false } = {}) {
   const out = [];

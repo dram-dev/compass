@@ -11,7 +11,12 @@ import {
   makeRecipientPartyResolver,
   matchCommittees,
 } from './fec.mjs';
-import { fetchClientFilings, findClients, normalizeFilings, summarizeLobbying } from './lda.mjs';
+import {
+  fetchFilingsForClients,
+  findClients,
+  normalizeFilings,
+  summarizeLobbying,
+} from './lda.mjs';
 import { composeSourceHint, computeLean } from './political.mjs';
 import { SAMPLE_TICKERS } from './sample-tickers.mjs';
 
@@ -227,11 +232,8 @@ export async function seedLobbying(
         overrides,
       });
       if (!clients.length) continue;
-      const all = [];
-      for (const c of clients) {
-        insClient.run(e.symbol, c.id, c.name, c.method);
-        all.push(...(await fetchClientFilings(c.id, years, { offline })));
-      }
+      for (const c of clients) insClient.run(e.symbol, c.id, c.name, c.method);
+      const all = await fetchFilingsForClients(clients, years, { offline });
       const rows = normalizeFilings(all, e.symbol);
       db.exec('BEGIN');
       for (const r of rows) insFiling.run(r);
