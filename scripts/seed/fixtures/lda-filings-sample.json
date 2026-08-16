@@ -1,0 +1,85 @@
+{
+  "count": 3,
+  "next": null,
+  "results": [
+    {
+      "filing_uuid": "a1",
+      "filing_type": "Q1",
+      "filing_year": 2024,
+      "filing_period": "first_quarter",
+      "dt_posted": "2024-04-18T09:24:33-04:00",
+      "income": "60000.00",
+      "expenses": null,
+      "registrant": { "id": 401106545, "name": "HSA STRATEGIES" },
+      "client": { "id": 50892, "name": "AMAZON.COM SERVICES LLC" },
+      "filing_document_url": "https://lda.gov/f/a1",
+      "lobbying_activities": [
+        {
+          "general_issue_code": "TEC",
+          "general_issue_code_display": "Telecommunications",
+          "description": "Broadband",
+          "government_entities": [{ "name": "HOUSE OF REPRESENTATIVES" }, { "name": "SENATE" }]
+        }
+      ]
+    },
+    {
+      "filing_uuid": "a2",
+      "filing_type": "Q1A",
+      "filing_year": 2024,
+      "filing_period": "first_quarter",
+      "dt_posted": "2024-05-02T10:00:00-04:00",
+      "income": "65000.00",
+      "expenses": null,
+      "registrant": { "id": 401106545, "name": "HSA STRATEGIES" },
+      "client": { "id": 50892, "name": "AMAZON.COM SERVICES LLC" },
+      "filing_document_url": "https://lda.gov/f/a2",
+      "lobbying_activities": [
+        {
+          "general_issue_code": "TEC",
+          "general_issue_code_display": "Telecommunications",
+          "description": "Broadband (amended)",
+          "government_entities": []
+        }
+      ]
+    },
+    {
+      "filing_uuid": "a3",
+      "filing_type": "Q2",
+      "filing_year": 2024,
+      "filing_period": "second_quarter",
+      "dt_posted": "2024-07-20T10:00:00-04:00",
+      "income": null,
+      "expenses": "4890000.00",
+      "expenses_method": "a",
+      "registrant": { "id": 9, "name": "AMAZON.COM SERVICES LLC" },
+      "client": { "id": 50892, "name": "AMAZON.COM SERVICES LLC" },
+      "filing_document_url": "https://lda.gov/f/a3",
+      "lobbying_activities": [
+        {
+          "general_issue_code": "TAX",
+          "general_issue_code_display": "Taxation/Internal Revenue Code",
+          "description": "Tax",
+          "government_entities": [{ "name": "SENATE" }]
+        },
+        {
+          "general_issue_code": "TEC",
+          "general_issue_code_display": "Telecommunications",
+          "description": "",
+          "government_entities": []
+        }
+      ]
+    },
+    {
+      "filing_uuid": "a4",
+      "filing_type": "RR",
+      "filing_year": 2024,
+      "filing_period": "first_quarter",
+      "dt_posted": "2024-01-02T10:00:00-04:00",
+      "income": null,
+      "expenses": null,
+      "registrant": { "id": 9, "name": "AMAZON.COM SERVICES LLC" },
+      "client": { "id": 50892, "name": "AMAZON.COM SERVICES LLC" },
+      "lobbying_activities": []
+    }
+  ]
+}

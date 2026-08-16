@@ -12,6 +12,7 @@ import { EXAMPLE_DATA_PACK, parseDataPack } from '@/data/dataPack';
 import { BucketDefaultsPanel } from './BucketDefaultsPanel';
 import { Section } from './Section';
 import { FundLookthroughPanel } from './FundLookthroughPanel';
+import { PoliticalFactsPanel } from './PoliticalFactsPanel';
 import { SAMPLE_COMPANIES } from '@/data/sampleCompanies';
 
 type Notice = { kind: 'ok' | 'err'; text: string } | null;
@@ -239,6 +240,20 @@ export function DataSourcesPage() {
 
       <Section
         no="06"
+        title="Political money facts (FEC + Senate LDA)"
+        sub={
+          <>
+            Public filings, computed offline: corporate PAC and employee contributions by recipient
+            party (FEC bulk data) and lobbying spend (Senate LDA), with a documented lean and verify
+            links. Load the bundled pack to use these leans in scoring.
+          </>
+        }
+      >
+        <PoliticalFactsPanel />
+      </Section>
+
+      <Section
+        no="07"
         title="Reset"
         sub="Erase everything stored on this device. Export first if you want to keep it."
       >

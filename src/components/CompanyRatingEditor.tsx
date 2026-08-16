@@ -9,6 +9,8 @@ import {
 import { useCompassStore } from '@/store/useCompassStore';
 import { Modal } from './Modal';
 import { ProvenanceBadge } from './ProvenanceBadge';
+import { POLITICAL_FACT_BY_TICKER } from '@/data/politicalFacts';
+import { PoliticalFactCard } from './PoliticalFactsPanel';
 
 const LEAN_OPTIONS: { v: number | null; label: string }[] = [
   { v: null, label: 'Unknown (not assessed)' },
@@ -130,6 +132,12 @@ export function CompanyRatingEditor({
           </select>
         </label>
         <p className="text-[11.5px] text-faint">{company.political.sourceHint}</p>
+        {company.ticker && POLITICAL_FACT_BY_TICKER[company.ticker] && (
+          <div className="mt-2">
+            <div className="eyebrow mb-1">Public money facts for {company.ticker}</div>
+            <PoliticalFactCard f={POLITICAL_FACT_BY_TICKER[company.ticker]!} />
+          </div>
+        )}
       </div>
       <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
         <button

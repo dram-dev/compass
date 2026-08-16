@@ -5,7 +5,12 @@ import { CONFIG } from './config.mjs';
 
 export function openDb(dbPath = CONFIG.dbPath) {
   if (dbPath !== ':memory:') mkdirSync(path.dirname(dbPath), { recursive: true });
-  const db = new DatabaseSync(dbPath);
+  let db;
+  try {
+    db = new DatabaseSync(dbPath, { timeout: 15000 }); // busy timeout: parallel seed stages share the DB (WAL)
+  } catch {
+    db = new DatabaseSync(dbPath);
+  }
   db.exec(readFileSync(CONFIG.schemaPath, 'utf8'));
   return db;
 }

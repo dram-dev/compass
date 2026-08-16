@@ -1,0 +1,9 @@
+{
+  "schema": "compass-political-facts",
+  "version": 1,
+  "generatedAt": null,
+  "cycles": [],
+  "method": "",
+  "counts": { "companies": 0, "withLean": 0, "withLobbying": 0 },
+  "companies": []
+}

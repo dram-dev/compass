@@ -17,7 +17,8 @@
     "seed:companies": "node scripts/seed/index.mjs companies",
     "seed:graph": "node scripts/seed/index.mjs graph",
     "seed:status": "node scripts/seed/index.mjs status",
-    "universe": "node scripts/seed/gen-universe.mjs"
+    "universe": "node scripts/seed/gen-universe.mjs",
+    "seed:political": "node scripts/seed/index.mjs political"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.2.5",
@@ -54,6 +55,7 @@
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.33.0",
     "vite": "^6.3.5",
-    "vitest": "^3.2.0"
+    "vitest": "^3.2.0",
+    "yauzl": "^3.4.0"
   }
 }

@@ -159,6 +159,12 @@ npm run seed:status
 
 Full details, schema, rate-limit strategy and ranking rules: `docs/research-db.md`.
 
+**Political-money facts** (`npm run seed:political`, no key needed): FEC bulk data — corporate PAC
+and employee contributions by recipient party — plus Senate LDA lobbying filings, matched to companies
+with an auditable, conservative name matcher, reduced to a documented lean (`docs/political-seed.md`),
+and exported both as facts for the **Data → Political money facts** panel and as a standard data pack the
+user loads on click (Imported badges + verify links; nothing fetched at runtime).
+
 ## Testing
 
 - `src/engine/*.test.ts` — worked example (exact), Jordan parity, allocation, alignment, political,
@@ -167,7 +173,7 @@ Full details, schema, rate-limit strategy and ranking rules: `docs/research-db.m
   validation errors, migrations.
 - Component tests: DualRange (pointer + keyboard), wizard, dashboard (zero-data + Jordan + toggles),
   plan (move / dismiss / highlight / gate config), data page (round trip, packs, Advanced), error boundary.
-- `scripts/seed/seed.test.mjs` — Alpha Vantage / SEC N-PORT parsers against real demo payloads, in-memory SQLite ranking + graph build.
+- `scripts/seed/seed.test.mjs`, `political.test.mjs` — Alpha Vantage / SEC N-PORT / FEC bulk / LDA parsers against real payload shapes, org-name matcher rules, lean derivation, in-memory SQLite ranking, graph and pack export.
 - `npm run coverage` enforces ≥ 90% lines/functions/statements on `src/engine`.
 
 ## Privacy

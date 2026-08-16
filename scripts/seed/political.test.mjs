@@ -1,0 +1,352 @@
+// @vitest-environment node
+import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { buildAliasIndex, defaultAliases, matchOrg, normOrg } from './orgmatch.mjs';
+import {
+  makeRecipientPartyResolver,
+  matchCommittees,
+  parseCm,
+  parseCn,
+  parseIndiv,
+  parseOth,
+  parsePas2,
+  partyOf,
+} from './fec.mjs';
+import { normalizeFilings, summarizeLobbying } from './lda.mjs';
+import { composeSourceHint, computeLean, MIN_PARTISAN_USD } from './political.mjs';
+import { openDb } from './db.mjs';
+import {
+  computePoliticalFacts,
+  exportPoliticalPack,
+  exportPoliticalFacts,
+} from './seed-political.mjs';
+import { mkdtempSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
+
+const fx = (n) => JSON.parse(readFileSync(new URL(`./fixtures/${n}`, import.meta.url), 'utf8'));
+
+describe('org-name normalization + matching', () => {
+  it('normOrg strips only legal-form suffixes and a leading THE', () => {
+    expect(normOrg('The Coca-Cola Company')).toBe('COCA COLA');
+    expect(normOrg('Bank of America Corporation')).toBe('BANK OF AMERICA');
+    expect(normOrg('American International Group, Inc.')).toBe('AMERICAN INTERNATIONAL GROUP');
+    expect(normOrg('AMAZON.COM SERVICES LLC')).toBe('AMAZON COM SERVICES');
+    expect(normOrg('Microsoft Corp')).toBe('MICROSOFT');
+    expect(normOrg('  ')).toBe('');
+    expect(normOrg('Inc')).toBe('INC'); // never strip the only word
+  });
+  it('defaultAliases derives sensible variants', () => {
+    expect(defaultAliases('Amazon.com Inc')).toEqual(
+      expect.arrayContaining(['Amazon.com Inc', 'AMAZON COM', 'AMAZON']),
+    );
+    expect(defaultAliases('')).toEqual([]);
+  });
+  const idx = buildAliasIndex([
+    { symbol: 'BAC', aliases: ['Bank of America'] },
+    { symbol: 'KO', aliases: ['Coca-Cola', 'The Coca-Cola Company'] },
+    { symbol: 'MSFT', aliases: ['Microsoft'] },
+    { symbol: 'META', aliases: ['Meta'] },
+    { symbol: 'TGT', aliases: ['Target'] },
+    { symbol: 'GOOGL', aliases: ['Google'] },
+    { symbol: 'X1', aliases: ['Shared Name'] },
+    { symbol: 'X2', aliases: ['Shared Name'] },
+  ]);
+  it('exact and multi-word prefix matches; deny-list blocks bottlers/associations', () => {
+    expect(matchOrg('BANK OF AMERICA CORPORATION', idx)).toMatchObject({
+      symbol: 'BAC',
+      method: 'exact',
+    }); // suffix stripped
+    expect(matchOrg('BANK OF AMERICA MERRILL LYNCH', idx)).toMatchObject({
+      symbol: 'BAC',
+      method: 'prefix',
+    });
+    expect(matchOrg('Bank of America', idx)).toMatchObject({ symbol: 'BAC', method: 'exact' });
+    expect(matchOrg('BANK OF HAWAII', idx)).toBeNull();
+    expect(matchOrg('COCA-COLA BOTTLING COMPANY UNITED', idx)).toBeNull();
+    expect(matchOrg('COCA-COLA CONSOLIDATED INC', idx)).toBeNull();
+    expect(matchOrg('THE COCA-COLA COMPANY', idx)).toMatchObject({ symbol: 'KO', method: 'exact' });
+    expect(matchOrg('BANK OF AMERICA CREDIT UNION', idx)).toBeNull();
+  });
+  it('single-word aliases never prefix-match unless singleWordPrefix + safe next word', () => {
+    expect(matchOrg('MICROSOFT CORPORATION STAKEHOLDERS VOLUNTARY PAC', idx)).toBeNull();
+    expect(
+      matchOrg('MICROSOFT CORPORATION STAKEHOLDERS VOLUNTARY PAC', idx, { singleWordPrefix: true }),
+    ).toMatchObject({ symbol: 'MSFT', method: 'prefix' });
+    expect(matchOrg('META FINANCIAL GROUP PAC', idx, { singleWordPrefix: true })).toBeNull();
+    expect(matchOrg('TARGET ENTERPRISES', idx, { singleWordPrefix: true })).toBeNull();
+    expect(
+      matchOrg('TARGET CORPORATION CITIZENS POLITICAL FORUM', idx, { singleWordPrefix: true }),
+    ).toMatchObject({ symbol: 'TGT' });
+    expect(matchOrg('GOOGLE LLC', idx)).toMatchObject({ symbol: 'GOOGL', method: 'exact' });
+    expect(matchOrg('Shared Name', idx)).toMatchObject({
+      method: 'exact-ambiguous',
+      candidates: ['X1', 'X2'],
+    });
+    expect(matchOrg('MICROSOFT', idx, { allowPrefix: false })).toMatchObject({ method: 'exact' });
+    expect(matchOrg('MICROSOFT CORP RETIREES', idx, { allowPrefix: false })).toBeNull();
+  });
+});
+
+describe('FEC bulk parsing + party resolution', () => {
+  const cmLine =
+    'C00012468|THE COCA-COLA COMPANY NONPARTISAN COMMITTEE FOR GOOD GOVERNMENT|TREAS|1 COCA COLA PLZ||ATLANTA|GA|30313|B|Q|UNK|M|C|THE COCA-COLA COMPANY|'.split(
+      '|',
+    );
+  const cnLine = 'H0GA01234|DOE, JANE|DEM|2024|GA|H|05|C|C|C00999999|||ATLANTA|GA|30303'.split('|');
+  it('parses cm/cn rows and maps UNK/NNE to no-party', () => {
+    const cm = parseCm(cmLine);
+    expect(cm).toMatchObject({
+      id: 'C00012468',
+      designation: 'B',
+      type: 'Q',
+      party: 'UNK',
+      orgType: 'C',
+      connectedOrg: 'THE COCA-COLA COMPANY',
+    });
+    expect(parseCn(cnLine)).toEqual({ id: 'H0GA01234', name: 'DOE, JANE', party: 'DEM' });
+    expect(partyOf('UNK')).toBe('U');
+    expect(partyOf('NNE')).toBe('U');
+    expect(partyOf('')).toBe('U');
+    expect(partyOf('DEM')).toBe('D');
+    expect(partyOf('DFL')).toBe('D');
+    expect(partyOf('REP')).toBe('R');
+    expect(partyOf('IND')).toBe('O');
+    expect(partyOf('GRE')).toBe('O');
+  });
+  it('resolves recipient party via committee party, then linked candidate', () => {
+    const committees = new Map([
+      ['C1', { id: 'C1', party: 'DEM', candId: '' }],
+      ['C2', { id: 'C2', party: '', candId: 'H1' }],
+      ['C3', { id: 'C3', party: '', candId: '' }],
+      ['C4', { id: 'C4', party: 'UNK', candId: '' }],
+    ]);
+    const candidates = new Map([
+      ['H1', { party: 'REP' }],
+      ['H2', { party: 'DEM' }],
+    ]);
+    const links = new Map([['C3', 'H2']]);
+    const r = makeRecipientPartyResolver(committees, candidates, links);
+    expect(r('C1')).toBe('D');
+    expect(r('C2')).toBe('R');
+    expect(r('C3')).toBe('D');
+    expect(r('C4')).toBe('U');
+    expect(r('NOPE')).toBe('U');
+  });
+  it('matchCommittees: connected-org exact, corporate name prefix, overrides, and exclusions', () => {
+    const idx = buildAliasIndex([
+      { symbol: 'KO', aliases: ['Coca-Cola', 'The Coca-Cola Company'] },
+      { symbol: 'MSFT', aliases: ['Microsoft'] },
+      { symbol: 'AMZN', aliases: ['Amazon', 'Amazon.com'] },
+    ]);
+    const committees = new Map();
+    const add = (id, name, orgType, connectedOrg, party = '', type = 'Q') =>
+      committees.set(id, {
+        id,
+        name,
+        orgType,
+        connectedOrg,
+        party,
+        type,
+        designation: 'B',
+        candId: '',
+      });
+    add(
+      'C1',
+      'THE COCA-COLA COMPANY NONPARTISAN COMMITTEE FOR GOOD GOVERNMENT',
+      'C',
+      'THE COCA-COLA COMPANY',
+      'UNK',
+    );
+    add('C2', 'COCA-COLA CONSOLIDATED, INC. POLITICAL ACTION COMMITTEE', 'C', '');
+    add(
+      'C3',
+      'MICROSOFT CORPORATION STAKEHOLDERS VOLUNTARY PAC - MSVPAC',
+      'C',
+      'MICROSOFT CORPORATION',
+    );
+    add('C4', 'AMAZON.COM SERVICES LLC SEPARATE SEGREGATED FUND (AMAZON PAC)', 'C', '');
+    add('C5', 'MICROSOFT FOR CONGRESS', '', '', 'DEM', 'H'); // candidate committee — never
+    add('C6', 'AMERICAN BEVERAGE ASSOCIATION PAC', 'T', 'AMERICAN BEVERAGE ASSOCIATION'); // trade — never
+    add('C7', 'SOME OTHER PAC', '', '');
+    const m = matchCommittees(committees, idx, { committees: { AMZN: ['C7', '!C4'] } });
+    const by = Object.fromEntries(m.map((x) => [x.committeeId, `${x.symbol}:${x.method}`]));
+    expect(by).toEqual({ C1: 'KO:exact', C3: 'MSFT:exact', C7: 'AMZN:override' });
+  });
+  it('parses pas2/oth/indiv layouts', () => {
+    const pas2 =
+      'C00012468|N|Q1|P|202404|24K|CCM|DOE FOR CONGRESS|ATLANTA|GA|30303|||03152024|2500|C00999999|H0GA01234|TR1|1|||SUB1'.split(
+        '|',
+      );
+    expect(parsePas2(pas2)).toMatchObject({
+      cmteId: 'C00012468',
+      txType: '24K',
+      amount: 2500,
+      otherId: 'C00999999',
+      candId: 'H0GA01234',
+      memo: '',
+      subId: 'SUB1',
+    });
+    const oth =
+      'C00012468|N|Q1|P|202404|24K|PTY|NRSC|WASHINGTON|DC|20003|||03152024|15000|C00027466|TR2|1|X||SUB2'.split(
+        '|',
+      );
+    expect(parseOth(oth)).toMatchObject({
+      txType: '24K',
+      entityType: 'PTY',
+      amount: 15000,
+      otherId: 'C00027466',
+      memo: 'X',
+      subId: 'SUB2',
+    });
+    const indiv =
+      'C00401224|N|M4|P|202404|15E|IND|SMITH, JANE|SEATTLE|WA|98101|AMAZON.COM|ENGINEER|03012024|250|C00999999|TR3|1|||SUB3'.split(
+        '|',
+      );
+    expect(parseIndiv(indiv)).toMatchObject({
+      cmteId: 'C00401224',
+      txType: '15E',
+      entityType: 'IND',
+      employer: 'AMAZON.COM',
+      occupation: 'ENGINEER',
+      amount: 250,
+      memo: '',
+      subId: 'SUB3',
+    });
+  });
+});
+
+describe('LDA normalization', () => {
+  it('keeps quarterly reports, marks superseded amendments, sums latest per period', () => {
+    const rows = normalizeFilings(fx('lda-filings-sample.json').results, 'AMZN');
+    expect(rows.map((r) => r.filing_uuid).sort()).toEqual(['a1', 'a2', 'a3']); // RR dropped
+    const a1 = rows.find((r) => r.filing_uuid === 'a1');
+    const a2 = rows.find((r) => r.filing_uuid === 'a2');
+    expect(a1.superseded).toBe(1);
+    expect(a2.superseded).toBe(0);
+    expect(a2.amount_usd).toBe(65000);
+    expect(a2.amount_kind).toBe('income');
+    const a3 = rows.find((r) => r.filing_uuid === 'a3');
+    expect(a3.amount_kind).toBe('expenses');
+    expect(a3.amount_usd).toBe(4890000);
+    const s = summarizeLobbying(rows);
+    expect(s.byYear).toEqual({ 2024: 65000 + 4890000 });
+    expect(s.topIssues[0]).toEqual({ name: 'Telecommunications', filings: 2 });
+  });
+});
+
+describe('lean derivation', () => {
+  it('bins r=(R−D)/(R+D) with sign convention negative=conservative; null under the minimum', () => {
+    expect(computeLean({ pacD: 1000, pacR: 1000 }).leanScore).toBeNull(); // 2k < 5k
+    expect(computeLean({ pacD: 5000, pacR: 5000 })).toMatchObject({
+      leanScore: 0,
+      r: 0,
+      confidence: 'low',
+    });
+    expect(computeLean({ pacD: 20000, pacR: 80000 })).toMatchObject({ leanScore: -2 }); // r = .6
+    expect(computeLean({ pacD: 30000, pacR: 70000 })).toMatchObject({ leanScore: -1 }); // r = .4
+    expect(computeLean({ pacD: 70000, pacR: 30000 })).toMatchObject({ leanScore: 1 });
+    expect(computeLean({ pacD: 90000, pacR: 10000 })).toMatchObject({ leanScore: 2 });
+    expect(computeLean({ pacD: 200000, pacR: 100000, empD: 100000, empR: 0 })).toMatchObject({
+      leanScore: 1,
+      confidence: 'high',
+    });
+    expect(computeLean({ pacD: 400000, pacR: 100000 })).toMatchObject({ confidence: 'med' }); // high needs both channels
+    expect(MIN_PARTISAN_USD).toBe(5000);
+  });
+  it('composeSourceHint cites cycles, splits, lobbying, method, and FEC links', () => {
+    const lean = computeLean({ pacD: 600000, pacR: 400000, empD: 900000, empR: 100000 });
+    const hint = composeSourceHint({
+      cycles: [2022, 2024],
+      pac: { D: 600000, R: 400000, O: 0, U: 50000 },
+      emp: { D: 900000, R: 100000, O: 0, U: 0 },
+      lobbyingByYear: { 2023: 19e6, 2024: 20e6 },
+      committees: ['C00360354'],
+      computedAt: '2026-08-16T00:00:00Z',
+      lean,
+    });
+    expect(hint).toMatch(
+      /FEC 2021–2024: PAC \$1\.1M \(D 60% \/ R 40%\); employees \$1\.0M \(D 90% \/ R 10%\); lobbying \$39\.0M \(2023–2024, Senate LDA\)\./,
+    );
+    expect(hint).toMatch(/Lean \+1 \(r=-0\.50, high confidence\)/);
+    expect(hint).toMatch(/fec\.gov\/data\/committee\/C00360354/);
+    expect(hint).toMatch(/docs\/political-seed\.md/);
+    expect(hint.length).toBeLessThanOrEqual(480);
+    const none = composeSourceHint({
+      cycles: [2024],
+      pac: { D: 0, R: 0, O: 0, U: 0 },
+      emp: { D: 0, R: 0, O: 0, U: 0 },
+      lobbyingByYear: {},
+      committees: [],
+      computedAt: '2026-08-16T00:00:00Z',
+      lean: computeLean({}),
+    });
+    expect(none).toMatch(/No FEC PAC\/employee contributions or LDA lobbying matched/);
+    expect(none).toMatch(/Lean not assigned/);
+  });
+});
+
+describe('facts + pack export (in-memory DB)', () => {
+  it('aggregates cycles/channels, applies sameAs share classes, exports pack records for sample brands', () => {
+    const db = openDb(':memory:');
+    const ins = db.prepare(
+      'INSERT INTO political_contribution (company_symbol,cycle,channel,party,amount_usd,txn_count,source,computed_at) VALUES (?,?,?,?,?,?,?,?)',
+    );
+    ins.run('AMZN', 2024, 'pac', 'D', 500000, 100, 't', 'now');
+    ins.run('AMZN', 2024, 'pac', 'R', 500000, 100, 't', 'now');
+    ins.run('AMZN', 2022, 'employee', 'D', 900000, 3000, 't', 'now');
+    ins.run('AMZN', 2022, 'employee', 'R', 100000, 300, 't', 'now');
+    ins.run('GOOGL', 2024, 'pac', 'D', 300000, 50, 't', 'now');
+    ins.run('GOOGL', 2024, 'pac', 'R', 300000, 50, 't', 'now');
+    db.prepare(
+      'INSERT INTO political_committee (company_symbol,committee_id,committee_name,connected_org,org_type,designation,match_method,cycle_seen) VALUES (?,?,?,?,?,?,?,?)',
+    ).run('AMZN', 'C00360354', 'AMAZON PAC', null, 'C', 'B', 'name-prefix', 2024);
+    db.prepare(
+      'INSERT INTO lobbying_filing (filing_uuid,company_symbol,client_id,registrant_id,registrant_name,filing_year,filing_period,filing_type,dt_posted,amount_usd,amount_kind,issues_json,document_url,superseded) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+    ).run(
+      'f1',
+      'AMZN',
+      50892,
+      9,
+      'AMAZON',
+      2024,
+      'first_quarter',
+      'Q1',
+      '2024-04-01',
+      4890000,
+      'expenses',
+      '[{"code":"TAX","display":"Taxation"}]',
+      null,
+      0,
+    );
+    const r = computePoliticalFacts(db, { cycles: [2022, 2024] });
+    const amzn = r.facts.AMZN;
+    expect(amzn.totals.pac).toEqual({ D: 500000, R: 500000, O: 0, U: 0 });
+    expect(amzn.totals.employee).toEqual({ D: 900000, R: 100000, O: 0, U: 0 });
+    expect(amzn.lean.leanScore).toBe(1); // r = (600k − 1.4M)/2M = −0.4
+    expect(amzn.lean.confidence).toBe('high');
+    expect(amzn.lobbying).toEqual({ 2024: 4890000 });
+    expect(amzn.topIssues[0].name).toBe('Taxation');
+    expect(amzn.links.fec[0]).toContain('C00360354');
+    expect(r.facts.GOOG).toBeDefined();
+    expect(r.facts.GOOG.sameAs).toBe('GOOGL');
+    expect(r.facts.GOOG.lean.leanScore).toBe(0);
+    // exports
+    const dir = mkdtempSync(path.join(tmpdir(), 'compass-pol-'));
+    const facts = exportPoliticalFacts(r, path.join(dir, 'facts.json'));
+    expect(facts.counts.withLean).toBeGreaterThanOrEqual(3);
+    const pack = exportPoliticalPack(r, path.join(dir, 'pack.json'));
+    const doc = JSON.parse(readFileSync(pack.path, 'utf8'));
+    expect(doc.schema).toBe('compass-data-pack');
+    const wf = doc.companies.find((c) => c.id === 'whole-foods'); // sample brand with ticker AMZN
+    expect(wf).toBeDefined();
+    expect(wf.political.leanScore).toBe(1);
+    expect(wf.political.sourceHint).toMatch(/^Via listed parent/);
+    expect(wf.parentCompanyId).toBe('amazon');
+    const amazon = doc.companies.find((c) => c.id === 'amazon');
+    expect(amazon.political.sourceHint).not.toMatch(/^Via listed parent/);
+    expect(doc.companies.find((c) => c.id === 'co-googl')).toBeDefined();
+    // no values ratings are asserted
+    expect(doc.companies.every((c) => Object.keys(c.ratings).length === 0)).toBe(true);
+  });
+});

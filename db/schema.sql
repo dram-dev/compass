@@ -142,3 +142,81 @@ SELECT f.symbol AS fund_symbol, f.name AS fund_name, f.kind, f.net_assets, f.pop
 FROM fund f
 JOIN fund_holding h ON h.fund_symbol = f.symbol
 LEFT JOIN company c ON c.symbol = h.holding_symbol;
+
+-- ---------------------------------------------------------------- political money (FEC + Senate LDA)
+-- Which FEC committees (corporate PACs) belong to a company. Auditable: how it was matched, and by whom.
+CREATE TABLE IF NOT EXISTS political_committee (
+  company_symbol  TEXT NOT NULL,
+  committee_id    TEXT NOT NULL,                -- FEC C########
+  committee_name  TEXT NOT NULL,
+  connected_org   TEXT,                         -- FEC CONNECTED_ORG_NM
+  org_type        TEXT,                         -- C corp, T trade, L labor, M membership, ...
+  designation     TEXT,                         -- B lobbyist/registrant PAC, U unauthorized, ...
+  match_method    TEXT NOT NULL,                -- 'override' | 'exact' | 'prefix'
+  cycle_seen      INTEGER,
+  PRIMARY KEY (company_symbol, committee_id)
+);
+
+-- Cycle-scoped facts. channel: 'pac' (company PAC → candidates/parties) | 'employee' (individuals listing the company as employer).
+-- party: 'D' | 'R' | 'O' (third party) | 'U' (recipient not party-affiliated: PACs, super PACs, hybrids)
+CREATE TABLE IF NOT EXISTS political_contribution (
+  company_symbol  TEXT NOT NULL,
+  cycle           INTEGER NOT NULL,
+  channel         TEXT NOT NULL CHECK (channel IN ('pac','employee')),
+  party           TEXT NOT NULL CHECK (party IN ('D','R','O','U')),
+  amount_usd      REAL NOT NULL,
+  txn_count       INTEGER NOT NULL,
+  source          TEXT NOT NULL,                -- e.g. 'fec-bulk:pas224+oth24' / 'fec-bulk:indiv24'
+  computed_at     TEXT NOT NULL,
+  PRIMARY KEY (company_symbol, cycle, channel, party)
+);
+
+-- Employer strings that matched a company (audit trail for the noisy channel).
+CREATE TABLE IF NOT EXISTS political_employer_match (
+  company_symbol  TEXT NOT NULL,
+  employer_raw    TEXT NOT NULL,
+  cycle           INTEGER NOT NULL,
+  amount_usd      REAL NOT NULL,
+  txn_count       INTEGER NOT NULL,
+  PRIMARY KEY (company_symbol, employer_raw, cycle)
+);
+
+-- Senate LDA: matched clients and de-duplicated quarterly filings.
+CREATE TABLE IF NOT EXISTS lobbying_client (
+  company_symbol  TEXT NOT NULL,
+  client_id       INTEGER NOT NULL,
+  client_name     TEXT NOT NULL,
+  match_method    TEXT NOT NULL,
+  PRIMARY KEY (company_symbol, client_id)
+);
+CREATE TABLE IF NOT EXISTS lobbying_filing (
+  filing_uuid     TEXT PRIMARY KEY,
+  company_symbol  TEXT NOT NULL,
+  client_id       INTEGER NOT NULL,
+  registrant_id   INTEGER,
+  registrant_name TEXT,
+  filing_year     INTEGER NOT NULL,
+  filing_period   TEXT NOT NULL,                -- first_quarter … fourth_quarter
+  filing_type     TEXT NOT NULL,                -- Q1, Q1A (amendment) …
+  dt_posted       TEXT,
+  amount_usd      REAL,                         -- income (hired firm) or expenses (in-house)
+  amount_kind     TEXT,                         -- 'income' | 'expenses'
+  issues_json     TEXT,                         -- [{code, display, description, agencies[]}]
+  document_url    TEXT,
+  superseded      INTEGER NOT NULL DEFAULT 0    -- 1 when a later amendment for the same registrant/client/period exists
+);
+CREATE INDEX IF NOT EXISTS idx_lobbying_company ON lobbying_filing(company_symbol, filing_year);
+
+CREATE VIEW IF NOT EXISTS v_lobbying_summary AS
+SELECT company_symbol, filing_year, SUM(amount_usd) AS amount_usd, COUNT(*) AS filings,
+       COUNT(DISTINCT registrant_id) AS registrants
+FROM lobbying_filing WHERE superseded = 0 GROUP BY company_symbol, filing_year;
+
+CREATE VIEW IF NOT EXISTS v_political_by_cycle AS
+SELECT company_symbol, cycle, channel,
+       SUM(CASE WHEN party='D' THEN amount_usd ELSE 0 END) AS dem_usd,
+       SUM(CASE WHEN party='R' THEN amount_usd ELSE 0 END) AS rep_usd,
+       SUM(CASE WHEN party='O' THEN amount_usd ELSE 0 END) AS other_usd,
+       SUM(CASE WHEN party='U' THEN amount_usd ELSE 0 END) AS unaffiliated_usd,
+       SUM(txn_count) AS txn_count
+FROM political_contribution GROUP BY company_symbol, cycle, channel;

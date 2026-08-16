@@ -174,3 +174,28 @@ Numbered, append-only. Each entry: decision · rationale · phase.
 47. **Fixtures**: parsers are tested against real Alpha Vantage demo payloads (QQQ ETF_PROFILE, IBM
     OVERVIEW/INCOME_STATEMENT, the throttle body) plus a synthesized balance/cash-flow pair using the
     documented field names, and a hand-written N-PORT XML sample. (RDB)
+
+## Political-money seed
+
+48. **Primary sources only** — FEC bulk data (PAC + employee channels) and the Senate LDA API; OpenSecrets
+    and Goods Unite Us stay verify links (their terms restrict caching/redistribution and scraping). The
+    Compass sample set is untouched; derived leans ship as a *data pack* the user loads on click, so they
+    arrive as `provenance: 'imported'` with source strings, never as sample values. (POL)
+49. **Employees channel = exact-normalized `EMPLOYER` matches only**, against a curated alias table
+    (`data/employer-aliases.json`) that grows over time; a review table of matched raw employer strings
+    is kept per company. Prefix matching is reserved for multi-word aliases (with a deny-list) and for
+    corporate PAC names (single-word alias + legal-form/PAC next word). A live probe against the 2024
+    committee master found and fixed two matcher bugs before any data was written (over-aggressive suffix
+    stripping; single-word prefixes). (POL)
+50. **FEC party codes UNK/NNE/NON/NPA/blank = no party** (not third party); corporate PACs frequently
+    carry UNK. Recipient party falls back to the linked candidate's party; otherwise dollars go to a
+    visible **U** (non-party recipients) bucket that is excluded from the lean ratio. (POL)
+51. **Lean formula** r=(R−D)/(R+D) binned at ±0.2/±0.6, null under $5k partisan; confidence by dollar
+    volume and channel coverage. Documented in `docs/political-seed.md` and restated in every
+    `sourceHint`. Independent expenditures (24A/24E) are excluded — they are not contributions to a
+    candidate. (POL)
+52. **Share classes**: `sameAs` in the alias file (GOOG → GOOGL) copies facts rather than double-matching;
+    the sample brand "Whole Foods Market" (ticker AMZN) receives Amazon's facts with an explicit
+    "Via listed parent Amazon (AMZN)" prefix in its hint. (POL)
+53. **Anonymous LDA access** (~10–15 req/min) is used by default; `LDA_API_KEY` is optional. The FEC
+    `indiv` files (≈4.2 GB per cycle) are streamed through yauzl + readline, never held in memory. (POL)

@@ -7,6 +7,8 @@
  *   node scripts/seed/index.mjs companies  [--overview N] [--statements N] [--only AAPL,MSFT] [--offline] [--refresh]
  *   node scripts/seed/index.mjs graph
  *   node scripts/seed/index.mjs all        (funds → rank → companies → graph)
+ *   node scripts/seed/index.mjs political  [--cycles 2022,2024] [--years 2023,2024,2025] [--skip-employees] [--only AMZN,WMT] [--offline]
+ *   node scripts/seed/index.mjs political:fec | political:lda | political:export   (individual stages)
  *   node scripts/seed/index.mjs status
  *
  * Every HTTP response is cached under db/cache so re-runs are free and throttled runs resume.
@@ -17,6 +19,13 @@ import { rankFunds, seedFunds } from './seed-funds.mjs';
 import { seedCompanies } from './seed-companies.mjs';
 import { buildGraph, exportGraph } from './build-graph.mjs';
 import { avCallsThisRun } from './alphavantage.mjs';
+import {
+  computePoliticalFacts,
+  exportPoliticalFacts,
+  exportPoliticalPack,
+  seedFec,
+  seedLobbying,
+} from './seed-political.mjs';
 
 const args = process.argv.slice(2);
 const cmd = args.find((a) => !a.startsWith('--')) ?? 'status';
@@ -87,6 +96,44 @@ async function main() {
         );
     }
   }
+  const cycles = list(opt('cycles'))?.map(Number) ?? [2022, 2024];
+  const years = list(opt('years'))?.map(Number) ?? [2023, 2024, 2025];
+  if (cmd === 'political' || cmd === 'political:fec') {
+    console.log('\n== political: FEC bulk (PAC + employees)');
+    const s = await seedFec(db, {
+      cycles,
+      offline,
+      skipEmployees: !!opt('skip-employees', false),
+      only: list(opt('only')),
+    });
+    console.log('   ', JSON.stringify(s));
+  }
+  if (cmd === 'political' || cmd === 'political:lda') {
+    console.log('\n== political: Senate LDA lobbying');
+    const s = await seedLobbying(db, { years, offline, only: list(opt('only')) });
+    console.log('   ', JSON.stringify({ ...s, errors: s.errors.slice(0, 5) }));
+  }
+  if (cmd === 'political' || cmd === 'political:export') {
+    console.log('\n== political: lean + exports');
+    const r = computePoliticalFacts(db, { cycles });
+    const f = exportPoliticalFacts(r);
+    const p = exportPoliticalPack(r);
+    console.log(
+      `    facts → ${f.path} ${JSON.stringify(f.counts)}\n    pack  → ${p.path} (${p.companies} records)`,
+    );
+    const top = Object.values(r.facts)
+      .filter((x) => x.lean?.leanScore !== null)
+      .sort((a, b) => b.lean.totalPartisanUsd - a.lean.totalPartisanUsd)
+      .slice(0, 15);
+    for (const c of top)
+      console.log(
+        `      ${c.symbol.padEnd(6)} lean ${String(c.lean.leanScore).padStart(2)} (${c.lean.confidence}) partisan $${(c.lean.totalPartisanUsd / 1e6).toFixed(2)}M · lobbying ${
+          Object.entries(c.lobbying)
+            .map(([y, v]) => `${y}:$${(v / 1e6).toFixed(1)}M`)
+            .join(' ') || '—'
+        }`,
+      );
+  }
   if (cmd === 'status') {
     const q = (sql) => db.prepare(sql).get();
     console.log(
@@ -113,6 +160,12 @@ async function main() {
         .get() ?? '(none)',
     );
     console.log('    throttles ', q("SELECT COUNT(*) n FROM fetch_log WHERE status='throttled'"));
+    console.log(
+      '    political ',
+      q(
+        'SELECT (SELECT COUNT(*) FROM political_committee) committees, (SELECT COUNT(DISTINCT company_symbol) FROM political_contribution) companies_with_contribs, (SELECT COUNT(*) FROM lobbying_filing) lobbying_filings',
+      ),
+    );
   }
   console.log(
     `\nAlpha Vantage calls this run: ${avCallsThisRun()} · ${((Date.now() - t0) / 1000).toFixed(1)}s`,

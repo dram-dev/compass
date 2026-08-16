@@ -1,0 +1,7 @@
+{
+  "note": "Manual curation layer for the political seed. `committees`: force-include (or, prefixed with '!', exclude) FEC committee IDs per ticker. `ldaClients`: force-include/exclude Senate LDA client IDs. `excludeEmployerStrings`: normalized employer strings to ignore. Every entry should cite why in `reasons`. Empty by default — the matcher is conservative and logs its choices; review db.political_committee / lobbying_client after a run and add corrections here.",
+  "committees": {},
+  "ldaClients": {},
+  "excludeEmployerStrings": [],
+  "reasons": {}
+}
