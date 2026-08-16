@@ -1,0 +1,116 @@
+{
+  "net_assets": "452800000000",
+  "net_expense_ratio": "0.0018",
+  "portfolio_turnover": "n/a",
+  "dividend_yield": "0.0044",
+  "inception_date": "1999-03-10",
+  "leveraged": "NO",
+  "sectors": [
+    {
+      "sector": "INFORMATION TECHNOLOGY",
+      "weight": "0.567"
+    },
+    {
+      "sector": "COMMUNICATION SERVICES",
+      "weight": "0.137"
+    },
+    {
+      "sector": "CONSUMER DISCRETIONARY",
+      "weight": "0.102"
+    },
+    {
+      "sector": "CONSUMER STAPLES",
+      "weight": "0.061"
+    },
+    {
+      "sector": "HEALTHCARE",
+      "weight": "0.037"
+    },
+    {
+      "sector": "INDUSTRIALS",
+      "weight": "0.03"
+    },
+    {
+      "sector": "UTILITIES",
+      "weight": "0.011"
+    },
+    {
+      "sector": "MATERIALS",
+      "weight": "0.01"
+    },
+    {
+      "sector": "ENERGY",
+      "weight": "0.005"
+    },
+    {
+      "sector": "FINANCIALS",
+      "weight": "0.002"
+    },
+    {
+      "sector": "REAL ESTATE",
+      "weight": "0.00"
+    }
+  ],
+  "holdings": [
+    {
+      "symbol": "NVDA",
+      "description": "NVIDIA CORP",
+      "weight": "0.0807"
+    },
+    {
+      "symbol": "AAPL",
+      "description": "APPLE INC",
+      "weight": "0.0715"
+    },
+    {
+      "symbol": "MSFT",
+      "description": "MICROSOFT CORP",
+      "weight": "0.0576"
+    },
+    {
+      "symbol": "AMZN",
+      "description": "AMAZON.COM INC",
+      "weight": "0.047"
+    },
+    {
+      "symbol": "MU",
+      "description": "MICRON TECHNOLOGY INC",
+      "weight": "0.0437"
+    },
+    {
+      "symbol": "AMD",
+      "description": "ADVANCED MICRO DEVICES INC",
+      "weight": "0.0367"
+    },
+    {
+      "symbol": "GOOGL",
+      "description": "ALPHABET INC CLASS A",
+      "weight": "0.0346"
+    },
+    {
+      "symbol": "GOOG",
+      "description": "ALPHABET INC CLASS C",
+      "weight": "0.0322"
+    },
+    {
+      "symbol": "AVGO",
+      "description": "BROADCOM INC",
+      "weight": "0.0312"
+    },
+    {
+      "symbol": "META",
+      "description": "META PLATFORMS INC CLASS A",
+      "weight": "0.0274"
+    },
+    {
+      "symbol": "TSLA",
+      "description": "TESLA INC",
+      "weight": "0.0257"
+    },
+    {
+      "symbol": "WMT",
+      "description": "WALMART INC",
+      "weight": "0.0236"
+    }
+  ]
+}

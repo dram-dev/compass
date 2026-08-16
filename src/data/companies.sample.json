@@ -405,6 +405,7 @@
     "id": "whole-foods",
     "name": "Whole Foods Market",
     "parentCompanyId": "amazon",
+    "ticker": "AMZN",
     "sector": "Grocery",
     "bucketDefault": "major",
     "political": {
@@ -436,6 +437,7 @@
   {
     "id": "kroger",
     "name": "Kroger",
+    "ticker": "KR",
     "sector": "Grocery",
     "bucketDefault": "major",
     "political": {
@@ -452,6 +454,7 @@
     "id": "safeway",
     "name": "Safeway",
     "parentCompanyId": "albertsons",
+    "ticker": "ACI",
     "sector": "Grocery",
     "bucketDefault": "major",
     "political": {
@@ -467,6 +470,7 @@
   {
     "id": "walmart",
     "name": "Walmart",
+    "ticker": "WMT",
     "sector": "Retail & grocery",
     "bucketDefault": "major",
     "political": {
@@ -482,6 +486,7 @@
   {
     "id": "target",
     "name": "Target",
+    "ticker": "TGT",
     "sector": "Retail & grocery",
     "bucketDefault": "major",
     "political": {
@@ -497,6 +502,7 @@
   {
     "id": "costco",
     "name": "Costco",
+    "ticker": "COST",
     "sector": "Retail & grocery",
     "bucketDefault": "major",
     "political": {
@@ -512,6 +518,7 @@
   {
     "id": "starbucks",
     "name": "Starbucks",
+    "ticker": "SBUX",
     "sector": "Dining & coffee",
     "bucketDefault": "major",
     "political": {
@@ -527,6 +534,7 @@
   {
     "id": "mcdonalds",
     "name": "McDonald's",
+    "ticker": "MCD",
     "sector": "Dining & coffee",
     "bucketDefault": "major",
     "political": {
@@ -542,6 +550,7 @@
   {
     "id": "chipotle",
     "name": "Chipotle",
+    "ticker": "CMG",
     "sector": "Dining & coffee",
     "bucketDefault": "major",
     "political": {
@@ -574,6 +583,7 @@
     "id": "taco-bell",
     "name": "Taco Bell",
     "parentCompanyId": "yum-brands",
+    "ticker": "YUM",
     "sector": "Dining & coffee",
     "bucketDefault": "major",
     "political": {
@@ -590,6 +600,7 @@
     "id": "shell",
     "name": "Shell",
     "parentCompanyId": "shell-plc",
+    "ticker": "SHEL",
     "sector": "Fuel & auto",
     "bucketDefault": "major",
     "political": {
@@ -605,6 +616,7 @@
   {
     "id": "exxonmobil",
     "name": "ExxonMobil",
+    "ticker": "XOM",
     "sector": "Fuel & auto",
     "bucketDefault": "major",
     "political": {
@@ -620,6 +632,7 @@
   {
     "id": "chevron",
     "name": "Chevron",
+    "ticker": "CVX",
     "sector": "Fuel & auto",
     "bucketDefault": "major",
     "political": {
@@ -635,6 +648,7 @@
   {
     "id": "amazon",
     "name": "Amazon",
+    "ticker": "AMZN",
     "sector": "Retail & household",
     "bucketDefault": "major",
     "political": {
@@ -650,6 +664,7 @@
   {
     "id": "home-depot",
     "name": "The Home Depot",
+    "ticker": "HD",
     "sector": "Home improvement",
     "bucketDefault": "major",
     "political": {
@@ -665,6 +680,7 @@
   {
     "id": "lowes",
     "name": "Lowe's",
+    "ticker": "LOW",
     "sector": "Home improvement",
     "bucketDefault": "major",
     "political": {
@@ -681,6 +697,7 @@
     "id": "walgreens",
     "name": "Walgreens",
     "parentCompanyId": "walgreens-boots-alliance",
+    "ticker": "WBA",
     "sector": "Retail & household",
     "bucketDefault": "major",
     "political": {
@@ -697,6 +714,7 @@
     "id": "cvs-pharmacy",
     "name": "CVS Pharmacy",
     "parentCompanyId": "cvs-health",
+    "ticker": "CVS",
     "sector": "Retail & household",
     "bucketDefault": "major",
     "political": {
@@ -712,6 +730,7 @@
   {
     "id": "netflix",
     "name": "Netflix",
+    "ticker": "NFLX",
     "sector": "Subscriptions & media",
     "bucketDefault": "major",
     "political": {
@@ -727,6 +746,7 @@
   {
     "id": "spotify",
     "name": "Spotify",
+    "ticker": "SPOT",
     "sector": "Subscriptions & media",
     "bucketDefault": "major",
     "political": {
@@ -743,6 +763,7 @@
     "id": "disney-plus",
     "name": "Disney+",
     "parentCompanyId": "walt-disney-company",
+    "ticker": "DIS",
     "sector": "Subscriptions & media",
     "bucketDefault": "major",
     "political": {
@@ -759,6 +780,7 @@
     "id": "hulu",
     "name": "Hulu",
     "parentCompanyId": "walt-disney-company",
+    "ticker": "DIS",
     "sector": "Subscriptions & media",
     "bucketDefault": "major",
     "political": {
@@ -774,6 +796,7 @@
   {
     "id": "verizon",
     "name": "Verizon",
+    "ticker": "VZ",
     "sector": "Subscriptions & media",
     "bucketDefault": "major",
     "political": {
@@ -790,6 +813,7 @@
     "id": "chase",
     "name": "Chase",
     "parentCompanyId": "jpmorgan-chase",
+    "ticker": "JPM",
     "sector": "Banking & insurance",
     "bucketDefault": "major",
     "political": {
@@ -805,6 +829,7 @@
   {
     "id": "bank-of-america",
     "name": "Bank of America",
+    "ticker": "BAC",
     "sector": "Banking & insurance",
     "bucketDefault": "major",
     "political": {
@@ -820,6 +845,7 @@
   {
     "id": "wells-fargo",
     "name": "Wells Fargo",
+    "ticker": "WFC",
     "sector": "Banking & insurance",
     "bucketDefault": "major",
     "political": {
@@ -835,6 +861,7 @@
   {
     "id": "capital-one",
     "name": "Capital One",
+    "ticker": "COF",
     "sector": "Banking & insurance",
     "bucketDefault": "major",
     "political": {
@@ -851,6 +878,7 @@
     "id": "geico",
     "name": "GEICO",
     "parentCompanyId": "berkshire-hathaway",
+    "ticker": "BRK-B",
     "sector": "Banking & insurance",
     "bucketDefault": "major",
     "political": {
@@ -866,6 +894,7 @@
   {
     "id": "planet-fitness",
     "name": "Planet Fitness",
+    "ticker": "PLNT",
     "sector": "Personal care & services",
     "bucketDefault": "major",
     "political": {
@@ -911,6 +940,7 @@
   {
     "id": "albertsons",
     "name": "Albertsons Companies",
+    "ticker": "ACI",
     "sector": "Grocery (holding)",
     "bucketDefault": "major",
     "political": {
@@ -941,6 +971,7 @@
   {
     "id": "yum-brands",
     "name": "Yum! Brands",
+    "ticker": "YUM",
     "sector": "Restaurant holding",
     "bucketDefault": "major",
     "political": {
@@ -956,6 +987,7 @@
   {
     "id": "shell-plc",
     "name": "Shell plc",
+    "ticker": "SHEL",
     "sector": "Energy (holding)",
     "bucketDefault": "major",
     "political": {
@@ -971,6 +1003,7 @@
   {
     "id": "walgreens-boots-alliance",
     "name": "Walgreens Boots Alliance",
+    "ticker": "WBA",
     "sector": "Retail (holding)",
     "bucketDefault": "major",
     "political": {
@@ -986,6 +1019,7 @@
   {
     "id": "cvs-health",
     "name": "CVS Health",
+    "ticker": "CVS",
     "sector": "Health & retail (holding)",
     "bucketDefault": "major",
     "political": {
@@ -1001,6 +1035,7 @@
   {
     "id": "walt-disney-company",
     "name": "The Walt Disney Company",
+    "ticker": "DIS",
     "sector": "Media conglomerate",
     "bucketDefault": "major",
     "political": {
@@ -1016,6 +1051,7 @@
   {
     "id": "jpmorgan-chase",
     "name": "JPMorgan Chase & Co.",
+    "ticker": "JPM",
     "sector": "Financial holding",
     "bucketDefault": "major",
     "political": {
@@ -1031,6 +1067,7 @@
   {
     "id": "berkshire-hathaway",
     "name": "Berkshire Hathaway",
+    "ticker": "BRK-B",
     "sector": "Conglomerate (holding)",
     "bucketDefault": "major",
     "political": {

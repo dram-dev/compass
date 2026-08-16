@@ -143,6 +143,22 @@ else the default row.
 | 9 | Community data-pack import | `docs/data-pack-schema.md`, `src/data/dataPack.ts`, `DataSourcesPage.tsx` | Data → Community data packs (import / example download); records badged Imported · source |
 | 10 | CSV transaction import (stretch) | `steps/Step4Current.tsx` | "Import CSV — coming soon" affordance (see ASSUMPTIONS #15) |
 
+## Research database (company financials + fund concentration graph)
+
+`scripts/seed/` builds an **offline** SQLite database (`db/compass.sqlite`, git-ignored) of real company
+financials and a connection graph from the ~200 most-held ETFs/mutual funds (ranked by net assets) to
+the companies they hold, then exports `src/data/generated/fund-concentration.json` for the app's
+**Data → Fund look-through** panel (which companies the fund universe concentrates in; who holds a
+given company; a fund's top holdings). The app never fetches at runtime — seeding is a maintainer step.
+
+```bash
+cp .env.example .env     # ALPHAVANTAGE_API_KEY (ETF profiles, company data) + SEC_USER_AGENT (mutual-fund N-PORT holdings)
+npm run seed             # funds → rank → companies → graph; resumable, disk-cached, throttle-aware
+npm run seed:status
+```
+
+Full details, schema, rate-limit strategy and ranking rules: `docs/research-db.md`.
+
 ## Testing
 
 - `src/engine/*.test.ts` — worked example (exact), Jordan parity, allocation, alignment, political,
@@ -151,6 +167,7 @@ else the default row.
   validation errors, migrations.
 - Component tests: DualRange (pointer + keyboard), wizard, dashboard (zero-data + Jordan + toggles),
   plan (move / dismiss / highlight / gate config), data page (round trip, packs, Advanced), error boundary.
+- `scripts/seed/seed.test.mjs` — Alpha Vantage / SEC N-PORT parsers against real demo payloads, in-memory SQLite ranking + graph build.
 - `npm run coverage` enforces ≥ 90% lines/functions/statements on `src/engine`.
 
 ## Privacy

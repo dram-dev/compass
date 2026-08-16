@@ -1,5 +1,6 @@
 // Generates src/data/companies.sample.json. Run: node scripts/gen-sample-companies.mjs
 import { writeFileSync } from 'node:fs';
+import { SAMPLE_TICKER_MAP } from './seed/sample-tickers.mjs';
 
 const FICT_HINT =
   'Illustrative fictional archetype — no real-world counterpart. Ratings and lean are placeholders to demonstrate the tool. For real companies, verify via OpenSecrets · FEC.gov · Goods Unite Us.';
@@ -25,6 +26,7 @@ const real = (id, name, sector, bucketDefault, parentCompanyId) => ({
   id,
   name,
   ...(parentCompanyId ? { parentCompanyId } : {}),
+  ...(SAMPLE_TICKER_MAP[id] ? { ticker: SAMPLE_TICKER_MAP[id] } : {}),
   sector,
   bucketDefault,
   political: { leanScore: null, confidence: 'low', sourceHint: REAL_HINT, provenance: 'sample' },

@@ -1,0 +1,22 @@
+{
+  "symbol": "IBM",
+  "annualReports": [
+    {
+      "fiscalDateEnding": "2025-12-31",
+      "reportedCurrency": "USD",
+      "operatingCashflow": "13445000000",
+      "capitalExpenditures": "1685000000",
+      "dividendPayout": "6147000000",
+      "netIncome": "6023000000"
+    },
+    {
+      "fiscalDateEnding": "2024-12-31",
+      "reportedCurrency": "USD",
+      "operatingCashflow": "13931000000",
+      "capitalExpenditures": "1257000000",
+      "dividendPayout": "6040000000",
+      "netIncome": "7502000000"
+    }
+  ],
+  "quarterlyReports": []
+}

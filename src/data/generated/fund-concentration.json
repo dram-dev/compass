@@ -1,0 +1,11 @@
+{
+  "schema": "compass-fund-concentration",
+  "version": 1,
+  "generatedAt": null,
+  "topN": 200,
+  "counts": { "fundsInGraph": 0, "companiesInGraph": 0, "edges": 0 },
+  "sources": {},
+  "funds": [],
+  "companies": [],
+  "edges": []
+}

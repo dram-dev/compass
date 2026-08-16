@@ -150,3 +150,27 @@ Numbered, append-only. Each entry: decision · rationale · phase.
 40. **Mobile**: responsive rules are ported from the reference (`scrollx` pan for wide charts, stacked
     slider rows below 560px, 16px inputs on small screens); browser-automation viewport could not be
     resized in this session so the phone layout was verified only by CSS review. (P5)
+
+## Research database (post-P5)
+
+41. **Seeding is an offline maintainer step**, not an app feature: `scripts/seed/` writes an SQLite DB
+    (`db/compass.sqlite`, git-ignored) and exports `src/data/generated/fund-concentration.json`, which
+    the app reads at build time. This keeps §1/§4 "no network calls for user data" intact. (RDB)
+42. **SQLite via `node:sqlite`** (built into Node ≥ 22.5) — no native dependency; CI's Node 22 runs the
+    seed tests in-memory. (RDB)
+43. **Alpha Vantage covers ETFs (`ETF_PROFILE`) and companies**; it has no mutual-fund holdings
+    endpoint, so mutual funds use **SEC Form N-PORT** (public, needs a descriptive User-Agent). Index
+    mutual funds that are share classes of an ETF are marked `proxy_of` and excluded from AUM sums to
+    avoid double counting; same-index funds from other families count separately. Active funds without
+    SEC configured are skipped, never guessed. (RDB)
+44. **"Most popular" = net assets** among a curated ~300-ticker candidate universe (ETFs + mutual funds
+    across Vanguard/iShares/SPDR/Schwab/Fidelity/American Funds/T. Rowe/PIMCO/Dodge & Cox…), top 200
+    kept. Alpha Vantage has no popularity endpoint; AUM is the closest public proxy. (RDB)
+45. **Free-tier reality**: ~25 requests/day. The seeder caches every response, stops cleanly on
+    throttle, resumes on re-run, and prioritizes sample-brand tickers and the most-concentrated
+    holdings so partial runs are useful. Statements are fetched only for the top-N companies by default. (RDB)
+46. **Sample brands now carry `ticker`** (ext field) so the shipped archetype/real-brand records can be
+    joined to the research DB (Whole Foods → AMZN, GEICO → BRK-B, …); private companies have none. (RDB)
+47. **Fixtures**: parsers are tested against real Alpha Vantage demo payloads (QQQ ETF_PROFILE, IBM
+    OVERVIEW/INCOME_STATEMENT, the throttle body) plus a synthesized balance/cash-flow pair using the
+    documented field names, and a hand-written N-PORT XML sample. (RDB)

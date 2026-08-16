@@ -1,0 +1,2208 @@
+{
+  "generatedAt": "2026-08-16",
+  "note": "Candidate universe; the seeder ranks by net assets and keeps the top 200. Proxies approximate index mutual funds by an ETF share class / same-index ETF; active mutual funds use SEC N-PORT filings.",
+  "funds": [
+    {
+      "symbol": "SPY",
+      "name": "SPDR S&P 500 ETF Trust",
+      "kind": "etf",
+      "family": "SPDR",
+      "category": "US large blend"
+    },
+    {
+      "symbol": "IVV",
+      "name": "iShares Core S&P 500 ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "US large blend"
+    },
+    {
+      "symbol": "VOO",
+      "name": "Vanguard S&P 500 ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "US large blend"
+    },
+    {
+      "symbol": "VTI",
+      "name": "Vanguard Total Stock Market ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "US total market"
+    },
+    {
+      "symbol": "QQQ",
+      "name": "Invesco QQQ Trust",
+      "kind": "etf",
+      "family": "Invesco",
+      "category": "US large growth"
+    },
+    {
+      "symbol": "VUG",
+      "name": "Vanguard Growth ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "US large growth"
+    },
+    {
+      "symbol": "VTV",
+      "name": "Vanguard Value ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "US large value"
+    },
+    {
+      "symbol": "IWF",
+      "name": "iShares Russell 1000 Growth ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "US large growth"
+    },
+    {
+      "symbol": "IWD",
+      "name": "iShares Russell 1000 Value ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "US large value"
+    },
+    {
+      "symbol": "IJH",
+      "name": "iShares Core S&P Mid-Cap ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "US mid blend"
+    },
+    {
+      "symbol": "IJR",
+      "name": "iShares Core S&P Small-Cap ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "US small blend"
+    },
+    {
+      "symbol": "VIG",
+      "name": "Vanguard Dividend Appreciation ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "US dividend"
+    },
+    {
+      "symbol": "VGT",
+      "name": "Vanguard Information Technology ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "Sector: technology"
+    },
+    {
+      "symbol": "XLK",
+      "name": "Technology Select Sector SPDR Fund",
+      "kind": "etf",
+      "family": "SPDR",
+      "category": "Sector: technology"
+    },
+    {
+      "symbol": "IWM",
+      "name": "iShares Russell 2000 ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "US small blend"
+    },
+    {
+      "symbol": "VO",
+      "name": "Vanguard Mid-Cap ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "US mid blend"
+    },
+    {
+      "symbol": "VB",
+      "name": "Vanguard Small-Cap ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "US small blend"
+    },
+    {
+      "symbol": "SCHD",
+      "name": "Schwab US Dividend Equity ETF",
+      "kind": "etf",
+      "family": "Schwab",
+      "category": "US dividend"
+    },
+    {
+      "symbol": "XLF",
+      "name": "Financial Select Sector SPDR Fund",
+      "kind": "etf",
+      "family": "SPDR",
+      "category": "Sector: financials"
+    },
+    {
+      "symbol": "RSP",
+      "name": "Invesco S&P 500 Equal Weight ETF",
+      "kind": "etf",
+      "family": "Invesco",
+      "category": "US large blend"
+    },
+    {
+      "symbol": "VYM",
+      "name": "Vanguard High Dividend Yield ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "US dividend"
+    },
+    {
+      "symbol": "ITOT",
+      "name": "iShares Core S&P Total US Stock Market ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "US total market"
+    },
+    {
+      "symbol": "IVW",
+      "name": "iShares S&P 500 Growth ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "US large growth"
+    },
+    {
+      "symbol": "IVE",
+      "name": "iShares S&P 500 Value ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "US large value"
+    },
+    {
+      "symbol": "SCHX",
+      "name": "Schwab US Large-Cap ETF",
+      "kind": "etf",
+      "family": "Schwab",
+      "category": "US large blend"
+    },
+    {
+      "symbol": "SCHB",
+      "name": "Schwab US Broad Market ETF",
+      "kind": "etf",
+      "family": "Schwab",
+      "category": "US total market"
+    },
+    {
+      "symbol": "SCHG",
+      "name": "Schwab US Large-Cap Growth ETF",
+      "kind": "etf",
+      "family": "Schwab",
+      "category": "US large growth"
+    },
+    {
+      "symbol": "SCHV",
+      "name": "Schwab US Large-Cap Value ETF",
+      "kind": "etf",
+      "family": "Schwab",
+      "category": "US large value"
+    },
+    {
+      "symbol": "SCHA",
+      "name": "Schwab US Small-Cap ETF",
+      "kind": "etf",
+      "family": "Schwab",
+      "category": "US small blend"
+    },
+    {
+      "symbol": "SCHM",
+      "name": "Schwab US Mid-Cap ETF",
+      "kind": "etf",
+      "family": "Schwab",
+      "category": "US mid blend"
+    },
+    {
+      "symbol": "XLV",
+      "name": "Health Care Select Sector SPDR Fund",
+      "kind": "etf",
+      "family": "SPDR",
+      "category": "Sector: health care"
+    },
+    {
+      "symbol": "IWB",
+      "name": "iShares Russell 1000 ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "US large blend"
+    },
+    {
+      "symbol": "QUAL",
+      "name": "iShares MSCI USA Quality Factor ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "US factor"
+    },
+    {
+      "symbol": "IWR",
+      "name": "iShares Russell Mid-Cap ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "US mid blend"
+    },
+    {
+      "symbol": "VBR",
+      "name": "Vanguard Small-Cap Value ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "US small value"
+    },
+    {
+      "symbol": "VBK",
+      "name": "Vanguard Small-Cap Growth ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "US small growth"
+    },
+    {
+      "symbol": "VOE",
+      "name": "Vanguard Mid-Cap Value ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "US mid value"
+    },
+    {
+      "symbol": "VOT",
+      "name": "Vanguard Mid-Cap Growth ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "US mid growth"
+    },
+    {
+      "symbol": "DIA",
+      "name": "SPDR Dow Jones Industrial Average ETF Trust",
+      "kind": "etf",
+      "family": "SPDR",
+      "category": "US large blend"
+    },
+    {
+      "symbol": "XLE",
+      "name": "Energy Select Sector SPDR Fund",
+      "kind": "etf",
+      "family": "SPDR",
+      "category": "Sector: energy"
+    },
+    {
+      "symbol": "USMV",
+      "name": "iShares MSCI USA Min Vol Factor ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "US factor"
+    },
+    {
+      "symbol": "VNQ",
+      "name": "Vanguard Real Estate ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "Sector: real estate"
+    },
+    {
+      "symbol": "DGRO",
+      "name": "iShares Core Dividend Growth ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "US dividend"
+    },
+    {
+      "symbol": "VV",
+      "name": "Vanguard Large-Cap ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "US large blend"
+    },
+    {
+      "symbol": "JEPI",
+      "name": "JPMorgan Equity Premium Income ETF",
+      "kind": "etf",
+      "family": "JPMorgan",
+      "category": "US covered call"
+    },
+    {
+      "symbol": "JEPQ",
+      "name": "JPMorgan Nasdaq Equity Premium Income ETF",
+      "kind": "etf",
+      "family": "JPMorgan",
+      "category": "US covered call"
+    },
+    {
+      "symbol": "SPLG",
+      "name": "SPDR Portfolio S&P 500 ETF",
+      "kind": "etf",
+      "family": "SPDR",
+      "category": "US large blend"
+    },
+    {
+      "symbol": "XLY",
+      "name": "Consumer Discretionary Select Sector SPDR Fund",
+      "kind": "etf",
+      "family": "SPDR",
+      "category": "Sector: consumer discretionary"
+    },
+    {
+      "symbol": "XLP",
+      "name": "Consumer Staples Select Sector SPDR Fund",
+      "kind": "etf",
+      "family": "SPDR",
+      "category": "Sector: consumer staples"
+    },
+    {
+      "symbol": "XLI",
+      "name": "Industrial Select Sector SPDR Fund",
+      "kind": "etf",
+      "family": "SPDR",
+      "category": "Sector: industrials"
+    },
+    {
+      "symbol": "XLC",
+      "name": "Communication Services Select Sector SPDR Fund",
+      "kind": "etf",
+      "family": "SPDR",
+      "category": "Sector: communication"
+    },
+    {
+      "symbol": "XLU",
+      "name": "Utilities Select Sector SPDR Fund",
+      "kind": "etf",
+      "family": "SPDR",
+      "category": "Sector: utilities"
+    },
+    {
+      "symbol": "XLB",
+      "name": "Materials Select Sector SPDR Fund",
+      "kind": "etf",
+      "family": "SPDR",
+      "category": "Sector: materials"
+    },
+    {
+      "symbol": "XLRE",
+      "name": "Real Estate Select Sector SPDR Fund",
+      "kind": "etf",
+      "family": "SPDR",
+      "category": "Sector: real estate"
+    },
+    {
+      "symbol": "SPYG",
+      "name": "SPDR Portfolio S&P 500 Growth ETF",
+      "kind": "etf",
+      "family": "SPDR",
+      "category": "US large growth"
+    },
+    {
+      "symbol": "SPYV",
+      "name": "SPDR Portfolio S&P 500 Value ETF",
+      "kind": "etf",
+      "family": "SPDR",
+      "category": "US large value"
+    },
+    {
+      "symbol": "VHT",
+      "name": "Vanguard Health Care ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "Sector: health care"
+    },
+    {
+      "symbol": "VONG",
+      "name": "Vanguard Russell 1000 Growth ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "US large growth"
+    },
+    {
+      "symbol": "VONV",
+      "name": "Vanguard Russell 1000 Value ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "US large value"
+    },
+    {
+      "symbol": "IWP",
+      "name": "iShares Russell Mid-Cap Growth ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "US mid growth"
+    },
+    {
+      "symbol": "IWS",
+      "name": "iShares Russell Mid-Cap Value ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "US mid value"
+    },
+    {
+      "symbol": "IWN",
+      "name": "iShares Russell 2000 Value ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "US small value"
+    },
+    {
+      "symbol": "IWO",
+      "name": "iShares Russell 2000 Growth ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "US small growth"
+    },
+    {
+      "symbol": "MDY",
+      "name": "SPDR S&P MidCap 400 ETF Trust",
+      "kind": "etf",
+      "family": "SPDR",
+      "category": "US mid blend"
+    },
+    {
+      "symbol": "VXF",
+      "name": "Vanguard Extended Market ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "US mid/small blend"
+    },
+    {
+      "symbol": "IWV",
+      "name": "iShares Russell 3000 ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "US total market"
+    },
+    {
+      "symbol": "SDY",
+      "name": "SPDR S&P Dividend ETF",
+      "kind": "etf",
+      "family": "SPDR",
+      "category": "US dividend"
+    },
+    {
+      "symbol": "DVY",
+      "name": "iShares Select Dividend ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "US dividend"
+    },
+    {
+      "symbol": "NOBL",
+      "name": "ProShares S&P 500 Dividend Aristocrats ETF",
+      "kind": "etf",
+      "family": "ProShares",
+      "category": "US dividend"
+    },
+    {
+      "symbol": "SPHQ",
+      "name": "Invesco S&P 500 Quality ETF",
+      "kind": "etf",
+      "family": "Invesco",
+      "category": "US factor"
+    },
+    {
+      "symbol": "SPYD",
+      "name": "SPDR Portfolio S&P 500 High Dividend ETF",
+      "kind": "etf",
+      "family": "SPDR",
+      "category": "US dividend"
+    },
+    {
+      "symbol": "COWZ",
+      "name": "Pacer US Cash Cows 100 ETF",
+      "kind": "etf",
+      "family": "Pacer",
+      "category": "US factor"
+    },
+    {
+      "symbol": "MOAT",
+      "name": "VanEck Morningstar Wide Moat ETF",
+      "kind": "etf",
+      "family": "VanEck",
+      "category": "US factor"
+    },
+    {
+      "symbol": "VLUE",
+      "name": "iShares MSCI USA Value Factor ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "US factor"
+    },
+    {
+      "symbol": "MTUM",
+      "name": "iShares MSCI USA Momentum Factor ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "US factor"
+    },
+    {
+      "symbol": "IUSG",
+      "name": "iShares Core S&P US Growth ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "US large growth"
+    },
+    {
+      "symbol": "IUSV",
+      "name": "iShares Core S&P US Value ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "US large value"
+    },
+    {
+      "symbol": "SPTM",
+      "name": "SPDR Portfolio S&P 1500 Composite Stock Market ETF",
+      "kind": "etf",
+      "family": "SPDR",
+      "category": "US total market"
+    },
+    {
+      "symbol": "SPMD",
+      "name": "SPDR Portfolio S&P 400 Mid Cap ETF",
+      "kind": "etf",
+      "family": "SPDR",
+      "category": "US mid blend"
+    },
+    {
+      "symbol": "SPSM",
+      "name": "SPDR Portfolio S&P 600 Small Cap ETF",
+      "kind": "etf",
+      "family": "SPDR",
+      "category": "US small blend"
+    },
+    {
+      "symbol": "VONE",
+      "name": "Vanguard Russell 1000 ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "US large blend"
+    },
+    {
+      "symbol": "VTWO",
+      "name": "Vanguard Russell 2000 ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "US small blend"
+    },
+    {
+      "symbol": "IJK",
+      "name": "iShares S&P Mid-Cap 400 Growth ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "US mid growth"
+    },
+    {
+      "symbol": "IJJ",
+      "name": "iShares S&P Mid-Cap 400 Value ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "US mid value"
+    },
+    {
+      "symbol": "IJT",
+      "name": "iShares S&P Small-Cap 600 Growth ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "US small growth"
+    },
+    {
+      "symbol": "IJS",
+      "name": "iShares S&P Small-Cap 600 Value ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "US small value"
+    },
+    {
+      "symbol": "ESGU",
+      "name": "iShares ESG Aware MSCI USA ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "US ESG"
+    },
+    {
+      "symbol": "ESGV",
+      "name": "Vanguard ESG US Stock ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "US ESG"
+    },
+    {
+      "symbol": "DFAC",
+      "name": "Dimensional US Core Equity 2 ETF",
+      "kind": "etf",
+      "family": "Dimensional",
+      "category": "US total market"
+    },
+    {
+      "symbol": "DFUS",
+      "name": "Dimensional US Equity Market ETF",
+      "kind": "etf",
+      "family": "Dimensional",
+      "category": "US total market"
+    },
+    {
+      "symbol": "DFAU",
+      "name": "Dimensional US Core Equity Market ETF",
+      "kind": "etf",
+      "family": "Dimensional",
+      "category": "US total market"
+    },
+    {
+      "symbol": "AVUV",
+      "name": "Avantis US Small Cap Value ETF",
+      "kind": "etf",
+      "family": "Avantis",
+      "category": "US small value"
+    },
+    {
+      "symbol": "SMH",
+      "name": "VanEck Semiconductor ETF",
+      "kind": "etf",
+      "family": "VanEck",
+      "category": "Sector: semiconductors"
+    },
+    {
+      "symbol": "SOXX",
+      "name": "iShares Semiconductor ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "Sector: semiconductors"
+    },
+    {
+      "symbol": "IBB",
+      "name": "iShares Biotechnology ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "Sector: biotech"
+    },
+    {
+      "symbol": "XBI",
+      "name": "SPDR S&P Biotech ETF",
+      "kind": "etf",
+      "family": "SPDR",
+      "category": "Sector: biotech"
+    },
+    {
+      "symbol": "KRE",
+      "name": "SPDR S&P Regional Banking ETF",
+      "kind": "etf",
+      "family": "SPDR",
+      "category": "Sector: regional banks"
+    },
+    {
+      "symbol": "IYR",
+      "name": "iShares US Real Estate ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "Sector: real estate"
+    },
+    {
+      "symbol": "VFH",
+      "name": "Vanguard Financials ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "Sector: financials"
+    },
+    {
+      "symbol": "VDE",
+      "name": "Vanguard Energy ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "Sector: energy"
+    },
+    {
+      "symbol": "VPU",
+      "name": "Vanguard Utilities ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "Sector: utilities"
+    },
+    {
+      "symbol": "VCR",
+      "name": "Vanguard Consumer Discretionary ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "Sector: consumer discretionary"
+    },
+    {
+      "symbol": "VDC",
+      "name": "Vanguard Consumer Staples ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "Sector: consumer staples"
+    },
+    {
+      "symbol": "VIS",
+      "name": "Vanguard Industrials ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "Sector: industrials"
+    },
+    {
+      "symbol": "VAW",
+      "name": "Vanguard Materials ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "Sector: materials"
+    },
+    {
+      "symbol": "VOX",
+      "name": "Vanguard Communication Services ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "Sector: communication"
+    },
+    {
+      "symbol": "ARKK",
+      "name": "ARK Innovation ETF",
+      "kind": "etf",
+      "family": "ARK",
+      "category": "US thematic"
+    },
+    {
+      "symbol": "TQQQ",
+      "name": "ProShares UltraPro QQQ",
+      "kind": "etf",
+      "family": "ProShares",
+      "category": "Leveraged"
+    },
+    {
+      "symbol": "VEA",
+      "name": "Vanguard FTSE Developed Markets ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "Intl developed"
+    },
+    {
+      "symbol": "IEFA",
+      "name": "iShares Core MSCI EAFE ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "Intl developed"
+    },
+    {
+      "symbol": "VWO",
+      "name": "Vanguard FTSE Emerging Markets ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "Emerging markets"
+    },
+    {
+      "symbol": "IEMG",
+      "name": "iShares Core MSCI Emerging Markets ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "Emerging markets"
+    },
+    {
+      "symbol": "VXUS",
+      "name": "Vanguard Total International Stock ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "Intl total"
+    },
+    {
+      "symbol": "EFA",
+      "name": "iShares MSCI EAFE ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "Intl developed"
+    },
+    {
+      "symbol": "VEU",
+      "name": "Vanguard FTSE All-World ex-US ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "Intl total"
+    },
+    {
+      "symbol": "SCHF",
+      "name": "Schwab International Equity ETF",
+      "kind": "etf",
+      "family": "Schwab",
+      "category": "Intl developed"
+    },
+    {
+      "symbol": "VT",
+      "name": "Vanguard Total World Stock ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "Global"
+    },
+    {
+      "symbol": "IXUS",
+      "name": "iShares Core MSCI Total International Stock ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "Intl total"
+    },
+    {
+      "symbol": "VGK",
+      "name": "Vanguard FTSE Europe ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "Europe"
+    },
+    {
+      "symbol": "EEM",
+      "name": "iShares MSCI Emerging Markets ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "Emerging markets"
+    },
+    {
+      "symbol": "ACWI",
+      "name": "iShares MSCI ACWI ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "Global"
+    },
+    {
+      "symbol": "SPDW",
+      "name": "SPDR Portfolio Developed World ex-US ETF",
+      "kind": "etf",
+      "family": "SPDR",
+      "category": "Intl developed"
+    },
+    {
+      "symbol": "EFV",
+      "name": "iShares MSCI EAFE Value ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "Intl value"
+    },
+    {
+      "symbol": "VIGI",
+      "name": "Vanguard International Dividend Appreciation ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "Intl dividend"
+    },
+    {
+      "symbol": "VYMI",
+      "name": "Vanguard International High Dividend Yield ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "Intl dividend"
+    },
+    {
+      "symbol": "SCHE",
+      "name": "Schwab Emerging Markets Equity ETF",
+      "kind": "etf",
+      "family": "Schwab",
+      "category": "Emerging markets"
+    },
+    {
+      "symbol": "IDEV",
+      "name": "iShares Core MSCI International Developed Markets ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "Intl developed"
+    },
+    {
+      "symbol": "VSS",
+      "name": "Vanguard FTSE All-World ex-US Small-Cap ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "Intl small"
+    },
+    {
+      "symbol": "BND",
+      "name": "Vanguard Total Bond Market ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "US bond"
+    },
+    {
+      "symbol": "AGG",
+      "name": "iShares Core US Aggregate Bond ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "US bond"
+    },
+    {
+      "symbol": "BNDX",
+      "name": "Vanguard Total International Bond ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "Intl bond"
+    },
+    {
+      "symbol": "VCIT",
+      "name": "Vanguard Intermediate-Term Corporate Bond ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "Corporate bond"
+    },
+    {
+      "symbol": "VCSH",
+      "name": "Vanguard Short-Term Corporate Bond ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "Corporate bond"
+    },
+    {
+      "symbol": "TLT",
+      "name": "iShares 20+ Year Treasury Bond ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "Treasury"
+    },
+    {
+      "symbol": "IEF",
+      "name": "iShares 7-10 Year Treasury Bond ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "Treasury"
+    },
+    {
+      "symbol": "SHY",
+      "name": "iShares 1-3 Year Treasury Bond ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "Treasury"
+    },
+    {
+      "symbol": "BSV",
+      "name": "Vanguard Short-Term Bond ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "US bond"
+    },
+    {
+      "symbol": "MBB",
+      "name": "iShares MBS ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "Mortgage"
+    },
+    {
+      "symbol": "LQD",
+      "name": "iShares iBoxx $ Investment Grade Corporate Bond ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "Corporate bond"
+    },
+    {
+      "symbol": "HYG",
+      "name": "iShares iBoxx $ High Yield Corporate Bond ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "High yield"
+    },
+    {
+      "symbol": "MUB",
+      "name": "iShares National Muni Bond ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "Municipal"
+    },
+    {
+      "symbol": "VTEB",
+      "name": "Vanguard Tax-Exempt Bond ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "Municipal"
+    },
+    {
+      "symbol": "IUSB",
+      "name": "iShares Core Total USD Bond Market ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "US bond"
+    },
+    {
+      "symbol": "JPST",
+      "name": "JPMorgan Ultra-Short Income ETF",
+      "kind": "etf",
+      "family": "JPMorgan",
+      "category": "Ultra short"
+    },
+    {
+      "symbol": "GOVT",
+      "name": "iShares US Treasury Bond ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "Treasury"
+    },
+    {
+      "symbol": "VMBS",
+      "name": "Vanguard Mortgage-Backed Securities ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "Mortgage"
+    },
+    {
+      "symbol": "IGSB",
+      "name": "iShares 1-5 Year Investment Grade Corporate Bond ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "Corporate bond"
+    },
+    {
+      "symbol": "VGIT",
+      "name": "Vanguard Intermediate-Term Treasury ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "Treasury"
+    },
+    {
+      "symbol": "VTIP",
+      "name": "Vanguard Short-Term Inflation-Protected Securities ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "TIPS"
+    },
+    {
+      "symbol": "TIP",
+      "name": "iShares TIPS Bond ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "TIPS"
+    },
+    {
+      "symbol": "SCHP",
+      "name": "Schwab US TIPS ETF",
+      "kind": "etf",
+      "family": "Schwab",
+      "category": "TIPS"
+    },
+    {
+      "symbol": "SCHZ",
+      "name": "Schwab US Aggregate Bond ETF",
+      "kind": "etf",
+      "family": "Schwab",
+      "category": "US bond"
+    },
+    {
+      "symbol": "BIL",
+      "name": "SPDR Bloomberg 1-3 Month T-Bill ETF",
+      "kind": "etf",
+      "family": "SPDR",
+      "category": "T-bill"
+    },
+    {
+      "symbol": "SHV",
+      "name": "iShares Short Treasury Bond ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "T-bill"
+    },
+    {
+      "symbol": "SGOV",
+      "name": "iShares 0-3 Month Treasury Bond ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "T-bill"
+    },
+    {
+      "symbol": "EMB",
+      "name": "iShares JP Morgan USD Emerging Markets Bond ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "EM bond"
+    },
+    {
+      "symbol": "PFF",
+      "name": "iShares Preferred and Income Securities ETF",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "Preferred"
+    },
+    {
+      "symbol": "GLD",
+      "name": "SPDR Gold Shares",
+      "kind": "etf",
+      "family": "SPDR",
+      "category": "Commodity: gold"
+    },
+    {
+      "symbol": "IAU",
+      "name": "iShares Gold Trust",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "Commodity: gold"
+    },
+    {
+      "symbol": "SLV",
+      "name": "iShares Silver Trust",
+      "kind": "etf",
+      "family": "iShares",
+      "category": "Commodity: silver"
+    },
+    {
+      "symbol": "GDX",
+      "name": "VanEck Gold Miners ETF",
+      "kind": "etf",
+      "family": "VanEck",
+      "category": "Sector: gold miners"
+    },
+    {
+      "symbol": "VFIAX",
+      "name": "Vanguard 500 Index Fund Admiral",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US large blend",
+      "proxy": "VOO",
+      "proxyKind": "share-class"
+    },
+    {
+      "symbol": "VFINX",
+      "name": "Vanguard 500 Index Fund Investor",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US large blend",
+      "proxy": "VOO",
+      "proxyKind": "share-class"
+    },
+    {
+      "symbol": "VINIX",
+      "name": "Vanguard Institutional Index Fund",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US large blend",
+      "proxy": "VOO",
+      "proxyKind": "same-index"
+    },
+    {
+      "symbol": "VIIIX",
+      "name": "Vanguard Institutional Index Fund Institutional Plus",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US large blend",
+      "proxy": "VOO",
+      "proxyKind": "same-index"
+    },
+    {
+      "symbol": "VTSAX",
+      "name": "Vanguard Total Stock Market Index Fund Admiral",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US total market",
+      "proxy": "VTI",
+      "proxyKind": "share-class"
+    },
+    {
+      "symbol": "VTSMX",
+      "name": "Vanguard Total Stock Market Index Fund Investor",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US total market",
+      "proxy": "VTI",
+      "proxyKind": "share-class"
+    },
+    {
+      "symbol": "VITSX",
+      "name": "Vanguard Total Stock Market Index Fund Institutional",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US total market",
+      "proxy": "VTI",
+      "proxyKind": "share-class"
+    },
+    {
+      "symbol": "VTIAX",
+      "name": "Vanguard Total International Stock Index Fund Admiral",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "Intl total",
+      "proxy": "VXUS",
+      "proxyKind": "share-class"
+    },
+    {
+      "symbol": "VBTLX",
+      "name": "Vanguard Total Bond Market Index Fund Admiral",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US bond",
+      "proxy": "BND",
+      "proxyKind": "share-class"
+    },
+    {
+      "symbol": "VBMFX",
+      "name": "Vanguard Total Bond Market Index Fund Investor",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US bond",
+      "proxy": "BND",
+      "proxyKind": "share-class"
+    },
+    {
+      "symbol": "VTBIX",
+      "name": "Vanguard Total Bond Market II Index Fund",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US bond",
+      "proxy": "BND",
+      "proxyKind": "same-index"
+    },
+    {
+      "symbol": "VIGAX",
+      "name": "Vanguard Growth Index Fund Admiral",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US large growth",
+      "proxy": "VUG",
+      "proxyKind": "share-class"
+    },
+    {
+      "symbol": "VVIAX",
+      "name": "Vanguard Value Index Fund Admiral",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US large value",
+      "proxy": "VTV",
+      "proxyKind": "share-class"
+    },
+    {
+      "symbol": "VSMAX",
+      "name": "Vanguard Small-Cap Index Fund Admiral",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US small blend",
+      "proxy": "VB",
+      "proxyKind": "share-class"
+    },
+    {
+      "symbol": "VIMAX",
+      "name": "Vanguard Mid-Cap Index Fund Admiral",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US mid blend",
+      "proxy": "VO",
+      "proxyKind": "share-class"
+    },
+    {
+      "symbol": "VGSLX",
+      "name": "Vanguard Real Estate Index Fund Admiral",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "Sector: real estate",
+      "proxy": "VNQ",
+      "proxyKind": "share-class"
+    },
+    {
+      "symbol": "VEMAX",
+      "name": "Vanguard Emerging Markets Stock Index Fund Admiral",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "Emerging markets",
+      "proxy": "VWO",
+      "proxyKind": "share-class"
+    },
+    {
+      "symbol": "VTMGX",
+      "name": "Vanguard Developed Markets Index Fund Admiral",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "Intl developed",
+      "proxy": "VEA",
+      "proxyKind": "share-class"
+    },
+    {
+      "symbol": "VFWAX",
+      "name": "Vanguard FTSE All-World ex-US Index Fund Admiral",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "Intl total",
+      "proxy": "VEU",
+      "proxyKind": "share-class"
+    },
+    {
+      "symbol": "VEXAX",
+      "name": "Vanguard Extended Market Index Fund Admiral",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US mid/small blend",
+      "proxy": "VXF",
+      "proxyKind": "share-class"
+    },
+    {
+      "symbol": "VSGAX",
+      "name": "Vanguard Small-Cap Growth Index Fund Admiral",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US small growth",
+      "proxy": "VBK",
+      "proxyKind": "share-class"
+    },
+    {
+      "symbol": "VSIAX",
+      "name": "Vanguard Small-Cap Value Index Fund Admiral",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US small value",
+      "proxy": "VBR",
+      "proxyKind": "share-class"
+    },
+    {
+      "symbol": "VMGMX",
+      "name": "Vanguard Mid-Cap Growth Index Fund Admiral",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US mid growth",
+      "proxy": "VOT",
+      "proxyKind": "share-class"
+    },
+    {
+      "symbol": "VMVAX",
+      "name": "Vanguard Mid-Cap Value Index Fund Admiral",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US mid value",
+      "proxy": "VOE",
+      "proxyKind": "share-class"
+    },
+    {
+      "symbol": "VHYAX",
+      "name": "Vanguard High Dividend Yield Index Fund Admiral",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US dividend",
+      "proxy": "VYM",
+      "proxyKind": "share-class"
+    },
+    {
+      "symbol": "VDADX",
+      "name": "Vanguard Dividend Appreciation Index Fund Admiral",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US dividend",
+      "proxy": "VIG",
+      "proxyKind": "share-class"
+    },
+    {
+      "symbol": "VITAX",
+      "name": "Vanguard Information Technology Index Fund Admiral",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "Sector: technology",
+      "proxy": "VGT",
+      "proxyKind": "share-class"
+    },
+    {
+      "symbol": "VFTAX",
+      "name": "Vanguard FTSE Social Index Fund Admiral",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US ESG",
+      "proxy": "ESGV",
+      "proxyKind": "same-index"
+    },
+    {
+      "symbol": "VLCAX",
+      "name": "Vanguard Large-Cap Index Fund Admiral",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US large blend",
+      "proxy": "VV",
+      "proxyKind": "share-class"
+    },
+    {
+      "symbol": "VTWAX",
+      "name": "Vanguard Total World Stock Index Fund Admiral",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "Global",
+      "proxy": "VT",
+      "proxyKind": "share-class"
+    },
+    {
+      "symbol": "VBILX",
+      "name": "Vanguard Intermediate-Term Bond Index Fund Admiral",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US bond",
+      "proxy": "BIV",
+      "proxyKind": "share-class"
+    },
+    {
+      "symbol": "VBIRX",
+      "name": "Vanguard Short-Term Bond Index Fund Admiral",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US bond",
+      "proxy": "BSV",
+      "proxyKind": "share-class"
+    },
+    {
+      "symbol": "FXAIX",
+      "name": "Fidelity 500 Index Fund",
+      "kind": "mutual",
+      "family": "Fidelity",
+      "category": "US large blend",
+      "proxy": "IVV",
+      "proxyKind": "same-index"
+    },
+    {
+      "symbol": "FSKAX",
+      "name": "Fidelity Total Market Index Fund",
+      "kind": "mutual",
+      "family": "Fidelity",
+      "category": "US total market",
+      "proxy": "ITOT",
+      "proxyKind": "same-index"
+    },
+    {
+      "symbol": "FTIHX",
+      "name": "Fidelity Total International Index Fund",
+      "kind": "mutual",
+      "family": "Fidelity",
+      "category": "Intl total",
+      "proxy": "IXUS",
+      "proxyKind": "same-index"
+    },
+    {
+      "symbol": "FXNAX",
+      "name": "Fidelity US Bond Index Fund",
+      "kind": "mutual",
+      "family": "Fidelity",
+      "category": "US bond",
+      "proxy": "AGG",
+      "proxyKind": "same-index"
+    },
+    {
+      "symbol": "FSPSX",
+      "name": "Fidelity International Index Fund",
+      "kind": "mutual",
+      "family": "Fidelity",
+      "category": "Intl developed",
+      "proxy": "EFA",
+      "proxyKind": "same-index"
+    },
+    {
+      "symbol": "FSMDX",
+      "name": "Fidelity Mid Cap Index Fund",
+      "kind": "mutual",
+      "family": "Fidelity",
+      "category": "US mid blend",
+      "proxy": "IWR",
+      "proxyKind": "same-index"
+    },
+    {
+      "symbol": "FSSNX",
+      "name": "Fidelity Small Cap Index Fund",
+      "kind": "mutual",
+      "family": "Fidelity",
+      "category": "US small blend",
+      "proxy": "IWM",
+      "proxyKind": "same-index"
+    },
+    {
+      "symbol": "FSPGX",
+      "name": "Fidelity Large Cap Growth Index Fund",
+      "kind": "mutual",
+      "family": "Fidelity",
+      "category": "US large growth",
+      "proxy": "IWF",
+      "proxyKind": "same-index"
+    },
+    {
+      "symbol": "FLCOX",
+      "name": "Fidelity Large Cap Value Index Fund",
+      "kind": "mutual",
+      "family": "Fidelity",
+      "category": "US large value",
+      "proxy": "IWD",
+      "proxyKind": "same-index"
+    },
+    {
+      "symbol": "FNCMX",
+      "name": "Fidelity Nasdaq Composite Index Fund",
+      "kind": "mutual",
+      "family": "Fidelity",
+      "category": "US large growth",
+      "proxy": "ONEQ",
+      "proxyKind": "same-index"
+    },
+    {
+      "symbol": "FZROX",
+      "name": "Fidelity ZERO Total Market Index Fund",
+      "kind": "mutual",
+      "family": "Fidelity",
+      "category": "US total market",
+      "proxy": "ITOT",
+      "proxyKind": "same-index"
+    },
+    {
+      "symbol": "FNILX",
+      "name": "Fidelity ZERO Large Cap Index Fund",
+      "kind": "mutual",
+      "family": "Fidelity",
+      "category": "US large blend",
+      "proxy": "IVV",
+      "proxyKind": "same-index"
+    },
+    {
+      "symbol": "SWPPX",
+      "name": "Schwab S&P 500 Index Fund",
+      "kind": "mutual",
+      "family": "Schwab",
+      "category": "US large blend",
+      "proxy": "IVV",
+      "proxyKind": "same-index"
+    },
+    {
+      "symbol": "SWTSX",
+      "name": "Schwab Total Stock Market Index Fund",
+      "kind": "mutual",
+      "family": "Schwab",
+      "category": "US total market",
+      "proxy": "SCHB",
+      "proxyKind": "same-index"
+    },
+    {
+      "symbol": "SWISX",
+      "name": "Schwab International Index Fund",
+      "kind": "mutual",
+      "family": "Schwab",
+      "category": "Intl developed",
+      "proxy": "SCHF",
+      "proxyKind": "same-index"
+    },
+    {
+      "symbol": "SWAGX",
+      "name": "Schwab US Aggregate Bond Index Fund",
+      "kind": "mutual",
+      "family": "Schwab",
+      "category": "US bond",
+      "proxy": "SCHZ",
+      "proxyKind": "same-index"
+    },
+    {
+      "symbol": "WFSPX",
+      "name": "iShares S&P 500 Index Fund K",
+      "kind": "mutual",
+      "family": "iShares",
+      "category": "US large blend",
+      "proxy": "IVV",
+      "proxyKind": "same-index"
+    },
+    {
+      "symbol": "BSPAX",
+      "name": "iShares S&P 500 Index Fund Investor A",
+      "kind": "mutual",
+      "family": "iShares",
+      "category": "US large blend",
+      "proxy": "IVV",
+      "proxyKind": "same-index"
+    },
+    {
+      "symbol": "TRRBX",
+      "name": "T. Rowe Price Retirement 2020 Fund",
+      "kind": "mutual",
+      "family": "T. Rowe Price",
+      "category": "Target date"
+    },
+    {
+      "symbol": "AGTHX",
+      "name": "American Funds The Growth Fund of America A",
+      "kind": "mutual",
+      "family": "American Funds",
+      "category": "US large growth"
+    },
+    {
+      "symbol": "RGAGX",
+      "name": "American Funds The Growth Fund of America R6",
+      "kind": "mutual",
+      "family": "American Funds",
+      "category": "US large growth"
+    },
+    {
+      "symbol": "AWSHX",
+      "name": "American Funds Washington Mutual Investors A",
+      "kind": "mutual",
+      "family": "American Funds",
+      "category": "US large value"
+    },
+    {
+      "symbol": "ANWPX",
+      "name": "American Funds New Perspective A",
+      "kind": "mutual",
+      "family": "American Funds",
+      "category": "Global"
+    },
+    {
+      "symbol": "AEPGX",
+      "name": "American Funds EuroPacific Growth A",
+      "kind": "mutual",
+      "family": "American Funds",
+      "category": "Intl"
+    },
+    {
+      "symbol": "RERGX",
+      "name": "American Funds EuroPacific Growth R6",
+      "kind": "mutual",
+      "family": "American Funds",
+      "category": "Intl"
+    },
+    {
+      "symbol": "AIVSX",
+      "name": "American Funds Investment Company of America A",
+      "kind": "mutual",
+      "family": "American Funds",
+      "category": "US large blend"
+    },
+    {
+      "symbol": "AMCPX",
+      "name": "American Funds AMCAP A",
+      "kind": "mutual",
+      "family": "American Funds",
+      "category": "US large growth"
+    },
+    {
+      "symbol": "ANCFX",
+      "name": "American Funds Fundamental Investors A",
+      "kind": "mutual",
+      "family": "American Funds",
+      "category": "US large blend"
+    },
+    {
+      "symbol": "AMRMX",
+      "name": "American Funds American Mutual A",
+      "kind": "mutual",
+      "family": "American Funds",
+      "category": "US large value"
+    },
+    {
+      "symbol": "ABALX",
+      "name": "American Funds American Balanced A",
+      "kind": "mutual",
+      "family": "American Funds",
+      "category": "Allocation"
+    },
+    {
+      "symbol": "RLBGX",
+      "name": "American Funds American Balanced R6",
+      "kind": "mutual",
+      "family": "American Funds",
+      "category": "Allocation"
+    },
+    {
+      "symbol": "AMECX",
+      "name": "American Funds Income Fund of America A",
+      "kind": "mutual",
+      "family": "American Funds",
+      "category": "Allocation"
+    },
+    {
+      "symbol": "CWGIX",
+      "name": "American Funds Capital World Growth & Income A",
+      "kind": "mutual",
+      "family": "American Funds",
+      "category": "Global"
+    },
+    {
+      "symbol": "CAIBX",
+      "name": "American Funds Capital Income Builder A",
+      "kind": "mutual",
+      "family": "American Funds",
+      "category": "Allocation"
+    },
+    {
+      "symbol": "SMCWX",
+      "name": "American Funds SMALLCAP World A",
+      "kind": "mutual",
+      "family": "American Funds",
+      "category": "Global small"
+    },
+    {
+      "symbol": "NEWFX",
+      "name": "American Funds New World A",
+      "kind": "mutual",
+      "family": "American Funds",
+      "category": "Emerging markets"
+    },
+    {
+      "symbol": "ABNDX",
+      "name": "American Funds Bond Fund of America A",
+      "kind": "mutual",
+      "family": "American Funds",
+      "category": "US bond"
+    },
+    {
+      "symbol": "DODGX",
+      "name": "Dodge & Cox Stock Fund",
+      "kind": "mutual",
+      "family": "Dodge & Cox",
+      "category": "US large value"
+    },
+    {
+      "symbol": "DODFX",
+      "name": "Dodge & Cox International Stock Fund",
+      "kind": "mutual",
+      "family": "Dodge & Cox",
+      "category": "Intl value"
+    },
+    {
+      "symbol": "DODIX",
+      "name": "Dodge & Cox Income Fund",
+      "kind": "mutual",
+      "family": "Dodge & Cox",
+      "category": "US bond"
+    },
+    {
+      "symbol": "DODBX",
+      "name": "Dodge & Cox Balanced Fund",
+      "kind": "mutual",
+      "family": "Dodge & Cox",
+      "category": "Allocation"
+    },
+    {
+      "symbol": "FCNTX",
+      "name": "Fidelity Contrafund",
+      "kind": "mutual",
+      "family": "Fidelity",
+      "category": "US large growth"
+    },
+    {
+      "symbol": "FCNKX",
+      "name": "Fidelity Contrafund K",
+      "kind": "mutual",
+      "family": "Fidelity",
+      "category": "US large growth"
+    },
+    {
+      "symbol": "FBGRX",
+      "name": "Fidelity Blue Chip Growth Fund",
+      "kind": "mutual",
+      "family": "Fidelity",
+      "category": "US large growth"
+    },
+    {
+      "symbol": "FDGRX",
+      "name": "Fidelity Growth Company Fund",
+      "kind": "mutual",
+      "family": "Fidelity",
+      "category": "US large growth"
+    },
+    {
+      "symbol": "FLPSX",
+      "name": "Fidelity Low-Priced Stock Fund",
+      "kind": "mutual",
+      "family": "Fidelity",
+      "category": "US mid value"
+    },
+    {
+      "symbol": "FMAGX",
+      "name": "Fidelity Magellan Fund",
+      "kind": "mutual",
+      "family": "Fidelity",
+      "category": "US large growth"
+    },
+    {
+      "symbol": "FBALX",
+      "name": "Fidelity Balanced Fund",
+      "kind": "mutual",
+      "family": "Fidelity",
+      "category": "Allocation"
+    },
+    {
+      "symbol": "FPURX",
+      "name": "Fidelity Puritan Fund",
+      "kind": "mutual",
+      "family": "Fidelity",
+      "category": "Allocation"
+    },
+    {
+      "symbol": "FDVLX",
+      "name": "Fidelity Value Fund",
+      "kind": "mutual",
+      "family": "Fidelity",
+      "category": "US mid value"
+    },
+    {
+      "symbol": "FLCSX",
+      "name": "Fidelity Large Cap Stock Fund",
+      "kind": "mutual",
+      "family": "Fidelity",
+      "category": "US large blend"
+    },
+    {
+      "symbol": "FGRIX",
+      "name": "Fidelity Growth & Income Portfolio",
+      "kind": "mutual",
+      "family": "Fidelity",
+      "category": "US large blend"
+    },
+    {
+      "symbol": "FEQIX",
+      "name": "Fidelity Equity-Income Fund",
+      "kind": "mutual",
+      "family": "Fidelity",
+      "category": "US large value"
+    },
+    {
+      "symbol": "FTBFX",
+      "name": "Fidelity Total Bond Fund",
+      "kind": "mutual",
+      "family": "Fidelity",
+      "category": "US bond"
+    },
+    {
+      "symbol": "FSELX",
+      "name": "Fidelity Select Semiconductors Portfolio",
+      "kind": "mutual",
+      "family": "Fidelity",
+      "category": "Sector: semiconductors"
+    },
+    {
+      "symbol": "FBIOX",
+      "name": "Fidelity Select Biotechnology Portfolio",
+      "kind": "mutual",
+      "family": "Fidelity",
+      "category": "Sector: biotech"
+    },
+    {
+      "symbol": "FSPHX",
+      "name": "Fidelity Select Health Care Portfolio",
+      "kind": "mutual",
+      "family": "Fidelity",
+      "category": "Sector: health care"
+    },
+    {
+      "symbol": "VWENX",
+      "name": "Vanguard Wellington Fund Admiral",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "Allocation"
+    },
+    {
+      "symbol": "VWELX",
+      "name": "Vanguard Wellington Fund Investor",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "Allocation"
+    },
+    {
+      "symbol": "VWINX",
+      "name": "Vanguard Wellesley Income Fund Investor",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "Allocation"
+    },
+    {
+      "symbol": "VWIAX",
+      "name": "Vanguard Wellesley Income Fund Admiral",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "Allocation"
+    },
+    {
+      "symbol": "VPMAX",
+      "name": "Vanguard PRIMECAP Fund Admiral",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US large growth"
+    },
+    {
+      "symbol": "VPMCX",
+      "name": "Vanguard PRIMECAP Fund Investor",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US large growth"
+    },
+    {
+      "symbol": "VWUAX",
+      "name": "Vanguard US Growth Fund Admiral",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US large growth"
+    },
+    {
+      "symbol": "VHCAX",
+      "name": "Vanguard Capital Opportunity Fund Admiral",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US large growth"
+    },
+    {
+      "symbol": "VGHCX",
+      "name": "Vanguard Health Care Fund Investor",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "Sector: health care"
+    },
+    {
+      "symbol": "VDIGX",
+      "name": "Vanguard Dividend Growth Fund",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US dividend"
+    },
+    {
+      "symbol": "VWNDX",
+      "name": "Vanguard Windsor Fund Investor",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US large value"
+    },
+    {
+      "symbol": "VWNFX",
+      "name": "Vanguard Windsor II Fund Investor",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US large value"
+    },
+    {
+      "symbol": "VEIPX",
+      "name": "Vanguard Equity-Income Fund Investor",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US large value"
+    },
+    {
+      "symbol": "VEIRX",
+      "name": "Vanguard Equity-Income Fund Admiral",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US large value"
+    },
+    {
+      "symbol": "VEXPX",
+      "name": "Vanguard Explorer Fund Investor",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "US small growth"
+    },
+    {
+      "symbol": "VBIAX",
+      "name": "Vanguard Balanced Index Fund Admiral",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "Allocation"
+    },
+    {
+      "symbol": "VTINX",
+      "name": "Vanguard Target Retirement Income Fund",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "Target date"
+    },
+    {
+      "symbol": "VTWNX",
+      "name": "Vanguard Target Retirement 2020 Fund",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "Target date"
+    },
+    {
+      "symbol": "VTTVX",
+      "name": "Vanguard Target Retirement 2025 Fund",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "Target date"
+    },
+    {
+      "symbol": "VTHRX",
+      "name": "Vanguard Target Retirement 2030 Fund",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "Target date"
+    },
+    {
+      "symbol": "VTTHX",
+      "name": "Vanguard Target Retirement 2035 Fund",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "Target date"
+    },
+    {
+      "symbol": "VFORX",
+      "name": "Vanguard Target Retirement 2040 Fund",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "Target date"
+    },
+    {
+      "symbol": "VTIVX",
+      "name": "Vanguard Target Retirement 2045 Fund",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "Target date"
+    },
+    {
+      "symbol": "VFIFX",
+      "name": "Vanguard Target Retirement 2050 Fund",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "Target date"
+    },
+    {
+      "symbol": "VFFVX",
+      "name": "Vanguard Target Retirement 2055 Fund",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "Target date"
+    },
+    {
+      "symbol": "VASGX",
+      "name": "Vanguard LifeStrategy Growth Fund",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "Allocation"
+    },
+    {
+      "symbol": "VSMGX",
+      "name": "Vanguard LifeStrategy Moderate Growth Fund",
+      "kind": "mutual",
+      "family": "Vanguard",
+      "category": "Allocation"
+    },
+    {
+      "symbol": "PTTRX",
+      "name": "PIMCO Total Return Fund Institutional",
+      "kind": "mutual",
+      "family": "PIMCO",
+      "category": "US bond"
+    },
+    {
+      "symbol": "PIMIX",
+      "name": "PIMCO Income Fund Institutional",
+      "kind": "mutual",
+      "family": "PIMCO",
+      "category": "Multisector bond"
+    },
+    {
+      "symbol": "PONAX",
+      "name": "PIMCO Income Fund A",
+      "kind": "mutual",
+      "family": "PIMCO",
+      "category": "Multisector bond"
+    },
+    {
+      "symbol": "MWTRX",
+      "name": "Metropolitan West Total Return Bond Fund M",
+      "kind": "mutual",
+      "family": "TCW",
+      "category": "US bond"
+    },
+    {
+      "symbol": "BCOAX",
+      "name": "Baird Core Plus Bond Fund Investor",
+      "kind": "mutual",
+      "family": "Baird",
+      "category": "US bond"
+    },
+    {
+      "symbol": "BAGIX",
+      "name": "Baird Aggregate Bond Fund Institutional",
+      "kind": "mutual",
+      "family": "Baird",
+      "category": "US bond"
+    },
+    {
+      "symbol": "DBLTX",
+      "name": "DoubleLine Total Return Bond Fund I",
+      "kind": "mutual",
+      "family": "DoubleLine",
+      "category": "US bond"
+    },
+    {
+      "symbol": "TRBCX",
+      "name": "T. Rowe Price Blue Chip Growth Fund",
+      "kind": "mutual",
+      "family": "T. Rowe Price",
+      "category": "US large growth"
+    },
+    {
+      "symbol": "PRGFX",
+      "name": "T. Rowe Price Growth Stock Fund",
+      "kind": "mutual",
+      "family": "T. Rowe Price",
+      "category": "US large growth"
+    },
+    {
+      "symbol": "PRNHX",
+      "name": "T. Rowe Price New Horizons Fund",
+      "kind": "mutual",
+      "family": "T. Rowe Price",
+      "category": "US small growth"
+    },
+    {
+      "symbol": "PRWCX",
+      "name": "T. Rowe Price Capital Appreciation Fund",
+      "kind": "mutual",
+      "family": "T. Rowe Price",
+      "category": "Allocation"
+    },
+    {
+      "symbol": "PRDGX",
+      "name": "T. Rowe Price Dividend Growth Fund",
+      "kind": "mutual",
+      "family": "T. Rowe Price",
+      "category": "US dividend"
+    },
+    {
+      "symbol": "TRRCX",
+      "name": "T. Rowe Price Retirement 2030 Fund",
+      "kind": "mutual",
+      "family": "T. Rowe Price",
+      "category": "Target date"
+    },
+    {
+      "symbol": "TRRDX",
+      "name": "T. Rowe Price Retirement 2040 Fund",
+      "kind": "mutual",
+      "family": "T. Rowe Price",
+      "category": "Target date"
+    },
+    {
+      "symbol": "JLGMX",
+      "name": "JPMorgan Large Cap Growth Fund R6",
+      "kind": "mutual",
+      "family": "JPMorgan",
+      "category": "US large growth"
+    },
+    {
+      "symbol": "OAKMX",
+      "name": "Oakmark Fund Investor",
+      "kind": "mutual",
+      "family": "Harris",
+      "category": "US large value"
+    },
+    {
+      "symbol": "HACAX",
+      "name": "Harbor Capital Appreciation Fund Institutional",
+      "kind": "mutual",
+      "family": "Harbor",
+      "category": "US large growth"
+    },
+    {
+      "symbol": "MEIAX",
+      "name": "MFS Value Fund A",
+      "kind": "mutual",
+      "family": "MFS",
+      "category": "US large value"
+    },
+    {
+      "symbol": "TWCGX",
+      "name": "American Century Growth Fund Investor",
+      "kind": "mutual",
+      "family": "American Century",
+      "category": "US large growth"
+    },
+    {
+      "symbol": "FDEEX",
+      "name": "Fidelity Freedom 2030 Fund",
+      "kind": "mutual",
+      "family": "Fidelity",
+      "category": "Target date"
+    },
+    {
+      "symbol": "FFFEX",
+      "name": "Fidelity Freedom 2040 Fund",
+      "kind": "mutual",
+      "family": "Fidelity",
+      "category": "Target date"
+    },
+    {
+      "symbol": "BIV",
+      "name": "Vanguard Intermediate-Term Bond ETF",
+      "kind": "etf",
+      "family": "Vanguard",
+      "category": "Proxy only",
+      "proxyOnly": true
+    },
+    {
+      "symbol": "ONEQ",
+      "name": "Fidelity Nasdaq Composite Index ETF",
+      "kind": "etf",
+      "family": "Fidelity",
+      "category": "Proxy only",
+      "proxyOnly": true
+    }
+  ]
+}

@@ -40,6 +40,7 @@ export interface Company {
   ratingsProvenance: Provenance;
   fictional?: boolean; // ext: true for illustrative archetypes (never real brands)
   source?: string; // ext: source string for imported data packs
+  ticker?: string; // ext: exchange ticker for real, listed brands (links to the research DB)
 }
 
 export interface BucketAllocation {

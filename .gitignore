@@ -4,3 +4,7 @@ coverage/
 .DS_Store
 *.local
 node_modules/.tmp/
+.env
+db/*.sqlite
+db/*.sqlite-*
+db/cache/

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<edgarSubmission xmlns="http://www.sec.gov/edgar/nport" xmlns:com="http://www.sec.gov/edgar/common">
+  <headerData><submissionType>NPORT-P</submissionType><filerInfo><seriesClassInfo><seriesId>S000002839</seriesId><classId>C000007779</classId></seriesClassInfo></filerInfo></headerData>
+  <formData>
+    <genInfo><regName>VANGUARD INDEX FUNDS</regName><seriesName>Vanguard 500 Index Fund</seriesName><seriesId>S000002839</seriesId><repPdEnd>2026-06-30</repPdEnd><repPdDate>2026-05-31</repPdDate></genInfo>
+    <fundInfo><totAssets>1234567890123.00</totAssets><totLiabs>1234567.00</totLiabs><netAssets>1234566655556.00</netAssets></fundInfo>
+    <invstOrSecs>
+      <invstOrSec><name>NVIDIA Corp</name><lei>549300S4KLFTLO7GSQ80</lei><title>NVIDIA Corp</title><cusip>67066G104</cusip>
+        <identifiers><isin value="US67066G1040"/><ticker value="NVDA"/></identifiers>
+        <balance>800000000.00</balance><units>NS</units><curCd>USD</curCd><valUSD>96000000000.00</valUSD><pctVal>7.7770</pctVal><payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry></invstOrSec>
+      <invstOrSec><name>Apple Inc</name><title>Apple Inc</title><cusip>037833100</cusip>
+        <identifiers><isin value="US0378331005"/><ticker value="AAPL"/></identifiers>
+        <valUSD>80000000000.00</valUSD><pctVal>6.4800</pctVal><assetCat>EC</assetCat></invstOrSec>
+      <invstOrSec><name>Vanguard Market Liquidity Fund</name><title>Vanguard Market Liquidity Fund</title><cusip>N/A</cusip>
+        <identifiers><other otherDesc="INTERNAL" value="MLF"/></identifiers>
+        <valUSD>2000000000.00</valUSD><pctVal>0.1620</pctVal><assetCat>STIV</assetCat></invstOrSec>
+      <invstOrSec><name>S&amp;P 500 E-Mini Future</name><title>ES FUT</title><cusip>000000000</cusip>
+        <valUSD>500000000.00</valUSD><pctVal>0.0400</pctVal><assetCat>DFE</assetCat></invstOrSec>
+      <invstOrSec><name>Broken row (no pctVal)</name><cusip>111111111</cusip><valUSD>1</valUSD></invstOrSec>
+    </invstOrSecs>
+  </formData>
+</edgarSubmission>

@@ -11,6 +11,7 @@ import {
 import { EXAMPLE_DATA_PACK, parseDataPack } from '@/data/dataPack';
 import { BucketDefaultsPanel } from './BucketDefaultsPanel';
 import { Section } from './Section';
+import { FundLookthroughPanel } from './FundLookthroughPanel';
 import { SAMPLE_COMPANIES } from '@/data/sampleCompanies';
 
 type Notice = { kind: 'ok' | 'err'; text: string } | null;
@@ -224,6 +225,20 @@ export function DataSourcesPage() {
 
       <Section
         no="05"
+        title="Fund look-through (research database)"
+        sub={
+          <>
+            Which companies the most-held ETFs and mutual funds concentrate in — from the offline
+            research DB (<code className="font-mono">scripts/seed</code>: Alpha Vantage + SEC
+            N-PORT). Look up a fund to see its top holdings, or a company to see who holds it.
+          </>
+        }
+      >
+        <FundLookthroughPanel />
+      </Section>
+
+      <Section
+        no="06"
         title="Reset"
         sub="Erase everything stored on this device. Export first if you want to keep it."
       >
