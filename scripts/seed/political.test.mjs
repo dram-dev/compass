@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { buildAliasIndex, defaultAliases, matchOrg, normOrg } from './orgmatch.mjs';
 import {
+  inferPartiesFromRows,
   makeRecipientPartyResolver,
   matchCommittees,
   parseCm,
@@ -133,6 +134,37 @@ describe('FEC bulk parsing + party resolution', () => {
     expect(r('C4')).toBe('U');
     expect(r('NOPE')).toBe('U');
   });
+  it('infers leadership/super PAC party from their own giving (≥80%, ≥$10k), IE opposition flips', () => {
+    const cands = new Map([
+      ['D1', { party: 'DEM' }],
+      ['R1', { party: 'REP' }],
+    ]);
+    const rows = [
+      { cmteId: 'LEAD', candId: 'R1', txType: '24K', amount: 9000, memo: '' },
+      { cmteId: 'LEAD', candId: 'R1', txType: '24K', amount: 3000, memo: '' },
+      { cmteId: 'LEAD', candId: 'D1', txType: '24K', amount: 1000, memo: '' },
+      { cmteId: 'SUPER', candId: 'D1', txType: '24A', amount: 5e6, memo: '' }, // opposing a Democrat → R
+      { cmteId: 'SUPER', candId: 'R1', txType: '24E', amount: 2e6, memo: '' },
+      { cmteId: 'SMALL', candId: 'D1', txType: '24K', amount: 5000, memo: '' }, // under $10k
+      { cmteId: 'MIXED', candId: 'D1', txType: '24K', amount: 6000, memo: '' },
+      { cmteId: 'MIXED', candId: 'R1', txType: '24K', amount: 6000, memo: '' },
+      { cmteId: 'MEMO', candId: 'D1', txType: '24K', amount: 50000, memo: 'X' },
+    ];
+    const inf = inferPartiesFromRows(rows, cands);
+    expect(inf.get('LEAD')).toBe('R'); // 12k of 13k
+    expect(inf.get('SUPER')).toBe('R');
+    expect(inf.has('SMALL')).toBe(false);
+    expect(inf.has('MIXED')).toBe(false);
+    expect(inf.has('MEMO')).toBe(false);
+    const r = makeRecipientPartyResolver(
+      new Map([['LEAD', { party: '', candId: '' }]]),
+      cands,
+      new Map(),
+      inf,
+    );
+    expect(r('LEAD')).toBe('R');
+    expect(r('UNKNOWN')).toBe('U');
+  });
   it('matchCommittees: connected-org exact, corporate name prefix, overrides, and exclusions', () => {
     const idx = buildAliasIndex([
       { symbol: 'KO', aliases: ['Coca-Cola', 'The Coca-Cola Company'] },
@@ -232,6 +264,35 @@ describe('LDA normalization', () => {
     const s = summarizeLobbying(rows);
     expect(s.byYear).toEqual({ 2024: 65000 + 4890000 });
     expect(s.topIssues[0]).toEqual({ name: 'Telecommunications', filings: 2 });
+  });
+  it('same period with an in-house expenses report: retained-firm income is not added on top', () => {
+    const same = summarizeLobbying([
+      {
+        filing_year: 2024,
+        filing_period: 'first_quarter',
+        amount_kind: 'expenses',
+        amount_usd: 2_000_000,
+        superseded: 0,
+        issues_json: '[]',
+      },
+      {
+        filing_year: 2024,
+        filing_period: 'first_quarter',
+        amount_kind: 'income',
+        amount_usd: 300_000,
+        superseded: 0,
+        issues_json: '[]',
+      },
+      {
+        filing_year: 2024,
+        filing_period: 'second_quarter',
+        amount_kind: 'income',
+        amount_usd: 100_000,
+        superseded: 0,
+        issues_json: '[]',
+      },
+    ]);
+    expect(same.byYear).toEqual({ 2024: 2_100_000 });
   });
 });
 

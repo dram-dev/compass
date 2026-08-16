@@ -207,10 +207,25 @@ CREATE TABLE IF NOT EXISTS lobbying_filing (
 );
 CREATE INDEX IF NOT EXISTS idx_lobbying_company ON lobbying_filing(company_symbol, filing_year);
 
-CREATE VIEW IF NOT EXISTS v_lobbying_summary AS
-SELECT company_symbol, filing_year, SUM(amount_usd) AS amount_usd, COUNT(*) AS filings,
-       COUNT(DISTINCT registrant_id) AS registrants
-FROM lobbying_filing WHERE superseded = 0 GROUP BY company_symbol, filing_year;
+-- Per period: a company's own in-house `expenses` report already includes what it paid retained firms, so
+-- when one exists it is THE number; otherwise sum the retained firms' `income`. (Same rule OpenSecrets uses.)
+DROP VIEW IF EXISTS v_lobbying_period;
+CREATE VIEW v_lobbying_period AS
+SELECT company_symbol, filing_year, filing_period,
+       CASE WHEN SUM(amount_kind = 'expenses') > 0
+            THEN SUM(CASE WHEN amount_kind = 'expenses' THEN amount_usd ELSE 0 END)
+            ELSE SUM(amount_usd) END                    AS amount_usd,
+       COUNT(*)                                         AS filings,
+       COUNT(DISTINCT registrant_id)                    AS registrants,
+       SUM(amount_kind = 'expenses') > 0                AS in_house
+FROM lobbying_filing WHERE superseded = 0
+GROUP BY company_symbol, filing_year, filing_period;
+
+DROP VIEW IF EXISTS v_lobbying_summary;
+CREATE VIEW v_lobbying_summary AS
+SELECT company_symbol, filing_year, SUM(amount_usd) AS amount_usd, SUM(filings) AS filings,
+       MAX(registrants) AS registrants, SUM(in_house) AS in_house_periods
+FROM v_lobbying_period GROUP BY company_symbol, filing_year;
 
 CREATE VIEW IF NOT EXISTS v_political_by_cycle AS
 SELECT company_symbol, cycle, channel,

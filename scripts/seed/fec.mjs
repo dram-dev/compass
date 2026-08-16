@@ -145,8 +145,11 @@ export function partyOf(code) {
   return 'O'; // IND, GRE, LIB, CON, … — real third parties / independents
 }
 
-/** Party of the recipient committee: its own affiliation, else its linked candidate's, else U. */
-export function makeRecipientPartyResolver(committees, candidates, links) {
+/**
+ * Party of the recipient committee: its own affiliation → its linked candidate's → the party inferred
+ * from its own giving/spending (leadership PACs, party-aligned super PACs, caucus PACs) → U.
+ */
+export function makeRecipientPartyResolver(committees, candidates, links, inferred = new Map()) {
   const cache = new Map();
   return (cmteId) => {
     if (cache.has(cmteId)) return cache.get(cmteId);
@@ -161,9 +164,63 @@ export function makeRecipientPartyResolver(committees, candidates, links) {
       const candId = links.get(cmteId);
       if (candId && candidates.has(candId)) p = partyOf(candidates.get(candId).party);
     }
+    if (p === 'U' && inferred.has(cmteId)) p = inferred.get(cmteId);
     cache.set(cmteId, p);
     return p;
   };
+}
+
+export const INFER_MIN_USD = 10_000;
+export const INFER_MIN_SHARE = 0.8;
+
+/**
+ * Infer the party of committees that carry no party code and no candidate link — leadership PACs,
+ * party-aligned super PACs, caucus PACs — from their OWN behavior in pas2 for the cycle: direct
+ * contributions (24K/24Z) to candidates count for the candidate's party; independent expenditures
+ * supporting (24E) count for it, opposing (24A) count against it. Assigns a party only when the
+ * committee moved ≥ INFER_MIN_USD and ≥ INFER_MIN_SHARE of it pointed one way. Returns Map id → 'D'|'R'.
+ */
+export function inferPartiesFromRows(rows, candidates) {
+  const acc = new Map(); // cmteId → { D, R }
+  for (const r of rows) {
+    if (!r.candId || !candidates.has(r.candId)) continue;
+    let party = partyOf(candidates.get(r.candId).party);
+    if (party !== 'D' && party !== 'R') continue;
+    if (r.txType === '24A') party = party === 'D' ? 'R' : 'D';
+    else if (r.txType !== '24K' && r.txType !== '24Z' && r.txType !== '24E') continue;
+    if (r.memo === 'X') continue;
+    const a = acc.get(r.cmteId) ?? { D: 0, R: 0 };
+    a[party] += Math.abs(r.amount);
+    acc.set(r.cmteId, a);
+  }
+  const out = new Map();
+  for (const [id, a] of acc) {
+    const t = a.D + a.R;
+    if (t < INFER_MIN_USD) continue;
+    if (a.D / t >= INFER_MIN_SHARE) out.set(id, 'D');
+    else if (a.R / t >= INFER_MIN_SHARE) out.set(id, 'R');
+  }
+  return out;
+}
+
+export async function inferCommitteeParties(cycle, ref, opts) {
+  const pas2 = await downloadBulk(cycle, 'pas2', opts);
+  if (!pas2.path) return new Map();
+  const rows = [];
+  await streamZipLines(pas2.path, (f) => {
+    const r = parsePas2(f);
+    const c = ref.committees.get(r.cmteId);
+    // only committees whose party we cannot otherwise resolve
+    if (c && partyOf(c.party) === 'U' && !c.candId && !ref.links.has(r.cmteId))
+      rows.push({
+        cmteId: r.cmteId,
+        candId: r.candId,
+        txType: r.txType,
+        amount: r.amount,
+        memo: r.memo,
+      });
+  });
+  return inferPartiesFromRows(rows, ref.candidates);
 }
 
 /** Load the small reference files for a cycle. */

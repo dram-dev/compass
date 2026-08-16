@@ -6,6 +6,7 @@ import { buildAliasIndex, defaultAliases } from './orgmatch.mjs';
 import {
   aggregateEmployees,
   aggregatePac,
+  inferCommitteeParties,
   loadReference,
   makeRecipientPartyResolver,
   matchCommittees,
@@ -93,10 +94,20 @@ export async function seedFec(
       summary.skipped.push(cycle);
       continue;
     }
-    const resolveParty = makeRecipientPartyResolver(ref.committees, ref.candidates, ref.links);
+    const inferred = await inferCommitteeParties(cycle, ref, { offline, log: out });
+    out(
+      `    recipient parties inferred for ${inferred.size} leadership/super/caucus PACs from their own giving (≥80% one-sided)`,
+    );
+    const resolveParty = makeRecipientPartyResolver(
+      ref.committees,
+      ref.candidates,
+      ref.links,
+      inferred,
+    );
     const matched = matchCommittees(ref.committees, uni.aliasIndex, overrides);
     const committeeToSymbol = new Map();
     db.exec('BEGIN');
+    db.prepare('DELETE FROM political_committee WHERE cycle_seen = ?').run(cycle);
     for (const m of matched) {
       committeeToSymbol.set(m.committeeId, m.symbol);
       insCommittee.run(
@@ -122,6 +133,9 @@ export async function seedFec(
     });
     if (pac) {
       db.exec('BEGIN');
+      db.prepare("DELETE FROM political_contribution WHERE cycle = ? AND channel = 'pac'").run(
+        cycle,
+      );
       for (const [k, t] of pac.totals) {
         const [symbol, party] = k.split('|');
         insContribution.run(
@@ -153,6 +167,10 @@ export async function seedFec(
       );
       if (emp) {
         db.exec('BEGIN');
+        db.prepare(
+          "DELETE FROM political_contribution WHERE cycle = ? AND channel = 'employee'",
+        ).run(cycle);
+        db.prepare('DELETE FROM political_employer_match WHERE cycle = ?').run(cycle);
         for (const [k, t] of emp.totals) {
           const [symbol, party] = k.split('|');
           insContribution.run(

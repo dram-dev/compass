@@ -130,15 +130,26 @@ export function normalizeFilings(filings, symbol) {
   return rows;
 }
 
+/**
+ * Yearly totals with the standard de-duplication: per (year, period), if the company filed its own in-house
+ * `expenses` report (which already includes payments to retained firms) use only that; else sum firms' `income`.
+ */
 export function summarizeLobbying(rows) {
   const byYear = {};
   const issues = {};
+  const periods = new Map(); // `${year}|${period}` → { year, expenses, income }
   for (const r of rows) {
     if (r.superseded) continue;
-    byYear[r.filing_year] = (byYear[r.filing_year] ?? 0) + (r.amount_usd ?? 0);
+    const k = `${r.filing_year}|${r.filing_period}`;
+    const p = periods.get(k) ?? { year: r.filing_year, expenses: null, income: 0 };
+    if (r.amount_kind === 'expenses') p.expenses = (p.expenses ?? 0) + (r.amount_usd ?? 0);
+    else p.income += r.amount_usd ?? 0;
+    periods.set(k, p);
     for (const i of JSON.parse(r.issues_json ?? '[]'))
       issues[i.display ?? i.code] = (issues[i.display ?? i.code] ?? 0) + 1;
   }
+  for (const p of periods.values())
+    byYear[p.year] = (byYear[p.year] ?? 0) + (p.expenses !== null ? p.expenses : p.income);
   const topIssues = Object.entries(issues)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 8)
