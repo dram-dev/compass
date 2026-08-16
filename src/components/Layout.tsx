@@ -1,5 +1,7 @@
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { Footer } from './Footer';
+import { useCompassStore } from '@/store/useCompassStore';
+import { loadJordan } from '@/data/fixtures/jordan';
 
 const NAV = [
   { to: '/wizard', label: 'Wizard' },
@@ -7,6 +9,26 @@ const NAV = [
   { to: '/plan', label: 'Plan' },
   { to: '/data', label: 'Data sources' },
 ];
+
+/** Dev-only (spec §12): loads the Jordan persona fixture. Not rendered in production builds. */
+function DevTools() {
+  const loadState = useCompassStore((s) => s.loadState);
+  const nav = useNavigate();
+  if (!import.meta.env.DEV) return null;
+  return (
+    <button
+      type="button"
+      className="chip ml-auto border-dashed hover:border-ink hover:text-ink"
+      onClick={() => {
+        loadState(loadJordan());
+        nav('/dashboard');
+      }}
+      title="Dev only: load the Jordan persona"
+    >
+      Load demo persona
+    </button>
+  );
+}
 
 export function Layout() {
   return (
@@ -34,6 +56,7 @@ export function Layout() {
               {n.label}
             </NavLink>
           ))}
+          <DevTools />
         </nav>
       </header>
       <main>

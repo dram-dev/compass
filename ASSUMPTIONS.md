@@ -87,3 +87,17 @@ Numbered, append-only. Each entry: decision · rationale · phase.
 22. **Real-brand parent facts** in the sample set are limited to widely reported ownership (e.g.,
     Whole Foods → Amazon; Trader Joe's → Aldi Nord; Hulu → Disney). Ace Hardware is bucketed
     `regional` (retailer-owned cooperative) though individual stores are locally owned — user-editable. (P1)
+
+## Added during P2
+
+23. **Wizard step lives in the store** (`wizard.step`, persisted) so a hard refresh returns to the same
+    step; `#/wizard/<n>` deep links set the step once and normalize the URL. (P2)
+24. **Free-text merchants** are created with the bucket they were typed into as `bucketDefault`, unrated
+    (bucket-default ratings), and immediately open the rating editor. Duplicate names dedupe by
+    case-insensitive match. (P2)
+25. **Single-thumb weights/ratings** (principle weights, −2..+2 ratings, intensity) use native
+    `<input type=range>` — the spec's prohibition is specifically on *paired* native ranges for the
+    dual-thumb control. (P2)
+26. **Test environment:** Node ≥ 22 exposes a stub `localStorage` global that vitest/jsdom does not
+    override; `test/setup.ts` installs an in-memory Storage. jsdom lacks `PointerEvent.clientX`, so the
+    DualRange pointer test dispatches plain events carrying `clientX`. (P2)
