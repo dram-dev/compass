@@ -40,6 +40,10 @@ describe('org-name normalization + matching', () => {
     expect(normOrg('JPMORGAN CHASE & CO.')).toBe('JPMORGAN CHASE');
     expect(normOrg('Johnson & Johnson')).toBe('JOHNSON AND JOHNSON');
     expect(normOrg('AT&T Inc')).toBe('AT AND T');
+    expect(normOrg("LOWE'S COMPANIES, INC.")).toBe('LOWES');
+    expect(normOrg("McDonald's Corporation")).toBe('MCDONALDS');
+    expect(normOrg('JPMORGAN CHASE BANK, N.A.')).toBe('JPMORGAN CHASE BANK');
+    expect(normOrg('WELLS FARGO BANK, N. A.')).toBe('WELLS FARGO BANK');
   });
   it('defaultAliases derives sensible variants', () => {
     expect(defaultAliases('Amazon.com Inc')).toEqual(

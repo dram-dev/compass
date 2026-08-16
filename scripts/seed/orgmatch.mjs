@@ -12,6 +12,7 @@ const SUFFIXES = new Set([
   'CORPORATION',
   'CO',
   'COMPANY',
+  'COMPANIES',
   'LLC',
   'LLP',
   'LP',
@@ -22,12 +23,15 @@ const SUFFIXES = new Set([
   'NV',
   'AG',
   'SE',
+  'NA',
 ]);
 
 export function normOrg(s) {
   if (!s) return '';
   let t = String(s)
     .toUpperCase()
+    .replace(/['’`]/g, '') // LOWE'S → LOWES, MCDONALD'S → MCDONALDS (how filers usually type it)
+    .replace(/\bN\.\s?A\.?(?=\s|$)/g, 'NA') // "BANK, N.A." → NA (stripped as a legal suffix)
     .replace(/&/g, ' AND ')
     .replace(/[^A-Z0-9 ]+/g, ' ')
     .replace(/\s+/g, ' ')
