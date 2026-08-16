@@ -56,12 +56,10 @@ describe('Wizard', () => {
 
   it('Jordan: step 4 shows every category and the live 42.0 preview; edits persist per keystroke', () => {
     act(() => {
-      useCompassStore
-        .getState()
-        .loadState({
-          ...loadJordan(),
-          wizard: { step: 4, completed: false, targetsCustomized: true },
-        });
+      useCompassStore.getState().loadState({
+        ...loadJordan(),
+        wizard: { step: 4, completed: false, targetsCustomized: true },
+      });
     });
     renderWizard();
     expect(screen.getAllByTestId(/category-card-/)).toHaveLength(8);
@@ -80,12 +78,10 @@ describe('Wizard', () => {
 
   it('review step builds the plan and routes to the dashboard', () => {
     act(() => {
-      useCompassStore
-        .getState()
-        .loadState({
-          ...loadJordan(),
-          wizard: { step: 7, completed: false, targetsCustomized: true },
-        });
+      useCompassStore.getState().loadState({
+        ...loadJordan(),
+        wizard: { step: 7, completed: false, targetsCustomized: true },
+      });
     });
     renderWizard();
     fireEvent.click(screen.getByRole('button', { name: /Build my plan/ }));
