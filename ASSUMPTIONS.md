@@ -101,3 +101,20 @@ Numbered, append-only. Each entry: decision · rationale · phase.
 26. **Test environment:** Node ≥ 22 exposes a stub `localStorage` global that vitest/jsdom does not
     override; `test/setup.ts` installs an in-memory Storage. jsdom lacks `PointerEvent.clientX`, so the
     DualRange pointer test dispatches plain events carrying `clientX`. (P2)
+
+## Added during P3
+
+27. **Sankey crossfade** renders all four layouts (spend/invest × current/optimal) as stacked SVG groups
+    and fades opacity over 300 ms (same idiom as the reference); node order is fixed via
+    `nodeSort(null)`/`linkSort(null)` so categories keep wizard order. Links are drawn as stroked
+    `sankeyLinkHorizontal` paths. (P3)
+28. **Political stacked bars** are plain SVG rects (print-safe, pattern-filled Unknown) rather than a
+    Recharts BarChart — two rows of four segments didn't justify the chart abstraction; the radar and
+    the Pareto scatter use Recharts as planned. Recharts 3.x (2.x is deprecated upstream). (P3)
+29. **Pareto quadrant labels** are HTML overlays anchored to the fixed chart margins (Recharts
+    ReferenceLine labels landed on the wrong side of the line); bubbles jitter horizontally within
+    their cost band so equal-cost swaps don't stack. (P3)
+30. **Radar** shows only principles with weight > 0 and needs ≥ 3 to draw; otherwise a hint. Coverage
+    is the spend-weighted mean rating per principle mapped to 0–100 (unknown portions neutral). (P3)
+31. **Re-score timing** is measured in `computeScores` (`computeMs`) and shown in the dashboard header;
+    Jordan runs in well under 1 ms in the store test and < 1 ms in-browser. (P3)
