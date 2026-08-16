@@ -17,29 +17,29 @@ Spec: `docs/BUILD-PROMPT.md`. Reference demos: `reference/`. Judgment calls: `AS
 
 | ID | Requirement | Implementation | Phase |
 |---|---|---|---|
-| R1 | Wizard | `src/wizard/Wizard.tsx`, `steps/Step1Intent…Step7Review.tsx`, `StepRail.tsx` | P2 |
+| R1 | Wizard | `src/wizard/WizardPage.tsx`, `steps/Step1Intent…Step7Review.tsx`, `StepRail.tsx` | P2 |
 | R2 | Current mix with dual-thumb ranges | `src/components/DualRange.tsx` (Pointer Events), `src/wizard/CategoryCard.tsx`, `src/wizard/steps/Step4Current.tsx`; engine midpoints in `src/engine/allocation.ts` | P1/P2 |
 | R3 | Company + political mapping | `src/engine/political.ts`, `src/dashboard/PoliticalExposure.tsx` (drill-down w/ parent roll-up, provenance, verify link), sankey link tooltips | P1/P3 |
-| R4 | Goal toggle | `src/components/GoalModeToggle.tsx` used in `Step1Intent` + sticky `src/dashboard/DashboardHeader.tsx`; `store/useCompassStore.setGoalMode` re-weights principles + rescoring selectors | P2/P3 |
+| R4 | Goal toggle | `src/components/GoalModeToggle.tsx` used in `Step1Intent` + the sticky header in `src/dashboard/DashboardPage.tsx`; `store/useCompassStore.setGoalMode` re-weights principles; `store/scoring.ts#useScores` re-scores | P2/P3 |
 | R5 | Sankey (lens × state) + slope | `src/dashboard/Sankey.tsx` (d3-sankey wrapper), `src/dashboard/SlopeChart.tsx` | P3 |
-| R6 | Stage-gate plan w/ impact/effort/cost + trajectory | `src/engine/plan.ts`, `src/plan/GateBoard.tsx`, `src/plan/ActionCard.tsx`, `src/plan/Trajectory.tsx`, `src/plan/GateConfig.tsx` | P4 |
+| R6 | Stage-gate plan w/ impact/effort/cost + trajectory | `src/engine/plan.ts`, `src/plan/PlanPage.tsx` (gate board), `src/plan/ActionCard.tsx`, `src/plan/Trajectory.tsx`, `src/plan/GateConfig.tsx` | P4 |
 | R7 | Tradeoff visuals | `src/dashboard/ParetoScatter.tsx` + badges in `ActionCard.tsx` | P3/P4 |
 | R8 | User-defined optimal | `src/wizard/steps/Step6Optimal.tsx` (prefill from `src/data/goalModePresets.ts`, fully editable), principle weights (`Step2Principles`), company rating overrides (`src/components/CompanyRatingEditor.tsx`), bucket defaults Advanced panel | P2 |
-| R9 | Printable plan | `src/plan/PlanPrintView.tsx` at `#/plan`, `src/plan/print.css` | P4 |
+| R9 | Printable plan | `src/plan/PlanPage.tsx` at `#/plan` (screen + print document), `src/plan/print.css` | P4 |
 
 ## Traceability — extended features
 
 | # | Feature | Implementation | Phase |
 |---|---|---|---|
-| 1 | Parent-company roll-up | `Company.parentCompanyId`; `src/engine/companies.ts#resolveParent`; shown in `PoliticalExposure` drill, merchant chips, sankey tooltip | P1/P3 |
+| 1 | Parent-company roll-up | `Company.parentCompanyId`; `src/engine/political.ts#resolveParent`; shown in `PoliticalExposure` drill, merchant chips, sankey tooltip | P1/P3 |
 | 2 | Provenance badging | `src/components/ProvenanceBadge.tsx` + `DataSourcesModal.tsx` (OpenSecrets / FEC / Goods Unite Us) | P2/P3 |
 | 3 | Unknown-exposure honesty | `political.ts` keeps `unknown` slice; `PoliticalExposure` callout "X% can't be assessed" | P3 |
 | 4 | Pareto free wins | `engine/plan.ts#freeWin`; `ParetoScatter` quadrant labels; free-win tag + gate-1 priority | P3/P4 |
 | 5 | Effort-budgeted gates + trajectory | `engine/plan.ts#fillGates`, `#projectTrajectory`; `GateConfig` editable budgets; `Trajectory.tsx` | P4 |
 | 6 | Investments module | `src/wizard/steps/Step5Investments.tsx`, `src/engine/investments.ts` (sleeves, investment buckets, class-only scenarios), sankey Investments lens, `InvestmentsDisclaimer.tsx` | P2/P3 |
-| 7 | Local multiplier note | `src/components/MultiplierNote.tsx` rendered on local-shift actions | P4 |
+| 7 | Local multiplier note | `src/components/Disclaimers.tsx#MultiplierNote` (chip on local-shift actions + one footnote) | P4 |
 | 8 | JSON export/import | `src/store/persistence.ts` (`exportState`, `importState` w/ validation), `src/store/migrations.ts` | P2/P5 |
-| 9 | Community data-pack import | `docs/data-pack-schema.md`, `src/data/dataPack.ts` (validate + merge as `imported`), UI in Data sources page | P5 |
+| 9 | Community data-pack import | `docs/data-pack-schema.md`, `src/data/dataPack.ts` (validate + merge as `imported`), UI in `src/components/DataSourcesPage.tsx` | P5 |
 | 10 | CSV transaction import | "Coming soon" affordance in Step 4 (see ASSUMPTIONS) | P5 |
 
 ## Architecture
@@ -47,23 +47,28 @@ Spec: `docs/BUILD-PROMPT.md`. Reference demos: `reference/`. Judgment calls: `AS
 ```
 src/
   main.tsx, App.tsx (HashRouter: #/ wizard, #/dashboard, #/plan, #/data)
-  engine/      types.ts, normalize.ts, alignment.ts, allocation.ts, score.ts, political.ts,
-               gap.ts, heuristics.ts, plan.ts, investments.ts, index.ts + *.test.ts
+  engine/      types.ts, normalize.ts, allocation.ts, context.ts, alignment.ts, score.ts,
+               political.ts, heuristics.ts, plan.ts, investments.ts, radar.ts, companies.ts,
+               index.ts + *.test.ts
   data/        companies.sample.json, principles.library.json, bucketDefaults.ts,
                goalModePresets.ts, categories.defaults.ts, fixtures/persona-jordan.json
-  store/       useCompassStore.ts (zustand + persist, key compass.v1), migrations.ts,
-               persistence.ts (export/import), selectors.ts (memoized scoring)
-  wizard/      Wizard.tsx, StepRail.tsx, CategoryCard.tsx, MerchantPicker.tsx, steps/
-  dashboard/   Dashboard.tsx, DashboardHeader.tsx, Dial.tsx, Sankey.tsx, SlopeChart.tsx,
+  store/       useCompassStore.ts (zustand + persist, key compass.v1), schema.ts, defaults.ts,
+               migrations.ts, validate.ts, persistence.ts (export/import), scoring.ts (memoized)
+  wizard/      WizardPage.tsx, StepRail.tsx, stepList.ts, CategoryCard.tsx, MerchantPicker.tsx, steps/
+  dashboard/   DashboardPage.tsx (incl. sticky header), Dial.tsx, Sankey.tsx, SlopeChart.tsx,
                PoliticalExposure.tsx, PrinciplesRadar.tsx, ParetoScatter.tsx
-  plan/        PlanPage.tsx, GateConfig.tsx, GateBoard.tsx, ActionCard.tsx, Trajectory.tsx,
-               PlanPrintView.tsx, print.css
+  plan/        PlanPage.tsx (board + print document), GateConfig.tsx, ActionCard.tsx,
+               Trajectory.tsx, print.css
   components/  DualRange.tsx, Segmented.tsx, GoalModeToggle.tsx, ProvenanceBadge.tsx,
-               DataSourcesModal.tsx, Disclaimers.tsx, Footer.tsx, NumberTick.tsx, …
+               DataSourcesModal.tsx, DataSourcesPage.tsx, BucketDefaultsPanel.tsx,
+               CompanyRatingEditor.tsx, Disclaimers.tsx, ErrorBoundary.tsx, Footer.tsx,
+               Layout.tsx, Modal.tsx, NumberTick.tsx, Section.tsx, BucketDot.tsx
   styles/      tokens.css (from reference :root), globals.css
+  lib/         format.ts, motion.ts, bucketColors.ts
 docs/          BUILD-PROMPT.md, data-pack-schema.md
+scripts/       gen-sample-companies.mjs, gen-jordan.mjs (regenerate data files)
 ```
 
-Scoring pipeline (pure): `store state → selectors.scoreAll(state, goalMode)` →
-`{ overall, band, byCategory, political, radar, swaps, gates, trajectory }` memoized on
-inputs; recomputed on any store change; must run < 100 ms for 12 × 4.
+Scoring pipeline (pure): `store state → scoring.computeScores(state)` →
+`{ ctx, current, target, political, swaps, plan, trajectory, radar, investments, computeMs }`,
+memoized in `useScores()` on the scoring inputs; Jordan re-scores in < 1 ms (gate: < 100 ms).
