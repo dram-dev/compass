@@ -1,0 +1,593 @@
+{
+  "schemaVersion": 1,
+  "profile": {
+    "name": "Jordan",
+    "createdAt": "2026-08-01T12:00:00.000Z",
+    "updatedAt": "2026-08-01T12:00:00.000Z"
+  },
+  "goalMode": "local-first",
+  "principles": [
+    {
+      "id": "local-economy",
+      "label": "Local economy",
+      "weight": 60,
+      "custom": false
+    },
+    {
+      "id": "labor",
+      "label": "Labor practices",
+      "weight": 25,
+      "custom": false
+    },
+    {
+      "id": "environment",
+      "label": "Environment",
+      "weight": 15,
+      "custom": false
+    },
+    {
+      "id": "political-alignment",
+      "label": "Political alignment",
+      "weight": 0,
+      "custom": false
+    }
+  ],
+  "political": {
+    "configured": true,
+    "direction": 1,
+    "intensity": 0.6
+  },
+  "categories": [
+    {
+      "id": "groceries",
+      "label": "Groceries",
+      "monthlySpend": 900,
+      "current": [
+        {
+          "bucket": "local",
+          "rangePct": [20, 30],
+          "namedCompanyIds": ["green-fields-coop"]
+        },
+        {
+          "bucket": "regional",
+          "rangePct": [15, 25],
+          "namedCompanyIds": []
+        },
+        {
+          "bucket": "major",
+          "rangePct": [40, 50],
+          "namedCompanyIds": ["nationalmart"]
+        },
+        {
+          "bucket": "unknown",
+          "rangePct": [5, 15],
+          "namedCompanyIds": []
+        }
+      ],
+      "target": [
+        {
+          "bucket": "local",
+          "rangePct": [50, 60],
+          "namedCompanyIds": ["green-fields-coop"]
+        },
+        {
+          "bucket": "regional",
+          "rangePct": [15, 25],
+          "namedCompanyIds": []
+        },
+        {
+          "bucket": "major",
+          "rangePct": [15, 25],
+          "namedCompanyIds": ["nationalmart"]
+        },
+        {
+          "bucket": "unknown",
+          "rangePct": [0, 10],
+          "namedCompanyIds": []
+        }
+      ]
+    },
+    {
+      "id": "dining",
+      "label": "Dining & coffee",
+      "monthlySpend": 450,
+      "current": [
+        {
+          "bucket": "local",
+          "rangePct": [50, 60],
+          "namedCompanyIds": []
+        },
+        {
+          "bucket": "regional",
+          "rangePct": [10, 20],
+          "namedCompanyIds": []
+        },
+        {
+          "bucket": "major",
+          "rangePct": [15, 25],
+          "namedCompanyIds": []
+        },
+        {
+          "bucket": "unknown",
+          "rangePct": [5, 15],
+          "namedCompanyIds": []
+        }
+      ],
+      "target": [
+        {
+          "bucket": "local",
+          "rangePct": [65, 75],
+          "namedCompanyIds": []
+        },
+        {
+          "bucket": "regional",
+          "rangePct": [5, 15],
+          "namedCompanyIds": []
+        },
+        {
+          "bucket": "major",
+          "rangePct": [10, 20],
+          "namedCompanyIds": []
+        },
+        {
+          "bucket": "unknown",
+          "rangePct": [0, 10],
+          "namedCompanyIds": []
+        }
+      ]
+    },
+    {
+      "id": "fuel",
+      "label": "Fuel & auto",
+      "monthlySpend": 350,
+      "current": [
+        {
+          "bucket": "local",
+          "rangePct": [5, 15],
+          "namedCompanyIds": []
+        },
+        {
+          "bucket": "regional",
+          "rangePct": [20, 30],
+          "namedCompanyIds": ["prairie-petro-coop"]
+        },
+        {
+          "bucket": "major",
+          "rangePct": [50, 60],
+          "namedCompanyIds": []
+        },
+        {
+          "bucket": "unknown",
+          "rangePct": [5, 15],
+          "namedCompanyIds": []
+        }
+      ],
+      "target": [
+        {
+          "bucket": "local",
+          "rangePct": [20, 30],
+          "namedCompanyIds": []
+        },
+        {
+          "bucket": "regional",
+          "rangePct": [25, 35],
+          "namedCompanyIds": ["prairie-petro-coop"]
+        },
+        {
+          "bucket": "major",
+          "rangePct": [35, 45],
+          "namedCompanyIds": []
+        },
+        {
+          "bucket": "unknown",
+          "rangePct": [0, 10],
+          "namedCompanyIds": []
+        }
+      ]
+    },
+    {
+      "id": "retail",
+      "label": "Retail & household",
+      "monthlySpend": 550,
+      "current": [
+        {
+          "bucket": "local",
+          "rangePct": [10, 20],
+          "namedCompanyIds": ["hearth-and-hardware"]
+        },
+        {
+          "bucket": "regional",
+          "rangePct": [10, 20],
+          "namedCompanyIds": []
+        },
+        {
+          "bucket": "major",
+          "rangePct": [55, 65],
+          "namedCompanyIds": []
+        },
+        {
+          "bucket": "unknown",
+          "rangePct": [5, 15],
+          "namedCompanyIds": []
+        }
+      ],
+      "target": [
+        {
+          "bucket": "local",
+          "rangePct": [30, 40],
+          "namedCompanyIds": ["hearth-and-hardware"]
+        },
+        {
+          "bucket": "regional",
+          "rangePct": [10, 20],
+          "namedCompanyIds": []
+        },
+        {
+          "bucket": "major",
+          "rangePct": [40, 50],
+          "namedCompanyIds": []
+        },
+        {
+          "bucket": "unknown",
+          "rangePct": [0, 10],
+          "namedCompanyIds": []
+        }
+      ]
+    },
+    {
+      "id": "subscriptions",
+      "label": "Subscriptions & media",
+      "monthlySpend": 180,
+      "current": [
+        {
+          "bucket": "local",
+          "rangePct": [0, 10],
+          "namedCompanyIds": []
+        },
+        {
+          "bucket": "regional",
+          "rangePct": [0, 10],
+          "namedCompanyIds": []
+        },
+        {
+          "bucket": "major",
+          "rangePct": [75, 85],
+          "namedCompanyIds": ["streambox-media"]
+        },
+        {
+          "bucket": "unknown",
+          "rangePct": [5, 15],
+          "namedCompanyIds": []
+        }
+      ],
+      "target": [
+        {
+          "bucket": "local",
+          "rangePct": [10, 20],
+          "namedCompanyIds": []
+        },
+        {
+          "bucket": "regional",
+          "rangePct": [0, 10],
+          "namedCompanyIds": []
+        },
+        {
+          "bucket": "major",
+          "rangePct": [65, 75],
+          "namedCompanyIds": ["streambox-media"]
+        },
+        {
+          "bucket": "unknown",
+          "rangePct": [5, 15],
+          "namedCompanyIds": []
+        }
+      ]
+    },
+    {
+      "id": "banking",
+      "label": "Banking & insurance",
+      "monthlySpend": 420,
+      "current": [
+        {
+          "bucket": "local",
+          "rangePct": [15, 25],
+          "namedCompanyIds": ["first-prairie-cu"]
+        },
+        {
+          "bucket": "regional",
+          "rangePct": [5, 15],
+          "namedCompanyIds": []
+        },
+        {
+          "bucket": "major",
+          "rangePct": [60, 70],
+          "namedCompanyIds": ["colossus-bank"]
+        },
+        {
+          "bucket": "unknown",
+          "rangePct": [0, 10],
+          "namedCompanyIds": []
+        }
+      ],
+      "target": [
+        {
+          "bucket": "local",
+          "rangePct": [55, 65],
+          "namedCompanyIds": ["first-prairie-cu"]
+        },
+        {
+          "bucket": "regional",
+          "rangePct": [5, 15],
+          "namedCompanyIds": []
+        },
+        {
+          "bucket": "major",
+          "rangePct": [23, 33],
+          "namedCompanyIds": ["colossus-bank"]
+        },
+        {
+          "bucket": "unknown",
+          "rangePct": [0, 4],
+          "namedCompanyIds": []
+        }
+      ]
+    },
+    {
+      "id": "personal-care",
+      "label": "Personal care & services",
+      "monthlySpend": 250,
+      "current": [
+        {
+          "bucket": "local",
+          "rangePct": [55, 65],
+          "namedCompanyIds": ["juniper-salon"]
+        },
+        {
+          "bucket": "regional",
+          "rangePct": [5, 15],
+          "namedCompanyIds": []
+        },
+        {
+          "bucket": "major",
+          "rangePct": [15, 25],
+          "namedCompanyIds": []
+        },
+        {
+          "bucket": "unknown",
+          "rangePct": [5, 15],
+          "namedCompanyIds": []
+        }
+      ],
+      "target": [
+        {
+          "bucket": "local",
+          "rangePct": [70, 80],
+          "namedCompanyIds": ["juniper-salon"]
+        },
+        {
+          "bucket": "regional",
+          "rangePct": [5, 15],
+          "namedCompanyIds": []
+        },
+        {
+          "bucket": "major",
+          "rangePct": [5, 15],
+          "namedCompanyIds": []
+        },
+        {
+          "bucket": "unknown",
+          "rangePct": [0, 10],
+          "namedCompanyIds": []
+        }
+      ]
+    },
+    {
+      "id": "home",
+      "label": "Home improvement",
+      "monthlySpend": 700,
+      "current": [
+        {
+          "bucket": "local",
+          "rangePct": [25, 35],
+          "namedCompanyIds": []
+        },
+        {
+          "bucket": "regional",
+          "rangePct": [15, 25],
+          "namedCompanyIds": []
+        },
+        {
+          "bucket": "major",
+          "rangePct": [40, 50],
+          "namedCompanyIds": []
+        },
+        {
+          "bucket": "unknown",
+          "rangePct": [0, 10],
+          "namedCompanyIds": []
+        }
+      ],
+      "target": [
+        {
+          "bucket": "local",
+          "rangePct": [50, 60],
+          "namedCompanyIds": []
+        },
+        {
+          "bucket": "regional",
+          "rangePct": [10, 20],
+          "namedCompanyIds": []
+        },
+        {
+          "bucket": "major",
+          "rangePct": [23, 33],
+          "namedCompanyIds": []
+        },
+        {
+          "bucket": "unknown",
+          "rangePct": [0, 4],
+          "namedCompanyIds": []
+        }
+      ]
+    }
+  ],
+  "holdings": [
+    {
+      "id": "h-checking",
+      "label": "Checking — Colossus Bank",
+      "type": "cash",
+      "amount": 12000,
+      "ratings": {},
+      "political": null,
+      "companyId": "colossus-bank",
+      "targetBucket": "community-aligned"
+    },
+    {
+      "id": "h-savings",
+      "label": "Savings — First Prairie CU",
+      "type": "cash",
+      "amount": 6000,
+      "ratings": {},
+      "political": null,
+      "companyId": "first-prairie-cu"
+    },
+    {
+      "id": "h-401k",
+      "label": "Employer 401(k) — total-market index",
+      "type": "fund",
+      "amount": 32000,
+      "ratings": {
+        "local-economy": -2,
+        "labor": -1,
+        "environment": -1
+      },
+      "political": null,
+      "targetBucket": "broad-mixed"
+    },
+    {
+      "id": "h-roth",
+      "label": "Roth IRA — balanced fund",
+      "type": "fund",
+      "amount": 18000,
+      "ratings": {
+        "local-economy": 0,
+        "labor": 0,
+        "environment": 0
+      },
+      "political": null
+    },
+    {
+      "id": "h-403b",
+      "label": "Old 403(b) — unreviewed",
+      "type": "fund",
+      "amount": 2000,
+      "ratings": {},
+      "political": null
+    },
+    {
+      "id": "h-megatech",
+      "label": "MegaTech shares (brokerage)",
+      "type": "equity",
+      "amount": 9000,
+      "ratings": {
+        "local-economy": -2,
+        "labor": -1,
+        "environment": -1,
+        "privacy": -2
+      },
+      "political": {
+        "leanScore": -1,
+        "confidence": "low",
+        "sourceHint": "Illustrative — verify at OpenSecrets / FEC / Goods Unite Us",
+        "provenance": "user"
+      },
+      "targetBucket": "broad-mixed"
+    },
+    {
+      "id": "h-cdfi",
+      "label": "Community loan fund note",
+      "type": "other",
+      "amount": 2000,
+      "sleeve": "community",
+      "ratings": {
+        "local-economy": 2,
+        "labor": 1,
+        "environment": 1
+      },
+      "political": null
+    },
+    {
+      "id": "h-crypto",
+      "label": "Crypto wallet",
+      "type": "crypto",
+      "amount": 5000,
+      "ratings": {},
+      "political": null
+    }
+  ],
+  "userCompanies": [],
+  "importedCompanies": [],
+  "companyOverrides": {},
+  "bucketDefaults": {
+    "local": {
+      "local-economy": 2,
+      "labor": 1,
+      "environment": 1,
+      "political-alignment": 0,
+      "domestic-manufacturing": 1,
+      "privacy": 1,
+      "animal-welfare": 0
+    },
+    "regional": {
+      "local-economy": 0,
+      "labor": 0,
+      "environment": 0,
+      "political-alignment": 0,
+      "domestic-manufacturing": 0,
+      "privacy": 0,
+      "animal-welfare": 0
+    },
+    "major": {
+      "local-economy": -2,
+      "labor": -1,
+      "environment": -1,
+      "political-alignment": 0,
+      "domestic-manufacturing": -1,
+      "privacy": -1,
+      "animal-welfare": 0
+    },
+    "unknown": {
+      "local-economy": 0,
+      "labor": 0,
+      "environment": 0,
+      "political-alignment": 0,
+      "domestic-manufacturing": 0,
+      "privacy": 0,
+      "animal-welfare": 0
+    }
+  },
+  "gates": [
+    {
+      "id": "g1",
+      "label": "Day 30",
+      "effortBudget": 8
+    },
+    {
+      "id": "g2",
+      "label": "Day 60",
+      "effortBudget": 8
+    },
+    {
+      "id": "g3",
+      "label": "Day 90",
+      "effortBudget": 8
+    }
+  ],
+  "placements": {},
+  "dismissed": [],
+  "wizard": {
+    "step": 7,
+    "completed": true,
+    "targetsCustomized": true
+  }
+}

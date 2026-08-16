@@ -1,0 +1,1046 @@
+[
+  {
+    "id": "green-fields-coop",
+    "name": "Green Fields Co-op",
+    "sector": "Grocery",
+    "bucketDefault": "local",
+    "political": {
+      "leanScore": 1,
+      "confidence": "low",
+      "sourceHint": "Illustrative fictional archetype — no real-world counterpart. Ratings and lean are placeholders to demonstrate the tool. For real companies, verify via OpenSecrets · FEC.gov · Goods Unite Us.",
+      "provenance": "sample"
+    },
+    "ratings": {
+      "local-economy": 2,
+      "labor": 1,
+      "environment": 1,
+      "domestic-manufacturing": 1,
+      "privacy": 1,
+      "animal-welfare": 1
+    },
+    "ratingsProvenance": "sample",
+    "fictional": true
+  },
+  {
+    "id": "riverbend-farmers-market",
+    "name": "Riverbend Farmers Market",
+    "sector": "Grocery",
+    "bucketDefault": "local",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Illustrative fictional archetype — no real-world counterpart. Ratings and lean are placeholders to demonstrate the tool. For real companies, verify via OpenSecrets · FEC.gov · Goods Unite Us.",
+      "provenance": "sample"
+    },
+    "ratings": {
+      "local-economy": 2,
+      "labor": 1,
+      "environment": 2,
+      "domestic-manufacturing": 2,
+      "privacy": 2,
+      "animal-welfare": 1
+    },
+    "ratingsProvenance": "sample",
+    "fictional": true
+  },
+  {
+    "id": "nationalmart",
+    "name": "NationalMart",
+    "parentCompanyId": "omnicorp-holdings",
+    "sector": "Retail & grocery",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": -1,
+      "confidence": "low",
+      "sourceHint": "Illustrative fictional archetype — no real-world counterpart. Ratings and lean are placeholders to demonstrate the tool. For real companies, verify via OpenSecrets · FEC.gov · Goods Unite Us.",
+      "provenance": "sample"
+    },
+    "ratings": {
+      "local-economy": -2,
+      "labor": -1,
+      "environment": -1,
+      "domestic-manufacturing": -1,
+      "privacy": -1,
+      "animal-welfare": 0
+    },
+    "ratingsProvenance": "sample",
+    "fictional": true
+  },
+  {
+    "id": "bigbox-home-center",
+    "name": "BigBox Home Center",
+    "parentCompanyId": "omnicorp-holdings",
+    "sector": "Home improvement",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": -1,
+      "confidence": "low",
+      "sourceHint": "Illustrative fictional archetype — no real-world counterpart. Ratings and lean are placeholders to demonstrate the tool. For real companies, verify via OpenSecrets · FEC.gov · Goods Unite Us.",
+      "provenance": "sample"
+    },
+    "ratings": {
+      "local-economy": -2,
+      "labor": -1,
+      "environment": -1,
+      "domestic-manufacturing": -1,
+      "privacy": -1,
+      "animal-welfare": 0
+    },
+    "ratingsProvenance": "sample",
+    "fictional": true
+  },
+  {
+    "id": "omnicorp-holdings",
+    "name": "Omnicorp Holdings",
+    "sector": "Conglomerate (holding)",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": -1,
+      "confidence": "low",
+      "sourceHint": "Illustrative fictional archetype — no real-world counterpart. Ratings and lean are placeholders to demonstrate the tool. For real companies, verify via OpenSecrets · FEC.gov · Goods Unite Us.",
+      "provenance": "sample"
+    },
+    "ratings": {
+      "local-economy": -2,
+      "labor": -1,
+      "environment": -1,
+      "domestic-manufacturing": -1,
+      "privacy": -1,
+      "animal-welfare": 0
+    },
+    "ratingsProvenance": "sample",
+    "fictional": true
+  },
+  {
+    "id": "first-prairie-cu",
+    "name": "First Prairie Credit Union",
+    "sector": "Banking & insurance",
+    "bucketDefault": "local",
+    "political": {
+      "leanScore": 1,
+      "confidence": "low",
+      "sourceHint": "Illustrative fictional archetype — no real-world counterpart. Ratings and lean are placeholders to demonstrate the tool. For real companies, verify via OpenSecrets · FEC.gov · Goods Unite Us.",
+      "provenance": "sample"
+    },
+    "ratings": {
+      "local-economy": 2,
+      "labor": 1,
+      "environment": 1,
+      "domestic-manufacturing": 0,
+      "privacy": 2,
+      "animal-welfare": 0
+    },
+    "ratingsProvenance": "sample",
+    "fictional": true
+  },
+  {
+    "id": "meadowlark-mutual",
+    "name": "Meadowlark Insurance Mutual",
+    "sector": "Banking & insurance",
+    "bucketDefault": "regional",
+    "political": {
+      "leanScore": 0,
+      "confidence": "low",
+      "sourceHint": "Illustrative fictional archetype — no real-world counterpart. Ratings and lean are placeholders to demonstrate the tool. For real companies, verify via OpenSecrets · FEC.gov · Goods Unite Us.",
+      "provenance": "sample"
+    },
+    "ratings": {
+      "local-economy": 0,
+      "labor": 0,
+      "environment": 0,
+      "domestic-manufacturing": 0,
+      "privacy": 1,
+      "animal-welfare": 0
+    },
+    "ratingsProvenance": "sample",
+    "fictional": true
+  },
+  {
+    "id": "colossus-bank",
+    "name": "Colossus Bank",
+    "parentCompanyId": "colossus-financial-group",
+    "sector": "Banking & insurance",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": -2,
+      "confidence": "low",
+      "sourceHint": "Illustrative fictional archetype — no real-world counterpart. Ratings and lean are placeholders to demonstrate the tool. For real companies, verify via OpenSecrets · FEC.gov · Goods Unite Us.",
+      "provenance": "sample"
+    },
+    "ratings": {
+      "local-economy": -2,
+      "labor": -1,
+      "environment": -1,
+      "domestic-manufacturing": 0,
+      "privacy": -2,
+      "animal-welfare": 0
+    },
+    "ratingsProvenance": "sample",
+    "fictional": true
+  },
+  {
+    "id": "colossus-financial-group",
+    "name": "Colossus Financial Group",
+    "sector": "Financial holding",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": -2,
+      "confidence": "low",
+      "sourceHint": "Illustrative fictional archetype — no real-world counterpart. Ratings and lean are placeholders to demonstrate the tool. For real companies, verify via OpenSecrets · FEC.gov · Goods Unite Us.",
+      "provenance": "sample"
+    },
+    "ratings": {
+      "local-economy": -2,
+      "labor": -1,
+      "environment": -1,
+      "domestic-manufacturing": 0,
+      "privacy": -2,
+      "animal-welfare": 0
+    },
+    "ratingsProvenance": "sample",
+    "fictional": true
+  },
+  {
+    "id": "streambox-media",
+    "name": "StreamBox Media",
+    "parentCompanyId": "meridian-entertainment",
+    "sector": "Subscriptions & media",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": -1,
+      "confidence": "low",
+      "sourceHint": "Illustrative fictional archetype — no real-world counterpart. Ratings and lean are placeholders to demonstrate the tool. For real companies, verify via OpenSecrets · FEC.gov · Goods Unite Us.",
+      "provenance": "sample"
+    },
+    "ratings": {
+      "local-economy": -2,
+      "labor": -1,
+      "environment": -1,
+      "domestic-manufacturing": 0,
+      "privacy": -2,
+      "animal-welfare": 0
+    },
+    "ratingsProvenance": "sample",
+    "fictional": true
+  },
+  {
+    "id": "summit-streaming",
+    "name": "Summit Streaming",
+    "parentCompanyId": "meridian-entertainment",
+    "sector": "Subscriptions & media",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": 1,
+      "confidence": "low",
+      "sourceHint": "Illustrative fictional archetype — no real-world counterpart. Ratings and lean are placeholders to demonstrate the tool. For real companies, verify via OpenSecrets · FEC.gov · Goods Unite Us.",
+      "provenance": "sample"
+    },
+    "ratings": {
+      "local-economy": -2,
+      "labor": -1,
+      "environment": -1,
+      "domestic-manufacturing": 0,
+      "privacy": -1,
+      "animal-welfare": 0
+    },
+    "ratingsProvenance": "sample",
+    "fictional": true
+  },
+  {
+    "id": "meridian-entertainment",
+    "name": "Meridian Entertainment",
+    "sector": "Media conglomerate",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": -1,
+      "confidence": "low",
+      "sourceHint": "Illustrative fictional archetype — no real-world counterpart. Ratings and lean are placeholders to demonstrate the tool. For real companies, verify via OpenSecrets · FEC.gov · Goods Unite Us.",
+      "provenance": "sample"
+    },
+    "ratings": {
+      "local-economy": -2,
+      "labor": -1,
+      "environment": -1,
+      "domestic-manufacturing": 0,
+      "privacy": -2,
+      "animal-welfare": 0
+    },
+    "ratingsProvenance": "sample",
+    "fictional": true
+  },
+  {
+    "id": "hearth-and-hardware",
+    "name": "Hearth & Hardware",
+    "sector": "Home improvement",
+    "bucketDefault": "local",
+    "political": {
+      "leanScore": 0,
+      "confidence": "low",
+      "sourceHint": "Illustrative fictional archetype — no real-world counterpart. Ratings and lean are placeholders to demonstrate the tool. For real companies, verify via OpenSecrets · FEC.gov · Goods Unite Us.",
+      "provenance": "sample"
+    },
+    "ratings": {
+      "local-economy": 2,
+      "labor": 1,
+      "environment": 1,
+      "domestic-manufacturing": 1,
+      "privacy": 1,
+      "animal-welfare": 0
+    },
+    "ratingsProvenance": "sample",
+    "fictional": true
+  },
+  {
+    "id": "prairie-petro-coop",
+    "name": "Prairie Petro Co-op",
+    "sector": "Fuel & auto",
+    "bucketDefault": "regional",
+    "political": {
+      "leanScore": 0,
+      "confidence": "low",
+      "sourceHint": "Illustrative fictional archetype — no real-world counterpart. Ratings and lean are placeholders to demonstrate the tool. For real companies, verify via OpenSecrets · FEC.gov · Goods Unite Us.",
+      "provenance": "sample"
+    },
+    "ratings": {
+      "local-economy": 0,
+      "labor": 0,
+      "environment": 0,
+      "domestic-manufacturing": 1,
+      "privacy": 0,
+      "animal-welfare": 0
+    },
+    "ratingsProvenance": "sample",
+    "fictional": true
+  },
+  {
+    "id": "juniper-salon",
+    "name": "Juniper Salon",
+    "sector": "Personal care & services",
+    "bucketDefault": "local",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Illustrative fictional archetype — no real-world counterpart. Ratings and lean are placeholders to demonstrate the tool. For real companies, verify via OpenSecrets · FEC.gov · Goods Unite Us.",
+      "provenance": "sample"
+    },
+    "ratings": {
+      "local-economy": 2,
+      "labor": 1,
+      "environment": 1,
+      "domestic-manufacturing": 0,
+      "privacy": 1,
+      "animal-welfare": 1
+    },
+    "ratingsProvenance": "sample",
+    "fictional": true
+  },
+  {
+    "id": "copper-kettle-cafe",
+    "name": "Copper Kettle Café",
+    "sector": "Dining & coffee",
+    "bucketDefault": "local",
+    "political": {
+      "leanScore": 1,
+      "confidence": "low",
+      "sourceHint": "Illustrative fictional archetype — no real-world counterpart. Ratings and lean are placeholders to demonstrate the tool. For real companies, verify via OpenSecrets · FEC.gov · Goods Unite Us.",
+      "provenance": "sample"
+    },
+    "ratings": {
+      "local-economy": 2,
+      "labor": 1,
+      "environment": 1,
+      "domestic-manufacturing": 0,
+      "privacy": 1,
+      "animal-welfare": 1
+    },
+    "ratingsProvenance": "sample",
+    "fictional": true
+  },
+  {
+    "id": "burgerbarn",
+    "name": "BurgerBarn",
+    "parentCompanyId": "grillco-international",
+    "sector": "Dining & coffee",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": -1,
+      "confidence": "low",
+      "sourceHint": "Illustrative fictional archetype — no real-world counterpart. Ratings and lean are placeholders to demonstrate the tool. For real companies, verify via OpenSecrets · FEC.gov · Goods Unite Us.",
+      "provenance": "sample"
+    },
+    "ratings": {
+      "local-economy": -2,
+      "labor": -1,
+      "environment": -1,
+      "domestic-manufacturing": 0,
+      "privacy": -1,
+      "animal-welfare": -1
+    },
+    "ratingsProvenance": "sample",
+    "fictional": true
+  },
+  {
+    "id": "grillco-international",
+    "name": "Grillco International",
+    "sector": "Restaurant holding",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": -1,
+      "confidence": "low",
+      "sourceHint": "Illustrative fictional archetype — no real-world counterpart. Ratings and lean are placeholders to demonstrate the tool. For real companies, verify via OpenSecrets · FEC.gov · Goods Unite Us.",
+      "provenance": "sample"
+    },
+    "ratings": {
+      "local-economy": -2,
+      "labor": -1,
+      "environment": -1,
+      "domestic-manufacturing": 0,
+      "privacy": -1,
+      "animal-welfare": -1
+    },
+    "ratingsProvenance": "sample",
+    "fictional": true
+  },
+  {
+    "id": "whole-foods",
+    "name": "Whole Foods Market",
+    "parentCompanyId": "amazon",
+    "sector": "Grocery",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "trader-joes",
+    "name": "Trader Joe's",
+    "parentCompanyId": "aldi-nord",
+    "sector": "Grocery",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "kroger",
+    "name": "Kroger",
+    "sector": "Grocery",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "safeway",
+    "name": "Safeway",
+    "parentCompanyId": "albertsons",
+    "sector": "Grocery",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "walmart",
+    "name": "Walmart",
+    "sector": "Retail & grocery",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "target",
+    "name": "Target",
+    "sector": "Retail & grocery",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "costco",
+    "name": "Costco",
+    "sector": "Retail & grocery",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "starbucks",
+    "name": "Starbucks",
+    "sector": "Dining & coffee",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "mcdonalds",
+    "name": "McDonald's",
+    "sector": "Dining & coffee",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "chipotle",
+    "name": "Chipotle",
+    "sector": "Dining & coffee",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "dunkin",
+    "name": "Dunkin'",
+    "parentCompanyId": "inspire-brands",
+    "sector": "Dining & coffee",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "taco-bell",
+    "name": "Taco Bell",
+    "parentCompanyId": "yum-brands",
+    "sector": "Dining & coffee",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "shell",
+    "name": "Shell",
+    "parentCompanyId": "shell-plc",
+    "sector": "Fuel & auto",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "exxonmobil",
+    "name": "ExxonMobil",
+    "sector": "Fuel & auto",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "chevron",
+    "name": "Chevron",
+    "sector": "Fuel & auto",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "amazon",
+    "name": "Amazon",
+    "sector": "Retail & household",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "home-depot",
+    "name": "The Home Depot",
+    "sector": "Home improvement",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "lowes",
+    "name": "Lowe's",
+    "sector": "Home improvement",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "walgreens",
+    "name": "Walgreens",
+    "parentCompanyId": "walgreens-boots-alliance",
+    "sector": "Retail & household",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "cvs-pharmacy",
+    "name": "CVS Pharmacy",
+    "parentCompanyId": "cvs-health",
+    "sector": "Retail & household",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "netflix",
+    "name": "Netflix",
+    "sector": "Subscriptions & media",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "spotify",
+    "name": "Spotify",
+    "sector": "Subscriptions & media",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "disney-plus",
+    "name": "Disney+",
+    "parentCompanyId": "walt-disney-company",
+    "sector": "Subscriptions & media",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "hulu",
+    "name": "Hulu",
+    "parentCompanyId": "walt-disney-company",
+    "sector": "Subscriptions & media",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "verizon",
+    "name": "Verizon",
+    "sector": "Subscriptions & media",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "chase",
+    "name": "Chase",
+    "parentCompanyId": "jpmorgan-chase",
+    "sector": "Banking & insurance",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "bank-of-america",
+    "name": "Bank of America",
+    "sector": "Banking & insurance",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "wells-fargo",
+    "name": "Wells Fargo",
+    "sector": "Banking & insurance",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "capital-one",
+    "name": "Capital One",
+    "sector": "Banking & insurance",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "geico",
+    "name": "GEICO",
+    "parentCompanyId": "berkshire-hathaway",
+    "sector": "Banking & insurance",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "planet-fitness",
+    "name": "Planet Fitness",
+    "sector": "Personal care & services",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "ace-hardware",
+    "name": "Ace Hardware",
+    "sector": "Home improvement",
+    "bucketDefault": "regional",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "aldi-nord",
+    "name": "Aldi Nord",
+    "sector": "Grocery (holding)",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "albertsons",
+    "name": "Albertsons Companies",
+    "sector": "Grocery (holding)",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "inspire-brands",
+    "name": "Inspire Brands",
+    "sector": "Restaurant holding",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "yum-brands",
+    "name": "Yum! Brands",
+    "sector": "Restaurant holding",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "shell-plc",
+    "name": "Shell plc",
+    "sector": "Energy (holding)",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "walgreens-boots-alliance",
+    "name": "Walgreens Boots Alliance",
+    "sector": "Retail (holding)",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "cvs-health",
+    "name": "CVS Health",
+    "sector": "Health & retail (holding)",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "walt-disney-company",
+    "name": "The Walt Disney Company",
+    "sector": "Media conglomerate",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "jpmorgan-chase",
+    "name": "JPMorgan Chase & Co.",
+    "sector": "Financial holding",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  },
+  {
+    "id": "berkshire-hathaway",
+    "name": "Berkshire Hathaway",
+    "sector": "Conglomerate (holding)",
+    "bucketDefault": "major",
+    "political": {
+      "leanScore": null,
+      "confidence": "low",
+      "sourceHint": "Not rated in sample data (structure only: parent, sector, bucket). Verify PAC/employee giving at OpenSecrets org search, FEC.gov filings, or Goods Unite Us — then rate it yourself or import a community data pack.",
+      "provenance": "sample"
+    },
+    "ratings": {},
+    "ratingsProvenance": "sample",
+    "fictional": false
+  }
+]

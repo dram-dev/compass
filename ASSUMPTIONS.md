@@ -64,3 +64,26 @@ Numbered, append-only. Each entry: decision · rationale · phase.
 15. **CSV transaction import (EF10)**: shipped as a disabled "Coming soon" affordance in Step 4 unless
     time remains at P5. (P5)
 16. Per-merchant spend shares within a bucket: equal weights (spec allows for v1). (P1)
+
+## Added during P1
+
+17. **Political axis convention (sample data + step 3 copy).** `leanScore` sign: negative = donation
+    profile leaning conservative/Republican, positive = leaning progressive/Democratic (coarse, low
+    confidence). Step 3 names both ends so the user can pick which is "aligned"; every downstream
+    display is Aligned / Mixed / Opposed / Unknown in semantic colors only. Only fictional archetypes
+    carry a non-null lean in sample data (see #1). (P1)
+18. **Unrated → per-principle fallback** (refines #3): `r_i = company.ratings[i] ?? bucketDefault[bucket][i]`,
+    so a company rated on two principles uses bucket defaults for the rest rather than silent zeros. (P1)
+19. **Ranges around presets are symmetric** (`midpointsToRanges` and the Jordan fixture): half-width
+    shrinks near 0/100 so renormalized midpoints stay exact — needed for the 58.9 parity (a clamped
+    `[0,7]` band would move a 2% midpoint to 3.5%). (P1)
+20. **Goal-mode switch semantics:** switching mode always re-applies that preset's principle weights
+    (custom principles keep their weight; unlisted library principles → 0; `custom` leaves weights
+    alone). Target presets are re-applied only while `wizard.targetsCustomized` is false or via an
+    explicit "Reset targets to preset" action — a dashboard toggle never overwrites hand-set targets. (P1)
+21. **Investments "optimal"** = per-holding user-editable `targetBucket` (default from
+    `suggestedTargetBucket`); projected alignment uses a representative a per bucket
+    (community +0.8 / mixed 0 / major −0.8 / unknown 0) when the holding changes bucket. (P1)
+22. **Real-brand parent facts** in the sample set are limited to widely reported ownership (e.g.,
+    Whole Foods → Amazon; Trader Joe's → Aldi Nord; Hulu → Disney). Ace Hardware is bucketed
+    `regional` (retailer-owned cooperative) though individual stores are locally owned — user-editable. (P1)

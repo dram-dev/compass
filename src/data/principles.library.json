@@ -1,0 +1,37 @@
+[
+  {
+    "id": "local-economy",
+    "label": "Local economy",
+    "description": "Keep dollars recirculating with independent, locally owned businesses."
+  },
+  {
+    "id": "labor",
+    "label": "Labor practices",
+    "description": "Fair wages, safety, and the right to organize."
+  },
+  {
+    "id": "environment",
+    "label": "Environment",
+    "description": "Emissions, waste, land and water stewardship."
+  },
+  {
+    "id": "political-alignment",
+    "label": "Political alignment",
+    "description": "How a company's political-support profile relates to your own stated preference (step 3)."
+  },
+  {
+    "id": "domestic-manufacturing",
+    "label": "Domestic manufacturing",
+    "description": "Goods made and jobs kept in-country."
+  },
+  {
+    "id": "privacy",
+    "label": "Privacy",
+    "description": "Data collection, tracking, and resale practices."
+  },
+  {
+    "id": "animal-welfare",
+    "label": "Animal welfare",
+    "description": "Sourcing and testing standards."
+  }
+]
