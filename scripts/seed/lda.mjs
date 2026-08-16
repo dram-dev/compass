@@ -8,7 +8,7 @@ import { matchOrg, normOrg } from './orgmatch.mjs';
 
 export const LDA_BASE = 'https://lda.gov/api/v1';
 const key = () => process.env.LDA_API_KEY ?? '';
-const limiter = makeLimiter(key() ? 100 : 12, 60_000);
+const limiter = makeLimiter(key() ? 100 : 15, 60_000); // documented anonymous ceiling: 15/min
 const headers = () => ({
   Accept: 'application/json',
   ...(key() ? { Authorization: `Token ${key()}` } : {}),
@@ -73,30 +73,33 @@ export async function findClients(
  */
 export async function fetchFilingsForClients(clients, years, { offline = false } = {}) {
   const ids = new Set(clients.map((c) => Number(c.id)));
-  const names = [
-    ...new Set(clients.map((c) => c.name).filter((n) => n && !n.startsWith('(override'))),
-  ];
+  const names = [...new Set(clients.map((c) => c.name).filter((n) => n && !n.startsWith('(override')))];
+  const minYear = Math.min(...years);
+  const maxYear = Math.max(...years);
   const seen = new Set();
   const out = [];
   for (const name of names) {
-    for (const y of years) {
-      let page = 1;
-      while (page <= 20) {
-        const body = await ldaGet(
-          `filings/?client_name=${encodeURIComponent(name)}&filing_year=${y}&page_size=100&page=${page}`,
-          { offline },
-        );
-        if (!body) break;
-        for (const f of body.results ?? []) {
-          const cid = Number(f.client?.id ?? f.client?.client_id);
-          if (ids.has(cid) && !seen.has(f.filing_uuid)) {
-            seen.add(f.filing_uuid);
-            out.push(f);
-          }
+    // newest first; stop as soon as a page is entirely older than the earliest wanted year
+    let page = 1;
+    while (page <= 40) {
+      const body = await ldaGet(
+        `filings/?client_name=${encodeURIComponent(name)}&ordering=-dt_posted&page_size=100&page=${page}`,
+        { offline },
+      );
+      if (!body) break;
+      let allOlder = (body.results ?? []).length > 0;
+      for (const f of body.results ?? []) {
+        const fy = Number(f.filing_year);
+        if (fy >= minYear) allOlder = false;
+        if (fy < minYear || fy > maxYear) continue;
+        const cid = Number(f.client?.id ?? f.client?.client_id);
+        if (ids.has(cid) && !seen.has(f.filing_uuid)) {
+          seen.add(f.filing_uuid);
+          out.push(f);
         }
-        if (!body.next) break;
-        page++;
       }
+      if (!body.next || allOlder) break;
+      page++;
     }
   }
   // override-only ids (no name known) fall back to per-id queries
