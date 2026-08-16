@@ -136,3 +136,17 @@ Numbered, append-only. Each entry: decision · rationale · phase.
     footnote per plan (rather than a paragraph on every card). (P4)
 36. **Dev-only boot flag** `#/<route>?demo=1` loads Jordan synchronously before first render (used for
     the headless print check); compiled out of production by `import.meta.env.DEV`. (P4)
+
+## Added during P5
+
+37. **Data page** (`#/data`) gathers verification sources, JSON export/import (file picker or paste;
+    whole-file validation, specific error, nothing partial), community data packs (file/paste + example
+    download), the Advanced bucket-defaults table, and a two-step "Clear all local data" (no native
+    `confirm()` dialogs). (P5)
+38. **Error boundaries** wrap every numbered dashboard/plan section so one failing chart shows a retry
+    callout instead of blanking the page. (P5)
+39. **CI** (`.github/workflows/ci.yml`) runs lint, coverage (thresholds enforced) and build on push/PR;
+    not required by the spec, added because the repo is public. (P5)
+40. **Mobile**: responsive rules are ported from the reference (`scrollx` pan for wide charts, stacked
+    slider rows below 560px, 16px inputs on small screens); browser-automation viewport could not be
+    resized in this session so the phone layout was verified only by CSS review. (P5)

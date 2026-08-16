@@ -11,7 +11,7 @@ Spec: `docs/BUILD-PROMPT.md`. Reference demos: `reference/`. Judgment calls: `AS
 | P2 | Wizard steps 1–7, dual-range control, per-keystroke persistence, migrations | Jordan walkthrough; hard-refresh restores at any step | `P2: wizard` |
 | P3 | Dashboard: dial, sankey (lens × state), slope, political, radar, pareto, sticky goal toggle | re-score < 100 ms; zero/partial-data states | `P3: dashboard` |
 | P4 | Plan: gates config, generator, drag/dismiss, trajectory, `/plan` print view | Print-to-PDF clean; reallocation unit test | `P4: plan` |
-| P5 | Empty/error states, a11y pass, export/import, data-pack schema doc, README traceability | §14 checklist green | `P5: polish` |
+| P5 | Empty/error states, a11y pass, export/import, data-pack schema doc, README traceability | §14 checklist green ✅ (all gates P0–P5 committed) | `P5: polish` |
 
 ## Traceability — hard requirements
 

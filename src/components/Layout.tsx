@@ -33,6 +33,12 @@ function DevTools() {
 export function Layout() {
   return (
     <div className="wrap">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded focus:bg-ink focus:px-3 focus:py-2 focus:text-paper"
+      >
+        Skip to content
+      </a>
       <header className="border-b border-ink pb-5 pt-[34px] print:hidden">
         <div className="font-serif text-[30px] font-semibold tracking-brand max-[560px]:text-2xl max-[560px]:tracking-[.26em]">
           C<span className="text-brass">O</span>MPASS
@@ -59,7 +65,7 @@ export function Layout() {
           <DevTools />
         </nav>
       </header>
-      <main>
+      <main id="main" tabIndex={-1}>
         <Outlet />
       </main>
       <Footer />

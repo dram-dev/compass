@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { ErrorBoundary } from './ErrorBoundary';
 
 export function Section({
   no,
@@ -29,7 +30,7 @@ export function Section({
           {controls}
         </div>
       )}
-      {children}
+      <ErrorBoundary label={title}>{children}</ErrorBoundary>
     </section>
   );
 }

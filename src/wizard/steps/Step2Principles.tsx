@@ -3,6 +3,7 @@ import { PRINCIPLE_LIBRARY } from '@/data/principles';
 import { normalizeWeights } from '@/engine/normalize';
 import { POLITICAL_PRINCIPLE_ID } from '@/engine/types';
 import { useCompassStore } from '@/store/useCompassStore';
+import { BucketDefaultsPanel } from '@/components/BucketDefaultsPanel';
 
 export function Step2Principles() {
   const principles = useCompassStore((s) => s.principles);
@@ -114,6 +115,12 @@ export function Step2Principles() {
           </button>
         </form>
       </div>
+      <details className="mt-5 text-[12.5px]">
+        <summary className="cursor-pointer text-faint hover:text-ink">
+          Advanced: bucket-default ratings (what a bucket scores when you haven't named a merchant)
+        </summary>
+        <BucketDefaultsPanel />
+      </details>
       {principles.every((p) => p.weight === 0) && (
         <div className="callout">
           All weights are zero — every destination scores the same. Give at least one principle
