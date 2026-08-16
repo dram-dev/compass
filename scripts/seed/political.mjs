@@ -56,10 +56,13 @@ export function composeSourceHint({
 }) {
   const cyc = cycles.length ? `${Math.min(...cycles) - 1}–${Math.max(...cycles)}` : '';
   const parts = [];
-  const pacT = pac.D + pac.R + pac.O + pac.U;
-  const empT = emp.D + emp.R + emp.O + emp.U;
-  if (pacT > 0) parts.push(`PAC ${money(pacT)} (${split(pac.D, pac.R)})`);
-  if (empT > 0) parts.push(`employees ${money(empT)} (${split(emp.D, emp.R)})`);
+  const pacT = pac.D + pac.R;
+  const empT = emp.D + emp.R;
+  if (pacT > 0) parts.push(`PAC ${money(pacT)} to candidates/parties (${split(pac.D, pac.R)})`);
+  else if (pac.O + pac.U > 0)
+    parts.push(`PAC ${money(pac.O + pac.U)} to non-party recipients only`);
+  if (empT > 0)
+    parts.push(`employees ${money(empT)} to candidates/parties (${split(emp.D, emp.R)})`);
   const lobY = Object.keys(lobbyingByYear).map(Number).sort();
   const lobT = Object.values(lobbyingByYear).reduce((s, v) => s + v, 0);
   if (lobY.length && lobT > 0)

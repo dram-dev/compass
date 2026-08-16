@@ -203,15 +203,28 @@ export function inferPartiesFromRows(rows, candidates) {
   return out;
 }
 
+const TRANSFER_TX = new Set(['24K', '24Z', '24G']); // contributions + transfers to affiliated (JFC distributions)
+
+/**
+ * Two sources feed the inference for committees with no party code and no candidate link:
+ *  - pas2: their contributions / independent expenditures to candidates (leadership PACs, super PACs);
+ *  - oth:  their contributions / transfers to committees whose party is resolvable — joint fundraising
+ *          committees ("Harris Victory Fund", "Trump National Committee JFC") distribute to candidate and
+ *          party committees this way and otherwise look non-partisan.
+ */
 export async function inferCommitteeParties(cycle, ref, opts) {
   const pas2 = await downloadBulk(cycle, 'pas2', opts);
-  if (!pas2.path) return new Map();
+  const oth = await downloadBulk(cycle, 'oth', opts);
+  if (!pas2.path || !oth.path) return new Map();
+  const unresolved = (id) => {
+    const c = ref.committees.get(id);
+    return !!c && partyOf(c.party) === 'U' && !c.candId && !ref.links.has(id);
+  };
+  const base = makeRecipientPartyResolver(ref.committees, ref.candidates, ref.links);
   const rows = [];
   await streamZipLines(pas2.path, (f) => {
     const r = parsePas2(f);
-    const c = ref.committees.get(r.cmteId);
-    // only committees whose party we cannot otherwise resolve
-    if (c && partyOf(c.party) === 'U' && !c.candId && !ref.links.has(r.cmteId))
+    if (unresolved(r.cmteId))
       rows.push({
         cmteId: r.cmteId,
         candId: r.candId,
@@ -220,7 +233,18 @@ export async function inferCommitteeParties(cycle, ref, opts) {
         memo: r.memo,
       });
   });
-  return inferPartiesFromRows(rows, ref.candidates);
+  // oth recipients become pseudo-candidates carrying the party the base resolver gives them
+  const pseudo = new Map(ref.candidates);
+  await streamZipLines(oth.path, (f) => {
+    const r = parseOth(f);
+    if (!TRANSFER_TX.has(r.txType) || r.memo === 'X' || !r.otherId || !unresolved(r.cmteId)) return;
+    const p = base(r.otherId);
+    if (p !== 'D' && p !== 'R') return;
+    const key = `cmte:${r.otherId}`;
+    if (!pseudo.has(key)) pseudo.set(key, { party: p === 'D' ? 'DEM' : 'REP' });
+    rows.push({ cmteId: r.cmteId, candId: key, txType: '24K', amount: r.amount, memo: '' });
+  });
+  return inferPartiesFromRows(rows, pseudo);
 }
 
 /** Load the small reference files for a cycle. */

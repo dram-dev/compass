@@ -154,7 +154,11 @@ describe('FEC bulk parsing + party resolution', () => {
       { cmteId: 'MIXED', candId: 'R1', txType: '24K', amount: 6000, memo: '' },
       { cmteId: 'MEMO', candId: 'D1', txType: '24K', amount: 50000, memo: 'X' },
     ];
+    // JFC-style: transfers to committees whose party resolved via the base resolver appear as pseudo-candidates
+    cands.set('cmte:C00DNC', { party: 'DEM' });
+    rows.push({ cmteId: 'JFC', candId: 'cmte:C00DNC', txType: '24K', amount: 1_000_000, memo: '' });
     const inf = inferPartiesFromRows(rows, cands);
+    expect(inf.get('JFC')).toBe('D');
     expect(inf.get('LEAD')).toBe('R'); // 12k of 13k
     expect(inf.get('SUPER')).toBe('R');
     expect(inf.has('SMALL')).toBe(false);
@@ -331,7 +335,7 @@ describe('lean derivation', () => {
       lean,
     });
     expect(hint).toMatch(
-      /FEC 2021–2024: PAC \$1\.1M \(D 60% \/ R 40%\); employees \$1\.0M \(D 90% \/ R 10%\); lobbying \$39\.0M \(2023–2024, Senate LDA\)\./,
+      /FEC 2021–2024: PAC \$1\.0M to candidates\/parties \(D 60% \/ R 40%\); employees \$1\.0M to candidates\/parties \(D 90% \/ R 10%\); lobbying \$39\.0M \(2023–2024, Senate LDA\)\./,
     );
     expect(hint).toMatch(/Lean \+1 \(r=-0\.50, high confidence\)/);
     expect(hint).toMatch(/fec\.gov\/data\/committee\/C00360354/);
