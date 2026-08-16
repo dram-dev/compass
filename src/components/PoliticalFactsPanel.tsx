@@ -71,7 +71,7 @@ export function PoliticalFactCard({ f }: { f: PoliticalFact }) {
       </div>
       <div className="mt-2 grid gap-1.5">
         <SplitBar s={f.totals.pac} label="Company PAC" />
-        <SplitBar s={f.totals.employee} label="Employees" />
+        <SplitBar s={f.totals.employee} label="Employees*" />
         {f.totals.pac.D + f.totals.pac.R + f.totals.pac.O + f.totals.pac.U === 0 &&
           f.totals.employee.D + f.totals.employee.R + f.totals.employee.O + f.totals.employee.U ===
             0 && (
@@ -100,6 +100,11 @@ export function PoliticalFactCard({ f }: { f: PoliticalFact }) {
           )}
         </div>
       )}
+      <p className="mt-1.5 text-[11px] text-faint">
+        *Individuals who listed the company as employer — including executives and founders. Grey =
+        non-party recipients (the company's own PAC, bipartisan groups); the lean uses only dollars
+        to Democratic vs Republican candidates, parties, and their aligned committees.
+      </p>
       <details className="mt-2 text-[11.5px] text-faint">
         <summary className="cursor-pointer hover:text-ink">
           How this was matched · verify links

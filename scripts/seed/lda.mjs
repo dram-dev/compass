@@ -39,9 +39,11 @@ export async function findClients(
     String(id).startsWith('!')
       ? excluded.add(Number(String(id).slice(1)))
       : forced.set(Number(id), 'override');
-  for (const alias of aliases) {
-    const q = normOrg(alias);
-    if (q.length < 3) continue;
+  // The client_name filter is a substring match, so only "root" aliases (not containing a shorter alias
+  // of the same company) need to be searched: AMAZON covers AMAZON COM SERVICES; AWS and ZAPPOS are roots.
+  const norms = [...new Set(aliases.map((a) => normOrg(a)).filter((q) => q.length >= 3))];
+  const roots = norms.filter((q) => !norms.some((o) => o !== q && q.includes(o)));
+  for (const q of roots) {
     let page = 1;
     while (page <= 5) {
       const body = await ldaGet(
