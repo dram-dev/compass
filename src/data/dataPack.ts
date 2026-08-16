@@ -122,7 +122,7 @@ export function parseDataPack(text: string): DataPackParse {
       ratingsProvenance: 'imported',
       fictional: false,
       source,
-      ...(isStr(c.ticker) && /^[A-Z][A-Z0-9.\-]{0,9}$/.test(c.ticker.trim().toUpperCase())
+      ...(isStr(c.ticker) && /^[A-Z][A-Z0-9.-]{0,9}$/.test(c.ticker.trim().toUpperCase())
         ? { ticker: c.ticker.trim().toUpperCase() }
         : {}),
     });
