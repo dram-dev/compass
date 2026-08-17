@@ -1,6 +1,6 @@
 {
   "schema": "compass-political-validation-sample",
-  "generatedAt": "2026-08-17T05:26:12.822Z",
+  "generatedAt": "2026-08-17T12:18:07.961Z",
   "note": "Phase B validation sample (docs/PLAN-political-axes.md). Comparator numbers are hand-recorded and validation-only; never imported by src/.",
   "companies": [
     {

@@ -214,10 +214,21 @@ export const COMPARATOR_COLUMNS = [
   'opensecrets_dem_pct',
   'opensecrets_rep_pct',
   'opensecrets_cycle',
+  'opensecrets_3cyc_dem_usd',
+  'opensecrets_3cyc_rep_usd',
+  'opensecrets_org_id',
   'opensecrets_url',
+  'opensecrets_pac_dem_usd_3cyc',
+  'opensecrets_pac_rep_usd_3cyc',
+  'opensecrets_pac_ids',
   'guu_dem_pct',
   'guu_rep_pct',
+  'guu_volume',
+  'guu_company_pct',
+  'guu_exec_pct',
+  'guu_slug',
   'guu_url',
+  'source_note',
   'notes',
 ];
 export function buildSample(db) {
@@ -238,10 +249,21 @@ export function buildSample(db) {
     opensecrets_dem_pct: '',
     opensecrets_rep_pct: '',
     opensecrets_cycle: '',
+    opensecrets_3cyc_dem_usd: '',
+    opensecrets_3cyc_rep_usd: '',
+    opensecrets_org_id: '',
     opensecrets_url: os(r.name),
+    opensecrets_pac_dem_usd_3cyc: '',
+    opensecrets_pac_rep_usd_3cyc: '',
+    opensecrets_pac_ids: '',
     guu_dem_pct: '',
     guu_rep_pct: '',
-    guu_url: 'https://www.goodsuniteus.com/',
+    guu_volume: '',
+    guu_company_pct: '',
+    guu_exec_pct: '',
+    guu_slug: '',
+    guu_url: 'https://www.goodsuniteus.com/brands/',
+    source_note: '',
     notes: '',
   }));
   return { rows, csvRows };
@@ -270,7 +292,12 @@ export function writeSample(db) {
       const p = prev.get(r.symbol);
       if (!p) continue;
       for (const k of COMPARATOR_COLUMNS)
-        if (k.startsWith('opensecrets_') || k.startsWith('guu_') || k === 'notes')
+        if (
+          k.startsWith('opensecrets_') ||
+          k.startsWith('guu_') ||
+          k === 'notes' ||
+          k === 'source_note'
+        )
           if (p[k]) r[k] = p[k];
     }
   }
@@ -362,6 +389,12 @@ export function validateComparators(rows) {
   const ours = ['our_pac_pctR', 'our_exec_pctR', 'our_employee_pctR', 'our_pooled_pctR'];
   const comps = {
     opensecrets: rows.map((r) => pctFromDemRep(r.opensecrets_dem_pct, r.opensecrets_rep_pct)),
+    opensecrets3: rows.map((r) =>
+      pctFromDemRep(r.opensecrets_3cyc_dem_usd, r.opensecrets_3cyc_rep_usd),
+    ),
+    opensecretsPac: rows.map((r) =>
+      pctFromDemRep(r.opensecrets_pac_dem_usd_3cyc, r.opensecrets_pac_rep_usd_3cyc),
+    ),
     guu: rows.map((r) => pctFromDemRep(r.guu_dem_pct, r.guu_rep_pct)),
   };
   const out = {};
@@ -375,14 +408,21 @@ export function validateComparators(rows) {
   }
   const recorded = {
     opensecrets: comps.opensecrets.filter(Number.isFinite).length,
+    opensecrets3: comps.opensecrets3.filter(Number.isFinite).length,
+    opensecretsPac: comps.opensecretsPac.filter(Number.isFinite).length,
     guu: comps.guu.filter(Number.isFinite).length,
     total: rows.length,
+    draft: rows.filter((r) => /draft/i.test(r.source_note ?? '')).length,
   };
-  const pacRho = Math.max(
-    out.opensecrets.our_pac_pctR.rho ?? -1,
-    out.guu.our_pac_pctR.rho ?? -1,
-    out.guu.our_exec_pctR.rho ?? -1,
-  );
+  // The PAC stream is judged against a PAC-only comparator (OpenSecrets committee pages, 3 cycles);
+  // blended comparators fall back only when no PAC-only figures were recorded.
+  const pacRho =
+    out.opensecretsPac.our_pac_pctR.rho ??
+    Math.max(
+      out.opensecrets.our_pac_pctR.rho ?? -1,
+      out.opensecrets3.our_pac_pctR.rho ?? -1,
+      out.guu.our_pac_pctR.rho ?? -1,
+    );
   return {
     rho: out,
     recorded,
@@ -438,21 +478,21 @@ export function renderValidationMarkdown({ comparators, review, position, genera
   if (!comparators) L.push('_comparators.csv not found — run `sample` first._', '');
   else {
     L.push(
-      `Recorded: OpenSecrets ${comparators.recorded.opensecrets}/${comparators.recorded.total} · Goods Unite Us ${comparators.recorded.guu}/${comparators.recorded.total}. Comparators are validation-only (CC BY-NC-SA / proprietary) and never shipped.`,
+      `Recorded: OpenSecrets org ${comparators.recorded.opensecrets}/${comparators.recorded.total} (3-cycle amounts ${comparators.recorded.opensecrets3}; PAC-only committee pages ${comparators.recorded.opensecretsPac}) · Goods Unite Us ${comparators.recorded.guu}/${comparators.recorded.total}${comparators.recorded.draft ? ` · **${comparators.recorded.draft} rows are machine-read drafts, not yet hand-verified**` : ''}. Comparators are validation-only (CC BY-NC-SA / proprietary) and never shipped.`,
       '',
     );
     L.push(
-      '| Our stream (%R of D+R) | vs OpenSecrets (blended, latest cycle) | vs GUU (PAC + execs, 3 cycles) |',
-      '|---|---|---|',
+      '| Our stream (%R of D+R) | vs OpenSecrets PAC-only, 2020–24 (committee pages, to candidates) | vs OpenSecrets 2024 org (blended: PAC + individuals + org) | vs OpenSecrets 2020–24 org blended | vs GUU (PAC + senior execs, 3 cycles) |',
+      '|---|---|---|---|---|',
     );
     const f = (x) => (x.rho === null ? `— (n=${x.n})` : `ρ = ${x.rho} (n=${x.n})`);
     for (const o of ['our_pac_pctR', 'our_exec_pctR', 'our_employee_pctR', 'our_pooled_pctR'])
       L.push(
-        `| ${o.replace('our_', '').replace('_pctR', '')} | ${f(comparators.rho.opensecrets[o])} | ${f(comparators.rho.guu[o])} |`,
+        `| ${o.replace('our_', '').replace('_pctR', '')} | ${f(comparators.rho.opensecretsPac[o])} | ${f(comparators.rho.opensecrets[o])} | ${f(comparators.rho.opensecrets3[o])} | ${f(comparators.rho.guu[o])} |`,
       );
     L.push(
       '',
-      `**Pass (ρ ≥ ${PASS.rhoPac} on the PAC stream): ${comparators.pacRho === null ? 'not yet computable' : comparators.pass ? 'yes' : 'no'}${comparators.pacRho === null ? '' : ` (best PAC/exec ρ = ${comparators.pacRho})`}**`,
+      `**Pass (ρ ≥ ${PASS.rhoPac}, our PAC stream vs the PAC-only comparator): ${comparators.pacRho === null ? 'not yet computable' : comparators.pass ? 'yes' : 'no'}${comparators.pacRho === null ? '' : ` (ρ = ${comparators.pacRho})`}**`,
       '',
     );
   }

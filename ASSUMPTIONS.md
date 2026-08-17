@@ -274,4 +274,13 @@ Numbered, append-only. Each entry: decision · rationale · phase.
     blocks; company names hidden by default in the rating page. Labels: protection / market-opening /
     neutral; the rating page is a self-contained local HTML file (no network) writing
     `ratings-<name>.jsonl`. Decision rule κ ≥ 0.7 as in the plan. (PD)
+71. **Comparator drafts were machine-read, and say so.** The 40-firm sheet is pre-filled from the public
+    OpenSecrets org Totals table (2020/2022/2024, blended PAC + individuals + org), the OpenSecrets
+    PAC-only committee pages (to federal candidates, 3 cycles, summed across a company's matched
+    committees) and Goods Unite Us brand pages (24 readable; 15 hidden behind their paid Index Align, 1
+    not found), each row marked `source_note = draft…` until a person verifies it. The PAC stream is
+    judged against the PAC-only comparator (like for like); blended comparators are reported alongside.
+    Known denominator differences: OpenSecrets PAC pages count gifts to candidates only (we include party
+    committees and leadership PACs), and its org D/R % excludes non-partisan money as we do. Draft
+    result: PAC ρ = 0.77 (n=29; 25 of 29 within ±5 pts), pooled vs blended ρ = 0.96 (n=40). (PB)
 

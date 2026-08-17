@@ -829,10 +829,29 @@ describe('validation library (Phases B/D)', () => {
       },
     ];
     const v = validateComparators(rows);
-    expect(v.recorded).toEqual({ opensecrets: 3, guu: 0, total: 4 });
+    expect(v.recorded).toMatchObject({
+      opensecrets: 3,
+      opensecretsPac: 0,
+      guu: 0,
+      total: 4,
+      draft: 0,
+    });
     expect(v.rho.opensecrets.our_pac_pctR).toEqual({ rho: 1, n: 3 });
     expect(v.rho.guu.our_pac_pctR.rho).toBeNull();
-    expect(v.pass).toBe(true);
+    expect(v.pass).toBe(true); // falls back to blended comparators when no PAC-only figures exist
+    // PAC-only comparator takes precedence for the PAC-stream pass rule; drafts are counted
+    const withPac = rows.map((r, i) => ({
+      ...r,
+      source_note: 'draft: machine-read',
+      opensecrets_pac_dem_usd_3cyc: ['40', '60', '20', ''][i],
+      opensecrets_pac_rep_usd_3cyc: ['60', '40', '80', ''][i],
+    }));
+    const v2 = validateComparators(withPac);
+    expect(v2.recorded.opensecretsPac).toBe(3);
+    expect(v2.recorded.draft).toBe(4);
+    expect(v2.rho.opensecretsPac.our_pac_pctR.n).toBe(3);
+    expect(v2.pacRho).toBe(v2.rho.opensecretsPac.our_pac_pctR.rho); // ours 60,50,70 vs 60,40,80 → ρ = 1
+    expect(v2.pass).toBe(true);
     const review = validateMatchReview([
       {
         kind: 'fec-committee',
