@@ -13,6 +13,18 @@ export function openDb(dbPath = CONFIG.dbPath) {
   }
   db.exec(readFileSync(CONFIG.schemaPath, 'utf8'));
   // Additive columns on existing tables (SQLite has no ADD COLUMN IF NOT EXISTS).
+  const ccols = new Set(
+    db
+      .prepare('PRAGMA table_info(company)')
+      .all()
+      .map((r) => r.name),
+  );
+  for (const [c, t] of [
+    ['sic', 'TEXT'],
+    ['public_float', 'REAL'],
+    ['shares_asof', 'TEXT'],
+  ])
+    if (!ccols.has(c)) db.exec(`ALTER TABLE company ADD COLUMN ${c} ${t}`);
   const cols = new Set(
     db
       .prepare('PRAGMA table_info(fund_holding)')
@@ -52,22 +64,50 @@ export function log(db, source, endpoint, key, status, detail = null) {
 }
 
 export function upsertCompany(db, c) {
+  // Merge semantics: new non-null values win; nulls never erase existing data (SEC + Alpha Vantage complement each other).
+  const cols = [
+    'name',
+    'asset_type',
+    'exchange',
+    'currency',
+    'country',
+    'sector',
+    'industry',
+    'description',
+    'cik',
+    'fiscal_year_end',
+    'market_cap',
+    'ebitda',
+    'pe_ratio',
+    'peg_ratio',
+    'book_value',
+    'dividend_yield',
+    'eps',
+    'revenue_ttm',
+    'gross_profit_ttm',
+    'profit_margin',
+    'operating_margin_ttm',
+    'roa_ttm',
+    'roe_ttm',
+    'beta',
+    'week52_high',
+    'week52_low',
+    'shares_outstanding',
+    'overview_json',
+    'sic',
+    'public_float',
+    'shares_asof',
+  ];
+  const row = { symbol: c.symbol, source: c.source, fetched_at: c.fetched_at };
+  for (const k of cols) row[k] = c[k] === undefined ? null : c[k];
+  const sets = cols.map((k) => `${k}=COALESCE(excluded.${k}, company.${k})`).join(', ');
   db.prepare(
-    `INSERT INTO company (symbol,name,asset_type,exchange,currency,country,sector,industry,description,cik,fiscal_year_end,
-      market_cap,ebitda,pe_ratio,peg_ratio,book_value,dividend_yield,eps,revenue_ttm,gross_profit_ttm,profit_margin,operating_margin_ttm,
-      roa_ttm,roe_ttm,beta,week52_high,week52_low,shares_outstanding,overview_json,source,fetched_at)
-    VALUES (@symbol,@name,@asset_type,@exchange,@currency,@country,@sector,@industry,@description,@cik,@fiscal_year_end,
-      @market_cap,@ebitda,@pe_ratio,@peg_ratio,@book_value,@dividend_yield,@eps,@revenue_ttm,@gross_profit_ttm,@profit_margin,@operating_margin_ttm,
-      @roa_ttm,@roe_ttm,@beta,@week52_high,@week52_low,@shares_outstanding,@overview_json,@source,@fetched_at)
-    ON CONFLICT(symbol) DO UPDATE SET name=excluded.name, asset_type=excluded.asset_type, exchange=excluded.exchange, currency=excluded.currency,
-      country=excluded.country, sector=excluded.sector, industry=excluded.industry, description=excluded.description, cik=excluded.cik,
-      fiscal_year_end=excluded.fiscal_year_end, market_cap=excluded.market_cap, ebitda=excluded.ebitda, pe_ratio=excluded.pe_ratio,
-      peg_ratio=excluded.peg_ratio, book_value=excluded.book_value, dividend_yield=excluded.dividend_yield, eps=excluded.eps,
-      revenue_ttm=excluded.revenue_ttm, gross_profit_ttm=excluded.gross_profit_ttm, profit_margin=excluded.profit_margin,
-      operating_margin_ttm=excluded.operating_margin_ttm, roa_ttm=excluded.roa_ttm, roe_ttm=excluded.roe_ttm, beta=excluded.beta,
-      week52_high=excluded.week52_high, week52_low=excluded.week52_low, shares_outstanding=excluded.shares_outstanding,
-      overview_json=excluded.overview_json, source=excluded.source, fetched_at=excluded.fetched_at`,
-  ).run(c);
+    `INSERT INTO company (symbol,${cols.join(',')},source,fetched_at)
+    VALUES (@symbol,${cols.map((k) => '@' + k).join(',')},@source,@fetched_at)
+    ON CONFLICT(symbol) DO UPDATE SET ${sets},
+      source = CASE WHEN instr(company.source, excluded.source) > 0 THEN company.source ELSE company.source || '+' || excluded.source END,
+      fetched_at = excluded.fetched_at`,
+  ).run(row);
 }
 
 export function upsertPeriod(db, p) {

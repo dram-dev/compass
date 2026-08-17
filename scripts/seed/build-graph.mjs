@@ -1,6 +1,7 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { CONFIG } from './config.mjs';
+import { computePoliticalFacts } from './seed-political.mjs';
 
 /**
  * Step 3 — the connection graph. Nodes: top-N funds + the companies they hold. Edges: holding weight.
@@ -20,6 +21,41 @@ export function buildGraph(
   const topHoldings = db.prepare(
     `SELECT holding_symbol AS symbol, holding_name AS name, weight FROM fund_holding WHERE fund_symbol = ? ORDER BY weight DESC LIMIT ?`,
   );
+  // Political look-through: fund assets by the FEC/LDA-derived lean of the companies held (see docs/political-seed.md).
+  let leanBySymbol = new Map();
+  try {
+    const facts = computePoliticalFacts(db).facts;
+    leanBySymbol = new Map(Object.values(facts).map((f) => [f.symbol, f.lean?.leanScore ?? null]));
+  } catch {
+    /* political tables absent */
+  }
+  const exposureRows = db
+    .prepare(
+      `SELECT fund_symbol AS fund, holding_symbol AS symbol, weight, asset_cat, issuer_cat FROM fund_holding_effective`,
+    )
+    .all();
+  const exposure = new Map();
+  for (const r of exposureRows) {
+    const e = exposure.get(r.fund) ?? {
+      '-2': 0,
+      '-1': 0,
+      0: 0,
+      1: 0,
+      2: 0,
+      unknown: 0,
+      nonCompany: 0,
+      coverage: 0,
+    };
+    const corporate =
+      (r.issuer_cat === null || r.issuer_cat === 'CORP') &&
+      (r.asset_cat === null || ['EC', 'EP', 'DBT'].includes(r.asset_cat));
+    if (!corporate || !r.symbol) e.nonCompany += r.weight;
+    else if (leanBySymbol.has(r.symbol) && leanBySymbol.get(r.symbol) !== null)
+      e[String(leanBySymbol.get(r.symbol))] += r.weight;
+    else e.unknown += r.weight;
+    e.coverage += r.weight;
+    exposure.set(r.fund, e);
+  }
   const fundNodes = funds.map((f) => ({
     symbol: f.symbol,
     name: f.name,
@@ -33,6 +69,7 @@ export function buildGraph(
     asOf: f.holdings_as_of,
     proxyOf: f.proxy_of,
     topHoldings: topHoldings.all(f.symbol, topHoldingsPerFund),
+    leanExposure: exposure.get(f.symbol) ?? null,
   }));
 
   const conc = db
@@ -58,6 +95,7 @@ export function buildGraph(
     aumWeightedUsd: r.aum_weighted_usd,
     // "% of this company's market cap held by the top-N funds" when both sides are known
     shareOfMarketCap: r.market_cap ? r.aum_weighted_usd / r.market_cap : null,
+    lean: leanBySymbol.has(r.symbol) ? leanBySymbol.get(r.symbol) : undefined, // undefined = no facts; null = below threshold
   }));
 
   const edgeRows = db
@@ -98,6 +136,8 @@ export function buildGraph(
       mutualFundHoldings:
         'SEC EDGAR Form N-PORT primary documents (public); index funds may proxy an ETF share class',
       companies: 'Alpha Vantage OVERVIEW / INCOME_STATEMENT / BALANCE_SHEET / CASH_FLOW',
+      political:
+        'leanExposure buckets fund assets by the FEC/LDA-derived lean (docs/political-seed.md) of each held company; nonCompany = governments, cash, unresolved funds; unknown = companies without a lean.',
       note: 'Weights are as-of each fund’s latest report; AUM-weighted dollars are approximate. Educational, not investment advice.',
     },
     funds: fundNodes,

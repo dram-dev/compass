@@ -1,11 +1,15 @@
 import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
+  classifyExposure,
   COMPANY_BY_SYMBOL,
   FUND_BY_SYMBOL,
   FUND_CONCENTRATION,
   fundsHolding,
   hasFundData,
+  type FundNode,
 } from '@/data/fundConcentration';
+import { useCompassStore } from '@/store/useCompassStore';
 import { fmtMoneyK } from '@/lib/format';
 
 const pct = (w: number, d = 1) => `${(w * 100).toFixed(d)}%`;
@@ -17,6 +21,61 @@ const money = (n: number | null) =>
       : n >= 1e9
         ? `$${(n / 1e9).toFixed(1)}B`
         : fmtMoneyK(n);
+
+/** Fund assets by political class of the companies held, relative to the user's preference (§6.4). */
+function ExposureBar({ fund }: { fund: FundNode }) {
+  const political = useCompassStore((s) => s.political);
+  const e = fund.leanExposure;
+  if (!e) return null;
+  const configured = political.configured && political.direction !== 0;
+  const c = classifyExposure(e, configured ? political.direction : 0);
+  const total = c.aligned + c.mixed + c.opposed + c.unknown + c.nonCompany || 1;
+  const seg = (v: number, bg: string, title: string) => (
+    <span
+      key={title}
+      className="h-full"
+      title={`${title} ${pct(v / total)}`}
+      style={{ width: `${(v / total) * 100}%`, background: bg }}
+    />
+  );
+  return (
+    <div className="mt-2 text-[12px]">
+      <div className="flex flex-wrap items-baseline gap-2 text-faint">
+        <span>
+          Political exposure of this fund's assets{configured ? ' (relative to you)' : ''}
+        </span>
+        {!configured && (
+          <Link to="/wizard/3" className="underline-offset-2 hover:underline">
+            configure your preference to classify →
+          </Link>
+        )}
+      </div>
+      <div
+        className="mt-1 flex h-3.5 overflow-hidden rounded-sm border border-rule"
+        role="img"
+        aria-label={`Aligned ${pct(c.aligned / total)}, Mixed ${pct(c.mixed / total)}, Opposed ${pct(c.opposed / total)}, Unknown ${pct(c.unknown / total)}, non-company assets ${pct(c.nonCompany / total)}`}
+      >
+        {seg(c.aligned, 'var(--aligned)', 'Aligned')}
+        {seg(c.mixed, 'var(--mixed)', 'Mixed')}
+        {seg(c.opposed, 'var(--opposed)', 'Opposed')}
+        {seg(c.unknown, 'var(--unknown)', 'Unknown')}
+        {seg(c.nonCompany, 'var(--rule)', 'Governments, cash & other non-company assets')}
+      </div>
+      <div className="mt-1 flex flex-wrap gap-x-3 font-mono text-[11px] text-faint">
+        <span>Aligned {pct(c.aligned / total)}</span>
+        <span>Mixed {pct(c.mixed / total)}</span>
+        <span>Opposed {pct(c.opposed / total)}</span>
+        <span>Unknown {pct(c.unknown / total)}</span>
+        <span>gov/cash/other {pct(c.nonCompany / total)}</span>
+      </div>
+      <p className="mt-1 text-[11px] text-faint">
+        Company leans come from FEC PAC + employee giving and Senate LDA lobbying (Data → Political
+        money facts). Unknown = held companies without enough public data, plus positions beyond the
+        top 250 stored per fund — never guessed.
+      </p>
+    </div>
+  );
+}
 
 /**
  * Fund look-through: which companies the top-N most-held funds concentrate in (research DB export).
@@ -74,6 +133,7 @@ export function FundLookthroughPanel() {
               {fund.holdingsSource} · as of {fund.asOf ?? '?'}
             </span>
           </div>
+          <ExposureBar fund={fund} />
           <ol className="mt-2 grid gap-1 sm:grid-cols-2">
             {fund.topHoldings.map((h, i) => (
               <li
@@ -103,6 +163,14 @@ export function FundLookthroughPanel() {
             <span className="chip">≈ {money(company.aumWeightedUsd)} of fund assets</span>
             {company.shareOfMarketCap !== null && (
               <span className="chip">≈ {pct(company.shareOfMarketCap)} of market cap</span>
+            )}
+            {company.lean !== undefined && (
+              <span className="chip">
+                FEC lean{' '}
+                {company.lean === null
+                  ? 'not assigned'
+                  : `${company.lean > 0 ? '+' : ''}${company.lean}`}
+              </span>
             )}
           </div>
           <ol className="mt-2 grid gap-1 sm:grid-cols-2">
@@ -137,6 +205,7 @@ export function FundLookthroughPanel() {
               <th className="px-2 py-2 text-right font-normal">Funds</th>
               <th className="px-2 py-2 text-right font-normal">Max weight</th>
               <th className="px-2 py-2 font-normal">in</th>
+              <th className="px-2 py-2 text-right font-normal">FEC lean</th>
               <th className="px-4 py-2 text-right font-normal">Fund $ pointed at it</th>
             </tr>
           </thead>
@@ -164,6 +233,13 @@ export function FundLookthroughPanel() {
                   >
                     {c.maxWeightFund}
                   </button>
+                </td>
+                <td className="px-2 py-1.5 text-right font-mono">
+                  {c.lean === undefined
+                    ? '—'
+                    : c.lean === null
+                      ? 'n/a'
+                      : `${c.lean > 0 ? '+' : ''}${c.lean}`}
                 </td>
                 <td className="px-4 py-1.5 text-right font-mono">{money(c.aumWeightedUsd)}</td>
               </tr>

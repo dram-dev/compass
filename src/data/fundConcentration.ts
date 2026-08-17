@@ -13,7 +13,18 @@ export interface FundNode {
   holdingsSource: string;
   asOf: string | null;
   proxyOf: string | null;
-  topHoldings: { symbol: string | null; name: string; weight: number }[];
+  topHoldings: { symbol: string | null; name: string; weight: number; via?: string | null }[];
+  leanExposure?: LeanExposure | null;
+}
+export interface LeanExposure {
+  '-2': number;
+  '-1': number;
+  '0': number;
+  '1': number;
+  '2': number;
+  unknown: number;
+  nonCompany: number;
+  coverage: number;
 }
 export interface CompanyNode {
   symbol: string;
@@ -28,6 +39,7 @@ export interface CompanyNode {
   avgWeight: number;
   aumWeightedUsd: number;
   shareOfMarketCap: number | null;
+  lean?: number | null; // FEC/LDA-derived lean (−2..+2); null = below threshold; undefined = no facts
 }
 export interface FundConcentrationGraph {
   schema: string;
@@ -57,4 +69,31 @@ export function fundsHolding(symbol: string): { fund: FundNode; weight: number }
     .map((e) => ({ fund: FUND_BY_SYMBOL[e.fund]!, weight: e.weight }))
     .filter((x) => !!x.fund)
     .sort((a, b) => b.weight - a.weight);
+}
+
+/**
+ * Fund political exposure relative to the user's preference (§6.4 classes). Unconfigured → everything
+ * Unknown except nonCompany. Returns fractions of fund assets.
+ */
+export function classifyExposure(e: LeanExposure, direction: -1 | 0 | 1) {
+  // holdings beyond the stored top-250 (1 − coverage) are unassessed → Unknown, never redistributed
+  const out = {
+    aligned: 0,
+    mixed: 0,
+    opposed: 0,
+    unknown: e.unknown + Math.max(0, 1 - e.coverage),
+    nonCompany: e.nonCompany,
+  };
+  for (const k of ['-2', '-1', '0', '1', '2'] as const) {
+    const lean = Number(k);
+    const w = e[k];
+    if (direction === 0) out.unknown += w;
+    else {
+      const rel = lean * direction;
+      if (rel >= 1) out.aligned += w;
+      else if (rel <= -1) out.opposed += w;
+      else out.mixed += w;
+    }
+  }
+  return out;
 }

@@ -34,7 +34,10 @@ CREATE TABLE IF NOT EXISTS company (
   week52_low       REAL,
   shares_outstanding REAL,
   overview_json    TEXT,                       -- raw OVERVIEW payload (provenance)
-  source           TEXT NOT NULL DEFAULT 'alphavantage',
+  sic              TEXT,                       -- SEC SIC code (industry classification)
+  public_float     REAL,                       -- dei:EntityPublicFloat (USD) — a floor for market cap when AV is unavailable
+  shares_asof      TEXT,
+  source           TEXT NOT NULL DEFAULT 'alphavantage',   -- 'sec-xbrl' | 'alphavantage' | 'sec-xbrl+alphavantage'
   fetched_at       TEXT NOT NULL               -- ISO timestamp
 );
 

@@ -10,6 +10,13 @@ import {
 } from './alphavantage.mjs';
 import { ThrottledError } from './http.mjs';
 import { SAMPLE_TICKERS } from './sample-tickers.mjs';
+import {
+  fetchCompanyFacts,
+  fetchSubmissions,
+  loadTickerCikMap,
+  parseCompanyFacts,
+  parseSubmissions,
+} from './sec-xbrl.mjs';
 
 /**
  * Which companies to seed, in priority order: (1) tickers behind Compass's shipped sample brands,
@@ -136,6 +143,106 @@ export async function seedCompanies(
       log(db, 'alphavantage', 'COMPANY', symbol, 'error', String(e.message));
       summary.errors.push(`${symbol}: ${e.message}`);
       out(`  CO  ${symbol} error: ${e.message}`);
+    }
+  }
+  return summary;
+}
+
+/**
+ * Step 2a — companies from SEC filings (no key): submissions (name, SIC industry/sector, exchange) and XBRL
+ * companyfacts (annual + quarterly statements) for the queue. Alpha Vantage remains an enrichment layer.
+ */
+export async function seedCompaniesSec(
+  db,
+  {
+    limit = 300,
+    statementsLimit = 300,
+    offline = false,
+    refresh = false,
+    log: out = console.log,
+    only = null,
+  } = {},
+) {
+  const queue = only ?? companyQueue(db);
+  const summary = { companies: 0, periods: 0, noCik: 0, skipped: 0, errors: [] };
+  const map = await loadTickerCikMap({ offline });
+  if (!map) {
+    out('! SEC ticker map unavailable');
+    return summary;
+  }
+  const have = new Set(
+    db
+      .prepare("SELECT symbol FROM company WHERE source LIKE '%sec-xbrl%'")
+      .all()
+      .map((r) => r.symbol),
+  );
+  let i = 0;
+  for (const symbol of queue) {
+    if (i >= limit) break;
+    i++;
+    if (!refresh && have.has(symbol)) {
+      summary.skipped++;
+      continue;
+    }
+    const hit = map.get(symbol);
+    if (!hit) {
+      summary.noCik++;
+      log(db, 'sec', 'companyfacts', symbol, 'empty', 'no CIK for ticker');
+      continue;
+    }
+    try {
+      const sub = parseSubmissions(await fetchSubmissions(hit.cik, { offline }));
+      let parsed = null;
+      if (i <= statementsLimit)
+        parsed = parseCompanyFacts(symbol, await fetchCompanyFacts(hit.cik, { offline }), now());
+      upsertCompany(db, {
+        symbol,
+        name: sub?.name ?? parsed?.entityName ?? hit.title,
+        exchange: sub?.exchange ?? null,
+        currency: 'USD',
+        country: 'USA',
+        sector: sub?.sector ?? null,
+        industry: sub?.industry ?? null,
+        cik: sub?.cik ?? hit.cik,
+        fiscal_year_end: sub?.fiscalYearEnd ?? null,
+        sic: sub?.sic ?? null,
+        public_float: parsed?.publicFloat?.val ?? null,
+        shares_outstanding: parsed?.sharesOutstanding?.val ?? null,
+        shares_asof: parsed?.sharesOutstanding?.end ?? null,
+        source: 'sec-xbrl',
+        fetched_at: now(),
+      });
+      if (parsed?.periods.length) {
+        db.exec('BEGIN');
+        try {
+          for (const p of parsed.periods) upsertPeriod(db, p);
+          db.exec('COMMIT');
+        } catch (e) {
+          db.exec('ROLLBACK');
+          throw e;
+        }
+        summary.periods += parsed.periods.length;
+      }
+      summary.companies++;
+      log(
+        db,
+        'sec',
+        'companyfacts',
+        symbol,
+        'ok',
+        `${parsed?.periods.length ?? 0} periods · SIC ${sub?.sic ?? '?'}`,
+      );
+      out(
+        `  SEC ${symbol.padEnd(6)} ${String(sub?.name ?? '')
+          .slice(0, 34)
+          .padEnd(
+            34,
+          )} ${String(sub?.sector ?? '?').padEnd(28)} periods=${parsed?.periods.length ?? 0}`,
+      );
+    } catch (e) {
+      summary.errors.push(`${symbol}: ${e.message}`);
+      log(db, 'sec', 'companyfacts', symbol, 'error', String(e.message));
+      out(`  SEC ${symbol} error: ${e.message}`);
     }
   }
   return summary;

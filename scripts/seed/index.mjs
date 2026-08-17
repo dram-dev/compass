@@ -16,7 +16,7 @@
 import { CONFIG } from './config.mjs';
 import { backfillHoldingSymbols, buildEffectiveHoldings, openDb } from './db.mjs';
 import { rankFunds, seedFunds } from './seed-funds.mjs';
-import { seedCompanies } from './seed-companies.mjs';
+import { seedCompanies, seedCompaniesSec } from './seed-companies.mjs';
 import { buildGraph, exportGraph } from './build-graph.mjs';
 import { avCallsThisRun } from './alphavantage.mjs';
 import {
@@ -74,7 +74,18 @@ async function main() {
     console.log('   ', JSON.stringify(rankFunds(db)));
   }
   if (cmd === 'companies' || cmd === 'all') {
-    console.log('\n== companies');
+    if (!opt('no-sec', false)) {
+      console.log('\n== companies: SEC XBRL (submissions + companyfacts)');
+      const s = await seedCompaniesSec(db, {
+        limit: num(opt('overview'), 300),
+        statementsLimit: num(opt('statements'), 300),
+        offline,
+        refresh: !!opt('refresh', false),
+        only: list(opt('only')),
+      });
+      console.log('   ', JSON.stringify({ ...s, errors: s.errors.slice(0, 5) }));
+    }
+    console.log('\n== companies: Alpha Vantage enrichment');
     const s = await seedCompanies(db, {
       overviewLimit: num(opt('overview'), 300),
       statementsLimit: num(opt('statements'), 50),
