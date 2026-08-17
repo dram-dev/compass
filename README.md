@@ -14,6 +14,23 @@ is relative to your configuration (Aligned / Mixed / Opposed / Unknown), never a
 > Educational scenario tool — not financial, investment, or tax advice. Company political data varies
 > by source and time; verify before acting.
 
+## Live review build
+
+**https://dram-dev.github.io/compass/** — deployed from `main` by `.github/workflows/deploy.yml`
+(lint → test → build → GitHub Pages). It is the app exactly as this repo stands: local-first, no
+backend, no runtime network calls; anything you enter stays in *your* browser's `localStorage` and
+you can wipe it under **Data sources → Reset**. The build carries `noindex` and a disallow-all
+`robots.txt` so it stays out of search results until it is announced; the URL itself is public, so
+share it deliberately. A guard step in the workflow fails the deploy if any validation comparator
+data (`data/validation/`, OpenSecrets CC BY-NC-SA / Goods Unite Us proprietary) ever reaches the
+bundle.
+
+Reviewer path: **Wizard** (7 steps — step 4 is where the dual-range spend control lives, step 3 sets
+the political preference that makes the political panels bite) → **Dashboard** (sankey with asset-lens
+× current/optimal, political exposure, Pareto) → **Plan** (stage gates, trajectory, "Print / save as
+PDF") → **Data sources** (fund look-through, political money facts, export/import).
+
+
 ## Setup
 
 ```bash

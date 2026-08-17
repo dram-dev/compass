@@ -283,4 +283,12 @@ Numbered, append-only. Each entry: decision · rationale · phase.
     Known denominator differences: OpenSecrets PAC pages count gifts to candidates only (we include party
     committees and leadership PACs), and its org D/R % excludes non-partisan money as we do. Draft
     result: PAC ρ = 0.77 (n=29; 25 of 29 within ±5 pts), pooled vs blended ρ = 0.96 (n=40). (PB)
+72. **Hosted review build on GitHub Pages** (`https://dram-dev.github.io/compass/`), deployed from
+    `main` by `.github/workflows/deploy.yml` after lint + test + build. No config was needed for the
+    project subpath: Vite `base` is already `'./'` and routing is HashRouter, so deep links work
+    without server rewrites. The workflow includes a guard that fails the deploy if `data/validation`
+    comparator figures reach `dist/`; a bare `goodsuniteus.com` string is allowed because the app
+    links there as a verify source. `noindex` meta + disallow-all `public/robots.txt` keep the review
+    build out of search engines — remove both when it is ready to announce. The URL is public and
+    unauthenticated; Pages offers no password protection. (PH)
 
