@@ -21,8 +21,9 @@ export function companyQueue(db, { topN = CONFIG.topN } = {}) {
     .prepare(
       `
     SELECT h.holding_symbol AS symbol, SUM(h.weight * COALESCE(f.net_assets,0)) AS aum
-    FROM fund_holding h JOIN fund f ON f.symbol = h.fund_symbol
+    FROM fund_holding_effective h JOIN fund f ON f.symbol = h.fund_symbol
     WHERE h.holding_symbol IS NOT NULL AND f.popularity_rank IS NOT NULL AND f.popularity_rank <= ? AND f.proxy_of IS NULL
+      AND (h.issuer_cat IS NULL OR h.issuer_cat = 'CORP') AND (h.asset_cat IS NULL OR h.asset_cat IN ('EC','EP','DBT'))
     GROUP BY h.holding_symbol ORDER BY aum DESC`,
     )
     .all(topN);
@@ -30,7 +31,7 @@ export function companyQueue(db, { topN = CONFIG.topN } = {}) {
   const out = [];
   for (const t of [...SAMPLE_TICKERS, ...rows.map((r) => r.symbol)]) {
     const s = String(t).toUpperCase();
-    if (seen.has(s) || !/^[A-Z][A-Z0-9.\-]{0,5}$/.test(s)) continue;
+    if (seen.has(s) || !/^[A-Z][A-Z0-9]{0,4}(-[A-Z])?$/.test(s)) continue;
     seen.add(s);
     out.push(s);
   }

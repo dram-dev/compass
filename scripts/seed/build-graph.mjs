@@ -64,8 +64,9 @@ export function buildGraph(
     .prepare(
       `
     SELECT h.fund_symbol AS fund, h.holding_symbol AS company, h.weight
-    FROM fund_holding h JOIN fund f ON f.symbol = h.fund_symbol
+    FROM fund_holding_effective h JOIN fund f ON f.symbol = h.fund_symbol
     WHERE h.holding_symbol IS NOT NULL AND f.popularity_rank IS NOT NULL AND f.popularity_rank <= ?
+      AND (h.issuer_cat IS NULL OR h.issuer_cat = 'CORP') AND (h.asset_cat IS NULL OR h.asset_cat IN ('EC','EP','DBT'))
       AND h.weight >= 0.005
     ORDER BY h.fund_symbol, h.weight DESC`,
     )

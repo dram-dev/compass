@@ -197,6 +197,7 @@ export function normalizeTicker(raw) {
   if (!raw) return null;
   const t = String(raw).trim().toUpperCase();
   if (!t || t === 'N/A' || t === '-' || /^(CASH|USD|OTHER|FUTURES?)$/i.test(t)) return null;
-  if (!/^[A-Z0-9.\-]{1,10}$/.test(t)) return null;
-  return t;
+  if (!/^[A-Z0-9.\-/]{1,12}$/.test(t)) return null;
+  // share classes: BRK/B, BRK.B → BRK-B (Alpha Vantage / FEC style)
+  return t.replace(/[./](?=[A-Z]$)/, '-');
 }

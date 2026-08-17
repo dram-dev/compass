@@ -12,6 +12,20 @@ export function openDb(dbPath = CONFIG.dbPath) {
     db = new DatabaseSync(dbPath);
   }
   db.exec(readFileSync(CONFIG.schemaPath, 'utf8'));
+  // Additive columns on existing tables (SQLite has no ADD COLUMN IF NOT EXISTS).
+  const cols = new Set(
+    db
+      .prepare('PRAGMA table_info(fund_holding)')
+      .all()
+      .map((r) => r.name),
+  );
+  for (const [c, t] of [
+    ['asset_cat', 'TEXT'],
+    ['issuer_cat', 'TEXT'],
+    ['symbol_method', 'TEXT'],
+  ])
+    if (!cols.has(c)) db.exec(`ALTER TABLE fund_holding ADD COLUMN ${c} ${t}`);
+  db.exec('CREATE INDEX IF NOT EXISTS idx_fund_holding_cusip ON fund_holding(cusip)');
   // Derived tables whose CHECK constraints evolved: rebuild (their contents are recomputed by the seeder).
   const pc = db
     .prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name='political_contribution'")
@@ -106,8 +120,8 @@ export function upsertFund(db, f) {
 export function replaceHoldings(db, fundSymbol, holdings, source) {
   const del = db.prepare('DELETE FROM fund_holding WHERE fund_symbol = ?');
   const ins =
-    db.prepare(`INSERT OR REPLACE INTO fund_holding (fund_symbol,holding_symbol,holding_name,cusip,isin,weight,value_usd,as_of,source)
-    VALUES (?,?,?,?,?,?,?,?,?)`);
+    db.prepare(`INSERT OR REPLACE INTO fund_holding (fund_symbol,holding_symbol,holding_name,cusip,isin,weight,value_usd,as_of,source,asset_cat,issuer_cat,symbol_method)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`);
   db.exec('BEGIN');
   try {
     del.run(fundSymbol);
@@ -122,10 +136,142 @@ export function replaceHoldings(db, fundSymbol, holdings, source) {
         h.valueUsd ?? null,
         h.asOf ?? null,
         source,
+        h.assetCat ?? null,
+        h.issuerCat ?? null,
+        h.symbol ? 'filing' : null,
       );
     db.exec('COMMIT');
   } catch (e) {
     db.exec('ROLLBACK');
     throw e;
   }
+}
+
+/**
+ * Back-fill missing holding tickers from other filings: same CUSIP → same ISIN → same normalized name.
+ * Only unambiguous keys (exactly one symbol) are used; the method is recorded per row.
+ */
+export function backfillHoldingSymbols(db, normName) {
+  const learn = (rows, keyOf) => {
+    const map = new Map();
+    for (const r of rows) {
+      const k = keyOf(r);
+      if (!k) continue;
+      const cur = map.get(k);
+      if (cur === undefined) map.set(k, r.s);
+      else if (cur !== null && cur !== r.s) map.set(k, null); // ambiguous
+    }
+    return map;
+  };
+  const known = db
+    .prepare(
+      'SELECT DISTINCT holding_symbol AS s, cusip AS c, isin AS i, holding_name AS n FROM fund_holding WHERE holding_symbol IS NOT NULL',
+    )
+    .all();
+  const byCusip = learn(
+    known.filter((r) => r.c),
+    (r) => r.c,
+  );
+  const byIsin = learn(
+    known.filter((r) => r.i),
+    (r) => r.i,
+  );
+  const byName = learn(known, (r) => normName(r.n));
+  const upd = db.prepare(
+    'UPDATE fund_holding SET holding_symbol = ?, symbol_method = ? WHERE rowid = ?',
+  );
+  const rows = db
+    .prepare(
+      'SELECT rowid AS id, holding_name AS n, cusip AS c, isin AS i FROM fund_holding WHERE holding_symbol IS NULL',
+    )
+    .all();
+  const stats = { cusip: 0, isin: 0, name: 0, unresolved: 0 };
+  db.exec('BEGIN');
+  for (const r of rows) {
+    let s = (r.c && byCusip.get(r.c)) || null;
+    let m = 'cusip';
+    if (!s && r.i) ((s = byIsin.get(r.i) || null), (m = 'isin'));
+    if (!s) ((s = byName.get(normName(r.n)) || null), (m = 'name'));
+    if (s) {
+      upd.run(s, m, r.id);
+      stats[m]++;
+    } else stats.unresolved++;
+  }
+  db.exec('COMMIT');
+  return stats;
+}
+
+/** Fund name → symbol map for look-through: strips share-class words so "Vanguard Total Stock Market Index Fund" ↔ VTSAX/VTI. */
+export function fundNameKey(name, normName) {
+  return normName(
+    String(name)
+      .replace(
+        /\b(Admiral|Investor|Institutional Plus|Institutional|Inst|Ins\+?|Inv|Adm|ETF|Shares?|Class [A-Z0-9]+|R6|K6?)\b/gi,
+        ' ',
+      )
+      .replace(/[—-].*$/, ''),
+  );
+}
+
+/**
+ * Materialize fund_holding_effective: copies every holding, and additionally expands registered-fund
+ * (issuer_cat RF / asset_cat EC with a fund-like name) positions into the underlying fund's holdings × weight
+ * when that fund is in the DB. One level only; the underlying's own RF rows are not recursed.
+ */
+export function buildEffectiveHoldings(db, normName) {
+  const funds = db.prepare('SELECT symbol, name FROM fund').all();
+  const byKey = new Map();
+  for (const f of funds) {
+    const k = fundNameKey(f.name, normName);
+    if (!k) continue;
+    if (!byKey.has(k)) byKey.set(k, f.symbol); // first wins (ETF class before mutual class in the universe order)
+  }
+  const holdings = db
+    .prepare(
+      'SELECT fund_symbol, holding_symbol, holding_name, weight, asset_cat, issuer_cat FROM fund_holding',
+    )
+    .all();
+  const byFund = new Map();
+  for (const h of holdings)
+    (byFund.get(h.fund_symbol) ?? byFund.set(h.fund_symbol, []).get(h.fund_symbol)).push(h);
+  const ins = db.prepare(
+    'INSERT OR REPLACE INTO fund_holding_effective (fund_symbol, holding_symbol, holding_name, weight, asset_cat, issuer_cat, via_fund) VALUES (?,?,?,?,?,?,?)',
+  );
+  const stats = { rows: 0, expanded: 0, viaFunds: new Set() };
+  db.exec('BEGIN');
+  db.exec('DELETE FROM fund_holding_effective');
+  for (const [fund, list] of byFund) {
+    for (const h of list) {
+      const isFundLike =
+        h.issuer_cat === 'RF' ||
+        /\b(index fund|portfolio|master|trust|etf|fund)\b/i.test(h.holding_name);
+      const under = isFundLike ? byKey.get(fundNameKey(h.holding_name, normName)) : undefined;
+      if (under && under !== fund && byFund.has(under)) {
+        for (const u of byFund.get(under)) {
+          if (u.issuer_cat === 'RF') continue; // one level only
+          ins.run(
+            fund,
+            u.holding_symbol,
+            u.holding_name,
+            u.weight * h.weight,
+            u.asset_cat,
+            u.issuer_cat,
+            under,
+          );
+          stats.rows++;
+        }
+        stats.expanded++;
+        stats.viaFunds.add(under);
+      } else {
+        ins.run(fund, h.holding_symbol, h.holding_name, h.weight, h.asset_cat, h.issuer_cat, null);
+        stats.rows++;
+      }
+    }
+  }
+  db.exec('COMMIT');
+  return {
+    rows: stats.rows,
+    expandedPositions: stats.expanded,
+    underlyingFunds: stats.viaFunds.size,
+  };
 }

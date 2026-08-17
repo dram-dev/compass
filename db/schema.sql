@@ -100,9 +100,27 @@ CREATE TABLE IF NOT EXISTS fund_holding (
   value_usd       REAL,
   as_of           TEXT,
   source          TEXT NOT NULL,
+  asset_cat       TEXT,                        -- N-PORT assetCat: EC equity-common, EP preferred, DBT debt, STIV cash-like, DE/DFE derivatives…
+  issuer_cat      TEXT,                        -- N-PORT issuerCat: CORP, UST, USGA, USGSE, MUN, NUSS, RF (registered fund), PF…
+  symbol_method   TEXT,                        -- 'filing' (ticker in the filing) | 'cusip' | 'isin' | 'name' (back-filled)
   PRIMARY KEY (fund_symbol, holding_name, cusip)
 );
 CREATE INDEX IF NOT EXISTS idx_fund_holding_symbol ON fund_holding(holding_symbol);
+CREATE INDEX IF NOT EXISTS idx_fund_holding_cusip ON fund_holding(cusip);
+
+-- Effective holdings after one level of fund-of-funds look-through: a target-date fund's position in
+-- "Vanguard Total Stock Market Index Fund" is expanded into that fund's holdings × weight. Rebuilt by the seeder.
+CREATE TABLE IF NOT EXISTS fund_holding_effective (
+  fund_symbol     TEXT NOT NULL,
+  holding_symbol  TEXT,
+  holding_name    TEXT NOT NULL,
+  weight          REAL NOT NULL,
+  asset_cat       TEXT,
+  issuer_cat      TEXT,
+  via_fund        TEXT,                        -- underlying fund symbol when expanded, else NULL
+  PRIMARY KEY (fund_symbol, holding_name, via_fund)
+);
+CREATE INDEX IF NOT EXISTS idx_fhe_symbol ON fund_holding_effective(holding_symbol);
 
 -- ---------------------------------------------------------------- bookkeeping
 CREATE TABLE IF NOT EXISTS fetch_log (
@@ -117,7 +135,8 @@ CREATE TABLE IF NOT EXISTS fetch_log (
 
 -- ---------------------------------------------------------------- derived views
 -- Company-level concentration across the seeded fund universe.
-CREATE VIEW IF NOT EXISTS v_company_concentration AS
+DROP VIEW IF EXISTS v_company_concentration;
+CREATE VIEW v_company_concentration AS
 SELECT
   h.holding_symbol                                   AS symbol,
   MAX(h.holding_name)                                AS name,
@@ -125,13 +144,15 @@ SELECT
   MAX(h.weight)                                      AS max_weight,
   AVG(h.weight)                                      AS avg_weight,
   SUM(h.weight * COALESCE(f.net_assets, 0))          AS aum_weighted_usd,   -- $ of fund assets pointed at this company
-  (SELECT h2.fund_symbol FROM fund_holding h2
+  (SELECT h2.fund_symbol FROM fund_holding_effective h2
      WHERE h2.holding_symbol = h.holding_symbol
      ORDER BY h2.weight DESC LIMIT 1)                AS max_weight_fund
-FROM fund_holding h
+FROM fund_holding_effective h
 JOIN fund f ON f.symbol = h.fund_symbol
 WHERE h.holding_symbol IS NOT NULL
   AND f.proxy_of IS NULL                             -- avoid double counting proxy share classes
+  AND (h.issuer_cat IS NULL OR h.issuer_cat = 'CORP')                          -- companies, not governments / other funds
+  AND (h.asset_cat IS NULL OR h.asset_cat IN ('EC','EP','DBT'))                -- equity, preferred, corporate debt
 GROUP BY h.holding_symbol;
 
 -- Fund-level look-through: top holdings per fund with company context.

@@ -40,6 +40,7 @@ export const CONFIG = {
     tickersUrl: 'https://www.sec.gov/files/company_tickers_mf.json',
   },
   topN: Number(process.env.COMPASS_TOP_FUNDS ?? 200),
+  politicalTopHeld: Number(process.env.COMPASS_POLITICAL_TOP_HELD ?? 500),
   maxHoldingsPerFund: Number(process.env.COMPASS_MAX_HOLDINGS ?? 250),
 };
 

@@ -51,6 +51,26 @@ export function politicalUniverse(db, { only = null } = {}) {
   }
   for (const c of sample) if (c.ticker && !names.has(c.ticker)) names.set(c.ticker, c.name);
   for (const t of SAMPLE_TICKERS) if (!names.has(t)) names.set(t, t);
+  // Top held companies from the fund graph (issuer names from the filings), when the fund tables exist.
+  const heldNames = new Map(); // symbol → { name, aum }
+  try {
+    const rows = db
+      .prepare(
+        `SELECT v.symbol, v.name, v.aum_weighted_usd AS aum FROM v_company_concentration v
+      WHERE v.symbol IS NOT NULL ORDER BY v.aum_weighted_usd DESC LIMIT ?`,
+      )
+      .all(CONFIG.politicalTopHeld ?? 500);
+    for (const r of rows) {
+      if (!/^[A-Z][A-Z0-9]{0,4}(-[A-Z])?$/.test(r.symbol)) continue; // US-listed forms only (BRK-B ok; ENR.DE excluded)
+      const nm = String(r.name ?? '')
+        .replace(/\s+—.*$/, '')
+        .trim(); // drop security title suffix
+      if (!names.has(r.symbol) && nm) names.set(r.symbol, nm);
+      heldNames.set(r.symbol, { name: nm, aum: r.aum });
+    }
+  } catch {
+    /* fund tables not seeded yet */
+  }
   const symbols = [...names.keys()]
     .filter((s) => !only || only.includes(s))
     .filter((s) => !sameAs[s])
@@ -60,6 +80,8 @@ export function politicalUniverse(db, { only = null } = {}) {
     for (const a of Array.isArray(aliasesFile[symbol]) ? aliasesFile[symbol] : []) set.add(a);
     for (const c of sample)
       if (c.ticker === symbol) defaultAliases(c.name).forEach((a) => set.add(a));
+    if (heldNames.has(symbol))
+      defaultAliases(heldNames.get(symbol).name).forEach((a) => set.add(a));
     return { symbol, aliases: [...set] };
   });
   return { symbols, entries, names, sameAs, aliasIndex: buildAliasIndex(entries) };

@@ -73,7 +73,9 @@ export async function findClients(
  */
 export async function fetchFilingsForClients(clients, years, { offline = false } = {}) {
   const ids = new Set(clients.map((c) => Number(c.id)));
-  const names = [...new Set(clients.map((c) => c.name).filter((n) => n && !n.startsWith('(override')))];
+  const names = [
+    ...new Set(clients.map((c) => c.name).filter((n) => n && !n.startsWith('(override'))),
+  ];
   const minYear = Math.min(...years);
   const maxYear = Math.max(...years);
   const seen = new Set();

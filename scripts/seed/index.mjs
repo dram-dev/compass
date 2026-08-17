@@ -14,7 +14,7 @@
  * Every HTTP response is cached under db/cache so re-runs are free and throttled runs resume.
  */
 import { CONFIG } from './config.mjs';
-import { openDb } from './db.mjs';
+import { backfillHoldingSymbols, buildEffectiveHoldings, openDb } from './db.mjs';
 import { rankFunds, seedFunds } from './seed-funds.mjs';
 import { seedCompanies } from './seed-companies.mjs';
 import { buildGraph, exportGraph } from './build-graph.mjs';
@@ -66,6 +66,10 @@ async function main() {
     console.log('   ', JSON.stringify(s));
   }
   if (cmd === 'rank' || cmd === 'funds' || cmd === 'all') {
+    console.log('\n== symbols');
+    const { normOrg } = await import('./orgmatch.mjs');
+    console.log('    back-fill', JSON.stringify(backfillHoldingSymbols(db, normOrg)));
+    console.log('    look-through', JSON.stringify(buildEffectiveHoldings(db, normOrg)));
     console.log('\n== rank');
     console.log('   ', JSON.stringify(rankFunds(db)));
   }

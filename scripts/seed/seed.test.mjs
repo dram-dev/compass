@@ -9,7 +9,15 @@ import {
   parseStatements,
 } from './alphavantage.mjs';
 import { condenseHoldings, parseNport, parseTickerMap, pickLatestNport } from './sec.mjs';
-import { openDb, replaceHoldings, upsertCompany, upsertFund, upsertPeriod } from './db.mjs';
+import {
+  buildEffectiveHoldings,
+  openDb,
+  replaceHoldings,
+  upsertCompany,
+  upsertFund,
+  upsertPeriod,
+} from './db.mjs';
+import { normOrg } from './orgmatch.mjs';
 import { rankFunds } from './seed-funds.mjs';
 import { companyQueue } from './seed-companies.mjs';
 import { buildGraph } from './build-graph.mjs';
@@ -79,7 +87,9 @@ describe('Alpha Vantage parsers (real demo payload shapes)', () => {
   });
 
   it('normalizeTicker drops cash/other rows and junk', () => {
-    expect(normalizeTicker(' brk.b ')).toBe('BRK.B');
+    expect(normalizeTicker(' brk.b ')).toBe('BRK-B');
+    expect(normalizeTicker('BRK/B')).toBe('BRK-B');
+    expect(normalizeTicker('BF.B')).toBe('BF-B');
     expect(normalizeTicker('CASH')).toBeNull();
     expect(normalizeTicker('n/a')).toBeNull();
     expect(normalizeTicker('')).toBeNull();
@@ -108,8 +118,25 @@ describe('SEC N-PORT parsing', () => {
     expect(mlf.symbol).toBeNull();
     expect(mlf.cusip).toBe('');
     expect(parseNport('<html>nope</html>')).toBeNull();
+    const de = parseNport(
+      '<edgarSubmission><formData><invstOrSecs><invstOrSec><name>Siemens Energy AG</name><identifiers><isin value="DE000ENER6Y0"/><ticker value="ENR"/></identifiers><pctVal>1.0</pctVal><assetCat>EC</assetCat><invCountry>DE</invCountry></invstOrSec><invstOrSec><name>Energizer Holdings Inc</name><identifiers><isin value="US29272W1099"/><ticker value="ENR"/></identifiers><pctVal>1.0</pctVal><assetCat>EC</assetCat><invCountry>US</invCountry></invstOrSec></invstOrSecs></formData></edgarSubmission>',
+    );
+    expect(de.holdings.map((h) => h.symbol)).toEqual(['ENR.DE', 'ENR']);
   });
 
+  it('condenseHoldings never merges distinct ISIN-only holdings (empty CUSIP is not a key)', () => {
+    const c = condenseHoldings([
+      { symbol: null, cusip: '', isin: 'GB0000456144', name: 'ANTOFAGASTA PLC', weight: 0.001 },
+      { symbol: null, cusip: '', isin: 'SE0000115446', name: 'VOLVO AB', weight: 0.002 },
+      { symbol: null, cusip: '', isin: null, name: 'Galderma Group AG', weight: 0.003 },
+      { symbol: null, cusip: '', isin: null, name: 'Galderma Group AG', weight: 0.001 },
+    ]);
+    expect(c.map((h) => [h.name, +h.weight.toFixed(4)])).toEqual([
+      ['Galderma Group AG', 0.004],
+      ['VOLVO AB', 0.002],
+      ['ANTOFAGASTA PLC', 0.001],
+    ]);
+  });
   it('condenseHoldings merges duplicates and caps', () => {
     const c = condenseHoldings(
       [
@@ -187,7 +214,7 @@ describe('DB, ranking and graph (in-memory SQLite)', () => {
       });
     fund('SPY', 'SPY', 'etf', 600e9);
     fund('QQQ', 'QQQ', 'etf', 300e9);
-    fund('VOO', 'VOO', 'etf', 500e9);
+    fund('VOO', 'Vanguard S&P 500 ETF', 'etf', 500e9);
     fund('VFIAX', 'VFIAX', 'mutual', null, { proxy_of: 'VOO', holdings_source: 'proxy:VOO' });
     fund('BND', 'BND', 'etf', 100e9);
     replaceHoldings(
@@ -232,6 +259,24 @@ describe('DB, ranking and graph (in-memory SQLite)', () => {
       ...parseOverviewLike('AAPL', 'Apple Inc', 'TECHNOLOGY', 3e12),
       fetched_at: t,
     });
+    // a target-date style fund holding VOO's series by name (registered fund) → look-through expands it
+    fund('VTGT', 'Vanguard Target Retirement 2050 Fund', 'mutual', 50e9);
+    replaceHoldings(
+      db,
+      'VTGT',
+      [
+        {
+          symbol: null,
+          name: 'Vanguard S&P 500 ETF — VANG-500',
+          weight: 0.5,
+          issuerCat: 'RF',
+          assetCat: 'EC',
+        },
+        { symbol: null, name: 'US Treasury 3%', weight: 0.5, issuerCat: 'UST', assetCat: 'DBT' },
+      ],
+      'test',
+    );
+    buildEffectiveHoldings(db, normOrg);
     return db;
   };
   const parseOverviewLike = (symbol, name, sector, market_cap) => ({
@@ -270,14 +315,14 @@ describe('DB, ranking and graph (in-memory SQLite)', () => {
   it('rankFunds orders by net assets, excludes share-class duplicates, which inherit their proxy rank', () => {
     const db = setup();
     const r = rankFunds(db, 3);
-    expect(r.ranked).toBe(4);
+    expect(r.ranked).toBe(5);
     const rank = Object.fromEntries(
       db
         .prepare('SELECT symbol, popularity_rank FROM fund')
         .all()
         .map((x) => [x.symbol, x.popularity_rank]),
     );
-    expect(rank).toEqual({ SPY: 1, VOO: 2, QQQ: 3, BND: 4, VFIAX: 2 });
+    expect(rank).toEqual({ SPY: 1, VOO: 2, QQQ: 3, BND: 4, VTGT: 5, VFIAX: 2 });
     expect(r.inTop).toBe(4); // SPY, VOO, QQQ + VFIAX inheriting 2
   });
 
@@ -288,13 +333,23 @@ describe('DB, ranking and graph (in-memory SQLite)', () => {
       .prepare('SELECT * FROM v_company_concentration ORDER BY aum_weighted_usd DESC')
       .all();
     const aapl = conc.find((c) => c.symbol === 'AAPL');
-    expect(aapl.funds_holding).toBe(3);
+    expect(aapl.funds_holding).toBe(4); // SPY, QQQ, VOO + VTGT via look-through
     expect(aapl.max_weight).toBeCloseTo(0.07, 10);
-    expect(aapl.aum_weighted_usd).toBeCloseTo(0.07 * 600e9 + 0.07 * 300e9 + 0.065 * 500e9, 0);
+    expect(aapl.aum_weighted_usd).toBeCloseTo(
+      0.07 * 600e9 + 0.07 * 300e9 + 0.065 * 500e9 + 0.5 * 0.065 * 50e9,
+      0,
+    );
+    const lt = db
+      .prepare(
+        "SELECT holding_symbol s, weight w, via_fund v FROM fund_holding_effective WHERE fund_symbol='VTGT' ORDER BY w DESC",
+      )
+      .all();
+    expect(lt.find((x) => x.s === 'AAPL')).toMatchObject({ w: 0.5 * 0.065, v: 'VOO' });
+    expect(lt.some((x) => x.s === null && x.v === null)).toBe(true); // the treasury row copied as-is
     expect(['SPY', 'QQQ']).toContain(aapl.max_weight_fund);
     expect(conc.some((c) => c.symbol === null)).toBe(false);
     const g = buildGraph(db, { topN: 200, topHoldingsPerFund: 2, maxCompanies: 10 });
-    expect(g.counts.fundsInGraph).toBe(5);
+    expect(g.counts.fundsInGraph).toBe(6);
     expect(g.companies[0].symbol).toBe('AAPL');
     expect(g.companies[0].sector).toBe('TECHNOLOGY');
     expect(g.companies[0].shareOfMarketCap).toBeCloseTo(aapl.aum_weighted_usd / 3e12, 10);

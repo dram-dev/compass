@@ -30,12 +30,13 @@ export async function seedFunds(
   };
   const etfs = universe.filter((f) => f.kind === 'etf').slice(0, limit);
   const useAv = !!CONFIG.alphaVantage.key;
+  let avExhausted = false;
   if (!useAv && !offline)
     out('! ALPHAVANTAGE_API_KEY not set — ETF profiles will only come from cache.');
 
   for (const f of etfs) {
     try {
-      const r = await fetchEtfProfile(f.symbol, { offline: offline || !useAv });
+      const r = await fetchEtfProfile(f.symbol, { offline: offline || !useAv || avExhausted });
       if (!r.body) {
         summary.skipped++;
         continue;
@@ -82,11 +83,12 @@ export async function seedFunds(
     } catch (e) {
       if (e instanceof ThrottledError) {
         out(
-          `! Alpha Vantage throttled at ${f.symbol}: ${e.message}\n  Progress is cached — re-run later to continue.`,
+          `! Alpha Vantage throttled at ${f.symbol}: ${e.message}\n  Remaining ETFs fall back to SEC N-PORT this run; re-run later for AV metadata.`,
         );
         log(db, 'alphavantage', 'ETF_PROFILE', f.symbol, 'throttled', e.message);
         summary.throttled = true;
-        break;
+        avExhausted = true;
+        continue;
       }
       log(db, 'alphavantage', 'ETF_PROFILE', f.symbol, 'error', String(e.message));
       summary.errors.push(`${f.symbol}: ${e.message}`);
@@ -94,8 +96,14 @@ export async function seedFunds(
     }
   }
 
-  // ---- mutual funds
-  const mfs = universe.filter((f) => f.kind === 'mutual').slice(0, limit);
+  // ---- SEC N-PORT: all mutual funds, plus ETFs that did not get an Alpha Vantage profile this run
+  const haveRow = new Set(
+    db
+      .prepare("SELECT symbol FROM fund WHERE holdings_source LIKE 'alphavantage:%'")
+      .all()
+      .map((r) => r.symbol),
+  );
+  const mfs = universe.filter((f) => f.kind === 'mutual' || !haveRow.has(f.symbol)).slice(0, limit);
   let tickerMap = null;
   if (CONFIG.sec.userAgent || offline) {
     try {
@@ -122,7 +130,7 @@ export async function seedFunds(
           upsertFund(db, {
             symbol: f.symbol,
             name: f.name,
-            kind: 'mutual',
+            kind: f.kind,
             family: f.family ?? null,
             category: f.category ?? null,
             net_assets: np.netAssets,
@@ -158,7 +166,8 @@ export async function seedFunds(
             'ok',
             `${holdings.length} holdings · ${np.accession}`,
           );
-          summary.mfNport++;
+          summary[f.kind === 'etf' ? 'etfNport' : 'mfNport'] =
+            (summary[f.kind === 'etf' ? 'etfNport' : 'mfNport'] ?? 0) + 1;
           out(
             `  MF  ${f.symbol.padEnd(6)} N-PORT ${np.reportDate} holdings=${holdings.length} netAssets=${np.netAssets ?? '?'}`,
           );
@@ -179,7 +188,7 @@ export async function seedFunds(
         upsertFund(db, {
           symbol: f.symbol,
           name: f.name,
-          kind: 'mutual',
+          kind: f.kind,
           family: f.family ?? null,
           category: f.category ?? null,
           net_assets: null,
