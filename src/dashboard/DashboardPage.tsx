@@ -6,6 +6,7 @@ import { GOAL_MODE_PRESETS } from '@/data/goalModePresets';
 import { GoalModeToggle } from '@/components/GoalModeToggle';
 import { Section } from '@/components/Section';
 import { ViewModeHint } from '@/components/ViewModeToggle';
+import { LoadDemoButton } from '@/components/Demo';
 import { useIsDetailed } from '@/store/useViewMode';
 import { NumberTick } from '@/components/NumberTick';
 import { Dial } from './Dial';
@@ -60,7 +61,13 @@ export function DashboardPage() {
           <Link className="underline" to="/wizard/4">
             step 4
           </Link>
-          {import.meta.env.DEV ? ' or load the demo persona from the header.' : '.'}
+          , import a bank CSV there, or see the whole thing working first:
+          <span className="mt-2 flex flex-wrap items-center gap-3">
+            <LoadDemoButton className="btn btn-pri" />
+            <span className="text-[11.5px] text-faint">
+              An illustrative persona — you can clear it at any time.
+            </span>
+          </span>
         </div>
       )}
       {total > 0 && !completed && (

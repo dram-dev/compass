@@ -31,6 +31,9 @@ const bucketChip = (b: BucketId) =>
  * known chains, and then asks the user to classify what it could not identify. It never guesses
  * whether an unfamiliar merchant is local or major, and it never applies anything without a preview.
  */
+/** Served from `public/`; BASE_URL keeps it correct under the project subpath on GitHub Pages. */
+const sampleUrl = `${import.meta.env.BASE_URL}sample-statement.csv`;
+
 export function CsvImportPanel({ onDone }: { onDone?: () => void }) {
   const categories = useCompassStore((s) => s.categories);
   const applyImport = useCompassStore((s) => s.applyTransactionImport);
@@ -155,7 +158,12 @@ export function CsvImportPanel({ onDone }: { onDone?: () => void }) {
       <p className="mt-2 text-[11.5px] text-faint">
         <span className="text-brass">⌂ </span>
         Read in this browser tab and discarded once the totals are computed — the file is never
-        uploaded, and only the monthly figures you apply are saved (on this device).
+        uploaded, and only the monthly figures you apply are saved (on this device). No statement
+        handy?{' '}
+        <a className="underline hover:text-ink" href={sampleUrl} download="sample-statement.csv">
+          Download a sample file
+        </a>{' '}
+        (invented transactions, in a typical card-export format) and import it.
       </p>
 
       {error && (

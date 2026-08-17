@@ -325,4 +325,21 @@ Numbered, append-only. Each entry: decision · rationale · phase.
     overrides untouched; merchants classified during review become `user` companies (unrated) so the
     dashboard can name them honestly. Sign convention is detected per file (dominant sign = spending) so
     both Chase-style negative and bank-style positive exports work. (CSV)
+79. **Demo scenario is the Jordan persona, promoted out of dev-only.** `#/demo` (a shareable link),
+    plus buttons in the wizard's first step and in the dashboard/plan empty states, load the spec's
+    worked persona — $3,800/month across eight categories, eight holdings, a configured political
+    preference, index 42.0 → 58.9. It uses the shipped **fictional archetypes**, never real brands with
+    invented figures, so nothing about it can be mistaken for researched claims about a real company.
+    The former dev-only header button is gone; that path is now the same code for everyone. (DEMO)
+80. **The demo labels itself and is reversible.** A banner sits above every page while it is loaded
+    ("illustrative persona — fictional merchants and placeholder ratings, not real-company research and
+    not your data") with a one-click **Clear demo data**. `demoActive` lives in `compass.ui.v1`, not the
+    plan state, so it marks *this browser session*: a reviewer who exports the demo and imports it
+    elsewhere gets ordinary editable data rather than a permanent label, and the flag is cleared on
+    reset and on importing a plan of one's own. Loading the demo over data the user already entered asks
+    first. (DEMO)
+81. **A sample statement ships for the importer** (`public/sample-statement.csv`, linked from the import
+    panel): 33 invented transactions in a typical card-export shape — known chains, unrecognisable local
+    merchants, a card payment, a Zelle transfer and an annual fee — so a reviewer can exercise the CSV
+    flow, including its exclusions and its classification step, without handing over a real bank export. (DEMO)
 

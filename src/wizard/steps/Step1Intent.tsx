@@ -1,5 +1,6 @@
 import { GOAL_MODE_PRESETS } from '@/data/goalModePresets';
 import { useCompassStore } from '@/store/useCompassStore';
+import { LoadDemoButton } from '@/components/Demo';
 import { GoalModeToggle } from '@/components/GoalModeToggle';
 
 export function Step1Intent() {
@@ -37,6 +38,11 @@ export function Step1Intent() {
           className="mt-1 w-full border-0 border-b border-rule bg-transparent py-1 focus:border-brass focus:outline-none"
         />
       </label>
+      <p className="mt-6 border-t border-rule pt-3 text-[12px] text-faint">
+        Just looking?{' '}
+        <LoadDemoButton className="underline hover:text-ink" label="load the demo scenario" /> — a
+        worked example with spending, a portfolio and a plan, which you can clear at any time.
+      </p>
     </>
   );
 }

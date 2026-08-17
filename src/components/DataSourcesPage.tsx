@@ -14,6 +14,8 @@ import { Section } from './Section';
 import { sectionNumbers } from '@/lib/sections';
 import { DetailOnly, ViewModeHint } from './ViewModeToggle';
 import { CsvImportPanel } from './CsvImportPanel';
+import { LoadDemoButton } from './Demo';
+import { useViewStore } from '@/store/useViewMode';
 import { useIsDetailed } from '@/store/useViewMode';
 import { FundLookthroughPanel } from './FundLookthroughPanel';
 import { PoliticalFactsPanel } from './PoliticalFactsPanel';
@@ -23,8 +25,12 @@ type Notice = { kind: 'ok' | 'err'; text: string } | null;
 
 /** Data page: verification sources (§10.2), export/import (EF8), community packs (EF9), Advanced (§6.2), reset. */
 export function DataSourcesPage() {
+  const setDemoActive = useViewStore((st) => st.setDemoActive);
   const detailed = useIsDetailed();
-  const nos = sectionNumbers([false, false, false, false, true, true, true, false], detailed);
+  const nos = sectionNumbers(
+    [false, false, false, false, true, true, true, false, false],
+    detailed,
+  );
   const s = useCompassStore();
   const [notice, setNotice] = useState<Notice>(null);
   const [packNotice, setPackNotice] = useState<Notice>(null);
@@ -45,6 +51,7 @@ export function DataSourcesPage() {
       return;
     }
     s.loadState(r.state);
+    setDemoActive(false); // an imported plan is the user's own data, not the demo
     setNotice({
       kind: 'ok',
       text: `Imported: ${r.state.categories.length} categories, ${r.state.holdings.length} holdings, ${r.state.userCompanies.length} of your merchants, ${r.state.importedCompanies.length} imported companies.`,
@@ -277,6 +284,20 @@ export function DataSourcesPage() {
       <ViewModeHint what="bucket-default ratings, the fund look-through and the political-money facts" />
       <Section
         no={nos[7]!}
+        title="Demo scenario"
+        sub="Load a fully worked example — spending, a portfolio, a political preference and a plan — to see the app populated. Illustrative only: fictional merchants and placeholder ratings, clearable in one click."
+      >
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <LoadDemoButton />
+          <span className="text-[11.5px] text-faint">
+            Or share <code className="font-mono">#/demo</code> — that link loads it straight into
+            the dashboard.
+          </span>
+        </div>
+      </Section>
+
+      <Section
+        no={nos[8]!}
         title="Reset"
         sub="Erase everything stored on this device. Export first if you want to keep it."
       >
@@ -293,6 +314,7 @@ export function DataSourcesPage() {
                 className="btn !border-opposed !text-opposed"
                 onClick={() => {
                   s.resetAll();
+                  setDemoActive(false);
                   setConfirmReset(false);
                   setNotice({
                     kind: 'ok',

@@ -25,6 +25,11 @@ share it deliberately. A guard step in the workflow fails the deploy if any vali
 data (`data/validation/`, OpenSecrets CC BY-NC-SA / Goods Unite Us proprietary) ever reaches the
 bundle.
 
+**Reviewers in a hurry: open https://dram-dev.github.io/compass/#/demo** — that loads a fully worked
+example (spending, portfolio, political preference, plan) with a banner saying it is illustrative and a
+one-click clear. To try the CSV importer without a real bank export, use the "Download a sample file"
+link inside the importer.
+
 Reviewer path: **Wizard** (7 steps — step 4 is where the dual-range spend control lives, step 3 sets
 the political preference that makes the political panels bite) → **Dashboard** (sankey with asset-lens
 × current/optimal, political exposure, Pareto) → **Plan** (stage gates, trajectory, "Print / save as
@@ -162,8 +167,9 @@ else the default row.
 | 11 | Political streams (PAC / employees / executives) | `scripts/seed/fec.mjs#isExecutiveOccupation`, `political.mjs#streamLean`, `PoliticalFactsPanel.tsx` | Data §06 fact cards — three bars, each with its own lean beside the pooled one |
 | 12 | Lobbying topics + P1 (Axis-2 inputs, activity not position) | `scripts/seed/lobbying-topics.mjs`, `db/schema.sql#lobbying_filing_topic`, `PoliticalFactsPanel.tsx#ProtectionPanel` | Data §06 "Lobbying topics" panel — weighted vs any-code trade/tariff share, topic chips, filing links |
 | 13 | Political benchmark harness | `scripts/seed/validate-political.mjs`, `docs/political-benchmark.md` | `npm run validate:political` |
-| 14 | Simple / Detailed density toggle | `src/store/useViewMode.ts`, `src/components/ViewModeToggle.tsx`, `src/components/Section.tsx#sectionNumbers`, `src/wizard/stepList.ts` | Header switch: simple walks a 3-step wizard and 3 dashboard panels; detailed shows all 7 steps and every panel |
-| 15 | 40-firm validation + position-coding kit (Phases B/D) | `scripts/seed/validation-lib.mjs`, `validate-political.mjs sample / review-template / validate / position-sample / position-kappa`, `data/validation/*`, `docs/codebook-lobbying-position.md`, `docs/political-validation.md` | `data/validation/README.md` — human steps; results in `docs/political-validation.md` |
+| 14 | Demo scenario | `src/components/Demo.tsx`, `src/lib/useDemo.ts`, `src/data/fixtures/persona-jordan.json`, `public/sample-statement.csv` | `#/demo` (shareable), or the buttons in wizard step 1 and the dashboard/plan empty states — loads the worked persona with a "Demo data" banner and one-click clear |
+| 15 | Simple / Detailed density toggle | `src/store/useViewMode.ts`, `src/components/ViewModeToggle.tsx`, `src/components/Section.tsx#sectionNumbers`, `src/wizard/stepList.ts` | Header switch: simple walks a 3-step wizard and 3 dashboard panels; detailed shows all 7 steps and every panel |
+| 16 | 40-firm validation + position-coding kit (Phases B/D) | `scripts/seed/validation-lib.mjs`, `validate-political.mjs sample / review-template / validate / position-sample / position-kappa`, `data/validation/*`, `docs/codebook-lobbying-position.md`, `docs/political-validation.md` | `data/validation/README.md` — human steps; results in `docs/political-validation.md` |
 
 ## Research database (company financials + fund concentration graph)
 

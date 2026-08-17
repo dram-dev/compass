@@ -6,6 +6,7 @@ import { GOAL_MODE_PRESETS } from '@/data/goalModePresets';
 import { VERIFY_SOURCES } from '@/data/verifySources';
 import { GateConfigPanel } from './GateConfig';
 import { DetailOnly, ViewModeHint } from '@/components/ViewModeToggle';
+import { LoadDemoButton } from '@/components/Demo';
 import { ActionCard } from './ActionCard';
 import { Trajectory } from './Trajectory';
 import { PoliticalExposurePanel } from '@/dashboard/PoliticalExposure';
@@ -121,7 +122,10 @@ export function PlanPage() {
           <Link className="underline" to="/wizard">
             wizard
           </Link>
-          .
+          , or see a worked plan first:
+          <span className="mt-2 flex flex-wrap items-center gap-3">
+            <LoadDemoButton className="btn btn-pri" label="Load the demo scenario" />
+          </span>
         </div>
       )}
 
