@@ -124,9 +124,10 @@ describe('ErrorBoundary', () => {
     expect(
       screen.queryByRole('heading', { name: /Political money facts/ }),
     ).not.toBeInTheDocument();
-    // four visible sections, numbered without gaps
-    expect(screen.getByText('04')).toBeInTheDocument(); // Reset is 04, not 07
-    expect(screen.queryByText('05')).not.toBeInTheDocument();
+    // five visible sections now (sources, export/import, CSV import, packs, reset), no gaps
+    expect(screen.getByRole('heading', { name: /Import a statement CSV/ })).toBeInTheDocument();
+    expect(screen.getByText('05')).toBeInTheDocument(); // Reset is 05, not 08
+    expect(screen.queryByText('06')).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Switch to Detailed/ })).toBeInTheDocument();
   });
 });

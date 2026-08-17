@@ -1,11 +1,13 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useCompassStore } from '@/store/useCompassStore';
 import { useScores } from '@/store/scoring';
 import { GOAL_MODE_PRESETS } from '@/data/goalModePresets';
 import { CategoryCard } from '../CategoryCard';
+import { CsvImportPanel } from '@/components/CsvImportPanel';
 import { fmtMoney } from '@/lib/format';
 
 export function Step4Current() {
+  const [importing, setImporting] = useState(false);
   const categories = useCompassStore((s) => s.categories);
   const mode = useCompassStore((s) => s.goalMode);
   const addCategory = useCompassStore((s) => s.addCategory);
@@ -48,20 +50,23 @@ export function Step4Current() {
       >
         + ADD A CATEGORY
       </button>
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-2 rounded border border-dashed border-rule px-4 py-3 text-[12px] text-faint">
-        <span>
-          <b className="text-ink">Import a bank/card CSV to prefill totals</b> — coming soon. For
-          now, monthly totals are typed by hand.
-        </span>
-        <button
-          type="button"
-          className="btn btn-ghost !py-1 text-[11px]"
-          disabled
-          aria-disabled
-          title="Coming soon"
-        >
-          Import CSV
-        </button>
+      <div className="mt-4 rounded border border-dashed border-rule px-4 py-3 text-[12px] text-faint">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <span>
+            <b className="text-ink">Import a bank or card CSV</b> — Compass reads it in this tab,
+            groups the transactions by merchant, and fills in the totals and the mix. You review
+            everything before it applies.
+          </span>
+          <button
+            type="button"
+            className="btn btn-ghost !py-1 text-[11px]"
+            aria-expanded={importing}
+            onClick={() => setImporting((v) => !v)}
+          >
+            {importing ? 'Hide importer' : 'Import CSV'}
+          </button>
+        </div>
+        {importing && <CsvImportPanel onDone={() => setImporting(false)} />}
       </div>
       <div className="callout">
         Naming merchants sharpens the political mapping. Picks from the sample list carry a{' '}

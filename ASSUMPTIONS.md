@@ -61,8 +61,8 @@ Numbered, append-only. Each entry: decision · rationale · phase.
 
 ## Cuts / deferrals
 
-15. **CSV transaction import (EF10)**: shipped as a disabled "Coming soon" affordance in Step 4 unless
-    time remains at P5. (P5)
+15. **CSV transaction import (EF10)**: shipped as a disabled "Coming soon" affordance in Step 4 at P5;
+    **implemented for real after reviewer feedback** — see #76–#78 and `docs/csv-import.md`. (P5, CSV)
 16. Per-merchant spend shares within a bucket: equal weights (spec allows for v1). (P1)
 
 ## Added during P1
@@ -307,4 +307,22 @@ Numbered, append-only. Each entry: decision · rationale · phase.
     and switching density while on a hidden step moves forward to the nearest visible one. Section
     numbering on every page is derived from what is visible (`sectionNumbers`), so simple mode never
     shows gaps like 01, 02, 06. (VM)
+76. **The statement importer is review-first.** It derives dollars and categories automatically and
+    recognises chains from a curated descriptor table (`data/merchantBrands.ts`), but a merchant it does
+    not recognise stays **Unknown** and is offered for classification, largest first — it never guesses
+    whether an unfamiliar merchant is local, regional or major, never infers a rating or political lean
+    from a name, and applies nothing without a per-category preview. Files are parsed in the page and
+    dropped; no transaction rows are ever persisted or exported. (CSV)
+77. **Monthly scaling is explicit.** A statement's totals are divided by the span of its *spending* rows
+    (÷ 30.44, nearest half month, never < 1) and the divisor is shown and editable, because "how many
+    months is this file" is a judgement the user should make. Excluded rows (payments, transfers, cash,
+    income, fees, rent, utilities) do not affect the span, and their counts and dollars are reported.
+    Exclusions are judged from the descriptor only — Chase files phone bills under "Bills & Utilities",
+    so trusting the bank's category column there would drop a subscription the app should score. (CSV)
+78. **Apply is additive-by-category, not wholesale.** `applyTransactionImport` replaces `monthlySpend`
+    and the `current` mix for the categories the statement covers (bands ±4 around the observed
+    midpoints) and leaves every other category, all targets the user customised, all ratings and all
+    overrides untouched; merchants classified during review become `user` companies (unrated) so the
+    dashboard can name them honestly. Sign convention is detected per file (dominant sign = spending) so
+    both Chase-style negative and bank-style positive exports work. (CSV)
 

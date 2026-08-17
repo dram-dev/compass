@@ -12,6 +12,7 @@ import { EXAMPLE_DATA_PACK, parseDataPack } from '@/data/dataPack';
 import { BucketDefaultsPanel } from './BucketDefaultsPanel';
 import { Section, sectionNumbers } from './Section';
 import { DetailOnly, ViewModeHint } from './ViewModeToggle';
+import { CsvImportPanel } from './CsvImportPanel';
 import { useIsDetailed } from '@/store/useViewMode';
 import { FundLookthroughPanel } from './FundLookthroughPanel';
 import { PoliticalFactsPanel } from './PoliticalFactsPanel';
@@ -22,7 +23,7 @@ type Notice = { kind: 'ok' | 'err'; text: string } | null;
 /** Data page: verification sources (§10.2), export/import (EF8), community packs (EF9), Advanced (§6.2), reset. */
 export function DataSourcesPage() {
   const detailed = useIsDetailed();
-  const nos = sectionNumbers([false, false, false, true, true, true, false], detailed);
+  const nos = sectionNumbers([false, false, false, false, true, true, true, false], detailed);
   const s = useCompassStore();
   const [notice, setNotice] = useState<Notice>(null);
   const [packNotice, setPackNotice] = useState<Notice>(null);
@@ -150,6 +151,14 @@ export function DataSourcesPage() {
 
       <Section
         no={nos[2]!}
+        title="Import a statement CSV"
+        sub="Bank or card export → monthly spend by category and destination. Parsed in this tab, never uploaded; you review every match before anything is applied."
+      >
+        <CsvImportPanel />
+      </Section>
+
+      <Section
+        no={nos[3]!}
         title="Community data packs"
         sub={
           <>
@@ -222,7 +231,7 @@ export function DataSourcesPage() {
 
       <DetailOnly>
         <Section
-          no={nos[3]!}
+          no={nos[4]!}
           title="Advanced: bucket-default ratings"
           sub="The engine's fallback ratings for bucket portions without a named, rated merchant. Edit freely; the worked-example defaults are documented in the README."
         >
@@ -232,7 +241,7 @@ export function DataSourcesPage() {
 
       <DetailOnly>
         <Section
-          no={nos[4]!}
+          no={nos[5]!}
           title="Fund look-through (research database)"
           sub={
             <>
@@ -248,7 +257,7 @@ export function DataSourcesPage() {
 
       <DetailOnly>
         <Section
-          no={nos[5]!}
+          no={nos[6]!}
           title="Political money facts (FEC + Senate LDA)"
           sub={
             <>
@@ -266,7 +275,7 @@ export function DataSourcesPage() {
 
       <ViewModeHint what="bucket-default ratings, the fund look-through and the political-money facts" />
       <Section
-        no={nos[6]!}
+        no={nos[7]!}
         title="Reset"
         sub="Erase everything stored on this device. Export first if you want to keep it."
       >

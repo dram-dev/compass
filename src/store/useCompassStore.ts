@@ -14,6 +14,7 @@ import { BUCKET_IDS } from '@/engine/types';
 import type { GateConfig } from '@/engine/plan';
 import { DEFAULT_GATES } from '@/engine/plan';
 import { midpoints } from '@/engine/allocation';
+import type { CategoryPlanRow } from '@/lib/transactions';
 import { GOAL_MODE_PRESETS, midpointsToRanges } from '@/data/goalModePresets';
 import { blankCategory } from '@/data/categories.defaults';
 import { DEFAULT_BUCKET_RATINGS } from '@/data/bucketDefaults';
@@ -49,6 +50,12 @@ export interface CompassActions {
   addNamedCompany(id: string, which: Which, bucket: BucketId, companyId: string): void;
   removeNamedCompany(id: string, which: Which, bucket: BucketId, companyId: string): void;
   applyTargetPreset(categoryId?: string): void;
+  /** CSV statement import (docs/csv-import.md): replaces spend + current mix for the affected categories. */
+  applyTransactionImport(rows: readonly CategoryPlanRow[]): {
+    categories: number;
+    created: number;
+    monthlyTotal: number;
+  };
   // holdings
   addHolding(partial?: Partial<Holding>): string;
   updateHolding(id: string, patch: Partial<Holding>): void;
@@ -243,6 +250,55 @@ export const useCompassStore = create<CompassStore>()(
           wizard: categoryId ? s.wizard : { ...s.wizard, targetsCustomized: false },
           ...touch(s),
         })),
+
+      /**
+       * Apply a reviewed CSV import. Only categories present in the import are touched — a category the
+       * statement said nothing about keeps whatever the user typed. Merchants the user classified but
+       * that have no company record become `user` companies (unrated, provenance 'user'), so the
+       * dashboard can name them without inventing ratings. Targets that the user has not customised are
+       * re-derived from the new current mix, exactly as a manual edit would.
+       */
+      applyTransactionImport: (rows) => {
+        let created = 0;
+        const idFor = new Map<string, string>();
+        for (const row of rows)
+          for (const nc of row.newCompanies) {
+            const key = `${nc.name}|${nc.bucket}`;
+            if (idFor.has(key)) continue;
+            const before = get().userCompanies.length;
+            const company = get().addUserCompany(nc.name, nc.bucket);
+            if (get().userCompanies.length > before) created++;
+            idFor.set(key, company.id);
+          }
+        set((s) => {
+          const byId = new Map(rows.map((r) => [r.categoryId, r]));
+          const categories = s.categories.map((c) => {
+            const row = byId.get(c.id);
+            if (!row) return c;
+            const named: Partial<Record<BucketId, string[]>> = {};
+            for (const b of BUCKET_IDS) {
+              const ids = [...(row.named[b] ?? [])];
+              for (const nc of row.newCompanies) {
+                if (nc.bucket !== b) continue;
+                const id = idFor.get(`${nc.name}|${nc.bucket}`);
+                if (id && !ids.includes(id)) ids.push(id);
+              }
+              named[b] = ids;
+            }
+            const current = midpointsToRanges(row.shares, 4, named);
+            const next = { ...c, monthlySpend: row.monthlySpend, current };
+            return s.wizard.targetsCustomized
+              ? next
+              : { ...next, target: presetTargetsFor(next, s.goalMode) };
+          });
+          return { categories, ...touch(s) };
+        });
+        return {
+          categories: rows.length,
+          created,
+          monthlyTotal: rows.reduce((a, r) => a + r.monthlySpend, 0),
+        };
+      },
 
       addHolding: (partial = {}) => {
         const id = partial.id ?? uid('h');

@@ -158,11 +158,12 @@ else the default row.
 | 7 | Local multiplier context | `src/components/Disclaimers.tsx#MultiplierNote`, `ActionCard.tsx` | `local ≈2–3×*` chip on local-shift actions + one illustrative footnote |
 | 8 | JSON export/import | `src/store/persistence.ts`, `validate.ts`, `migrations.ts` | Data → Export JSON / Import JSON (file or paste); malformed input → specific error |
 | 9 | Community data-pack import | `docs/data-pack-schema.md`, `src/data/dataPack.ts`, `DataSourcesPage.tsx` | Data → Community data packs (import / example download); records badged Imported · source |
-| 10 | CSV transaction import (stretch) | `steps/Step4Current.tsx` | "Import CSV — coming soon" affordance (see ASSUMPTIONS #15) |
+| 10 | CSV transaction import | `src/lib/csv.ts`, `src/lib/transactions.ts`, `src/components/CsvImportPanel.tsx`, `store#applyTransactionImport`, `docs/csv-import.md` | Wizard step 4 → "Import CSV", or Data → "Import a statement CSV": bank/card export → merchants grouped, categories and monthly totals filled in, unknown merchants offered for classification, preview before apply |
 | 11 | Political streams (PAC / employees / executives) | `scripts/seed/fec.mjs#isExecutiveOccupation`, `political.mjs#streamLean`, `PoliticalFactsPanel.tsx` | Data §06 fact cards — three bars, each with its own lean beside the pooled one |
 | 12 | Lobbying topics + P1 (Axis-2 inputs, activity not position) | `scripts/seed/lobbying-topics.mjs`, `db/schema.sql#lobbying_filing_topic`, `PoliticalFactsPanel.tsx#ProtectionPanel` | Data §06 "Lobbying topics" panel — weighted vs any-code trade/tariff share, topic chips, filing links |
 | 13 | Political benchmark harness | `scripts/seed/validate-political.mjs`, `docs/political-benchmark.md` | `npm run validate:political` |
-| 14 | 40-firm validation + position-coding kit (Phases B/D) | `scripts/seed/validation-lib.mjs`, `validate-political.mjs sample / review-template / validate / position-sample / position-kappa`, `data/validation/*`, `docs/codebook-lobbying-position.md`, `docs/political-validation.md` | `data/validation/README.md` — human steps; results in `docs/political-validation.md` |
+| 14 | Simple / Detailed density toggle | `src/store/useViewMode.ts`, `src/components/ViewModeToggle.tsx`, `src/components/Section.tsx#sectionNumbers`, `src/wizard/stepList.ts` | Header switch: simple walks a 3-step wizard and 3 dashboard panels; detailed shows all 7 steps and every panel |
+| 15 | 40-firm validation + position-coding kit (Phases B/D) | `scripts/seed/validation-lib.mjs`, `validate-political.mjs sample / review-template / validate / position-sample / position-kappa`, `data/validation/*`, `docs/codebook-lobbying-position.md`, `docs/political-validation.md` | `data/validation/README.md` — human steps; results in `docs/political-validation.md` |
 
 ## Research database (company financials + fund concentration graph)
 
