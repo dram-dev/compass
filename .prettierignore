@@ -6,3 +6,4 @@ package-lock.json
 *.md
 src/data/generated
 .claude
+data/validation

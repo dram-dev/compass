@@ -257,4 +257,21 @@ Numbered, append-only. Each entry: decision · rationale · phase.
     machine output; formatting them would triple their size. The political facts export is now ~1.5 MB
     (streams + protectionActivity for 356 companies) and is bundled statically — the app bundle is
     ~3.4 MB (674 kB gzip); code-splitting the facts JSON is a follow-up, not a gate item. (PA)
+68. **Alias collisions are surfaced, not silently tolerated.** Two universe symbols sharing an alias made every
+    exact match "ambiguous" and dropped it — Boeing's PAC (BA vs its 2024 preferred BAPA), BNY (ticker change
+    BK→BNY), Berkshire (BRK-A/BRK-B). Fixed with `sameAs` entries; `politicalUniverse` now also logs
+    remaining collisions at seed time (HON/HONA "Honeywell Aerospace" is the one left, harmless), drops
+    junk names (`n/a`) and adds every issuer-name variant from the fund filings as aliases (Dell had only
+    "n/a" before). `--only` runs now delete only the named companies' rows. (PB)
+69. **Validation sample rules** (Phase B1): 10 sample brands (7 with a PAC by partisan $, 3 without) + 30
+    top-held companies (8 without a PAC by AUM, then sectors round-robin by AUM); share classes never
+    sampled. Comparator and review CSVs live under `data/validation/` (Prettier-ignored, never imported by
+    `src/`); regeneration preserves hand-entered columns. Match review lists fuzzy rows first — those are the
+    required hour; exact rows are an optional spot check; κ is reported for both sets. (PB)
+70. **Position-coding sample** (Phase D2): the unit is one lobbying activity (issue code + specific-issue
+    text); TAR/TRD codes first, then activities with a relevant keyword topic, ≤ 6 per company, deduped by
+    normalized text, ≤ 240 total, deterministically interleaved by hash so raters do not see companies in
+    blocks; company names hidden by default in the rating page. Labels: protection / market-opening /
+    neutral; the rating page is a self-contained local HTML file (no network) writing
+    `ratings-<name>.jsonl`. Decision rule κ ≥ 0.7 as in the plan. (PD)
 

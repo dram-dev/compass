@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Compass · rate lobbying positions</title>
+<style>
+  :root { --bg:#F3F4F7; --card:#fff; --ink:#1B2230; --muted:#5B6472; --rule:#D6DAE2; --acc:#1F4E5F; --p:#8F6412; --m:#2F6B4F; --n:#5B6472; }
+  body { margin:0; font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif; color:var(--ink); background:var(--bg); }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+  h1 { font-size:1.3rem; margin:0 0 .25rem; } .sub { color:var(--muted); font-size:.9rem; }
+  .row { display:flex; flex-wrap:wrap; gap:.75rem; align-items:center; margin:.75rem 0; }
+  input[type=text] { font: inherit; padding:.35rem .5rem; border:1px solid var(--rule); border-radius:4px; }
+  button { font: inherit; padding:.45rem .9rem; border:1px solid var(--rule); border-radius:6px; background:var(--card); cursor:pointer; }
+  button:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
+  button.p { border-color: var(--p); color: var(--p); } button.m { border-color: var(--m); color: var(--m); } button.n { border-color: var(--n); color: var(--n); }
+  button.on { background: var(--ink); color:#fff; border-color: var(--ink); }
+  .card { background:var(--card); border:1px solid var(--rule); border-radius:8px; padding:1rem 1.1rem; margin-top:1rem; }
+  .meta { font-family: ui-monospace, Menlo, monospace; font-size:.78rem; color:var(--muted); display:flex; flex-wrap:wrap; gap:.4rem 1rem; }
+  .text { margin:.75rem 0; white-space:pre-wrap; font-size:1rem; }
+  .prog { height:6px; background:var(--rule); border-radius:3px; overflow:hidden; } .prog > div { height:100%; background:var(--acc); }
+  textarea { width:100%; font:inherit; font-size:.9rem; padding:.4rem .5rem; border:1px solid var(--rule); border-radius:4px; box-sizing:border-box; }
+  .hint { font-size:.82rem; color:var(--muted); }
+  kbd { font-family: ui-monospace, Menlo, monospace; font-size:.75rem; border:1px solid var(--rule); border-radius:3px; padding:0 .3rem; }
+  a { color: var(--acc); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Rate lobbying positions</h1>
+  <div class="sub">Local page — nothing leaves this browser. Codebook: <code>docs/codebook-lobbying-position.md</code>. Rate the text, not the company.</div>
+  <div class="row">
+    <label>Rater <input id="rater" type="text" placeholder="yourname" size="12" /></label>
+    <label>Sample <input id="file" type="file" accept=".jsonl,.txt" /></label>
+    <label>Resume from ratings file <input id="resume" type="file" accept=".jsonl,.txt" /></label>
+    <button id="export">Export ratings-&lt;rater&gt;.jsonl</button>
+    <label class="hint"><input id="showco" type="checkbox" /> show company name</label>
+  </div>
+  <div class="prog"><div id="bar" style="width:0%"></div></div>
+  <div class="hint" id="status">Load <code>data/validation/position-sample.jsonl</code> to start.</div>
+  <div class="card" id="card" hidden>
+    <div class="meta">
+      <span id="m-order"></span><span id="m-code"></span><span id="m-year"></span><span id="m-kind"></span><span id="m-co"></span><span id="m-topics"></span>
+      <a id="m-url" target="_blank" rel="noopener">filing ↗</a>
+    </div>
+    <div class="text" id="text"></div>
+    <div class="row">
+      <button class="p" data-label="protection">1 · protection-seeking</button>
+      <button class="m" data-label="market-opening">2 · market-opening</button>
+      <button class="n" data-label="neutral">3 · neutral / unclear</button>
+    </div>
+    <textarea id="note" rows="2" placeholder="note (optional) — e.g. mixed asks, why neutral"></textarea>
+    <div class="row hint">
+      <button id="prev">← prev</button><button id="next">next →</button><button id="skip">skip unrated →</button>
+      <span>keys: <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> label · <kbd>←</kbd> <kbd>→</kbd> move · <kbd>c</kbd> toggle company</span>
+    </div>
+  </div>
+</div>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  let items = [], i = 0, ratings = {};
+  const key = () => 'compass-ratings:' + ($('rater').value.trim() || 'anon');
+  const load = () => { try { ratings = JSON.parse(localStorage.getItem(key()) || '{}'); } catch { ratings = {}; } };
+  const save = () => localStorage.setItem(key(), JSON.stringify(ratings));
+  const rated = () => items.filter((it) => ratings[it.id]?.label).length;
+  function render() {
+    if (!items.length) return;
+    const it = items[i];
+    $('card').hidden = false;
+    $('m-order').textContent = `#${it.order} of ${items.length}`;
+    $('m-code').textContent = `${it.code} · ${it.codeDisplay}`;
+    $('m-year').textContent = `${it.year} ${String(it.period || '').replace('_', ' ')}`;
+    $('m-kind').textContent = it.kind;
+    $('m-co').textContent = $('showco').checked ? `${it.symbol} · ${it.company} · ${it.registrant || ''}` : '(company hidden)';
+    $('m-topics').textContent = it.topics?.length ? 'topics: ' + it.topics.join(', ') : '';
+    $('m-url').href = it.url || '#'; $('m-url').hidden = !it.url;
+    $('text').textContent = it.text;
+    const r = ratings[it.id] || {};
+    document.querySelectorAll('button[data-label]').forEach((b) => b.classList.toggle('on', b.dataset.label === r.label));
+    $('note').value = r.note || '';
+    $('bar').style.width = (100 * rated() / items.length) + '%';
+    $('status').textContent = `${rated()} / ${items.length} rated · rater ${$('rater').value.trim() || '(set a name)'} · progress is saved in this browser; export when done.`;
+  }
+  function label(l) {
+    if (!items.length) return;
+    const it = items[i];
+    ratings[it.id] = { id: it.id, label: l, note: $('note').value.trim(), rater: $('rater').value.trim(), ratedAt: new Date().toISOString() };
+    save();
+    if (i < items.length - 1) i++;
+    render();
+  }
+  $('file').addEventListener('change', async (e) => {
+    const f = e.target.files[0]; if (!f) return;
+    const text = await f.text();
+    items = text.split('\n').filter((l) => l.trim()).map((l) => JSON.parse(l)).sort((a, b) => a.order - b.order);
+    load(); i = Math.max(0, items.findIndex((it) => !ratings[it.id]?.label)); render();
+  });
+  $('resume').addEventListener('change', async (e) => {
+    const f = e.target.files[0]; if (!f) return;
+    for (const l of (await f.text()).split('\n')) { if (!l.trim()) continue; try { const r = JSON.parse(l); if (r.id && r.label) ratings[r.id] = r; } catch {} }
+    save(); render();
+  });
+  $('rater').addEventListener('change', () => { load(); render(); });
+  $('showco').addEventListener('change', render);
+  $('note').addEventListener('input', () => { const it = items[i]; if (it && ratings[it.id]) { ratings[it.id].note = $('note').value.trim(); save(); } });
+  document.querySelectorAll('button[data-label]').forEach((b) => b.addEventListener('click', () => label(b.dataset.label)));
+  $('prev').addEventListener('click', () => { if (i > 0) i--; render(); });
+  $('next').addEventListener('click', () => { if (i < items.length - 1) i++; render(); });
+  $('skip').addEventListener('click', () => { const j = items.findIndex((it, k) => k > i && !ratings[it.id]?.label); if (j >= 0) i = j; render(); });
+  $('export').addEventListener('click', () => {
+    const rater = $('rater').value.trim() || 'anon';
+    const lines = items.map((it) => ratings[it.id]).filter((r) => r && r.label).map((r) => JSON.stringify({ ...r, rater }));
+    const blob = new Blob([lines.join('\n') + '\n'], { type: 'application/x-ndjson' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `ratings-${rater}.jsonl`; a.click();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+    if (e.key === '1') label('protection'); else if (e.key === '2') label('market-opening'); else if (e.key === '3') label('neutral');
+    else if (e.key === 'ArrowLeft') { if (i > 0) i--; render(); } else if (e.key === 'ArrowRight') { if (i < items.length - 1) i++; render(); }
+    else if (e.key === 'c') { $('showco').checked = !$('showco').checked; render(); }
+  });
+})();
+</script>
+</body>
+</html>

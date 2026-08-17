@@ -2,7 +2,7 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { CONFIG } from './config.mjs';
 import { log, now } from './db.mjs';
-import { buildAliasIndex, defaultAliases } from './orgmatch.mjs';
+import { buildAliasIndex, defaultAliases, normOrg } from './orgmatch.mjs';
 import {
   aggregateEmployees,
   aggregatePac,
@@ -41,12 +41,15 @@ export const PACK_EXPORT =
   path.join(CONFIG.root, 'src', 'data', 'generated', 'political-pack.json');
 
 /** Ticker universe: DB companies ∪ sample-brand tickers ∪ curated alias keys; plus name→alias index. */
+const junkName = (s) => !s || String(s).trim().length < 3 || /^n\/?a$/i.test(String(s).trim());
+
 export function politicalUniverse(db, { only = null } = {}) {
   const aliasesFile = readJson(ALIASES_PATH, { aliases: {} }).aliases ?? {};
   const sample = readJson(SAMPLE_PATH, []);
   const names = new Map(); // symbol → display name
   // canonical display name: DB company name → first curated alias → sample brand name → ticker
-  for (const c of db.prepare('SELECT symbol, name FROM company').all()) names.set(c.symbol, c.name);
+  for (const c of db.prepare('SELECT symbol, name FROM company').all())
+    if (!junkName(c.name)) names.set(c.symbol, c.name);
   const sameAs = {};
   for (const [t, v] of Object.entries(aliasesFile)) {
     if (v && !Array.isArray(v) && v.sameAs) sameAs[t] = v.sameAs;
@@ -63,13 +66,30 @@ export function politicalUniverse(db, { only = null } = {}) {
       WHERE v.symbol IS NOT NULL ORDER BY v.aum_weighted_usd DESC LIMIT ?`,
       )
       .all(CONFIG.politicalTopHeld ?? 500);
+    // Every issuer-name variant the filings use for a held symbol (most frequent first), junk ("n/a") dropped —
+    // v_company_concentration keeps a single name and it is sometimes the junk one (DELL, ODFL).
+    const variants = new Map();
+    for (const v of db
+      .prepare(
+        'SELECT holding_symbol AS symbol, holding_name AS name, COUNT(*) AS n FROM fund_holding_effective WHERE holding_symbol IS NOT NULL GROUP BY 1, 2 ORDER BY n DESC',
+      )
+      .all()) {
+      const nm = String(v.name ?? '')
+        .replace(/\s+—.*$/, '')
+        .trim();
+      if (junkName(nm)) continue;
+      const list = variants.get(v.symbol) ?? variants.set(v.symbol, []).get(v.symbol);
+      if (list.length < 4 && !list.includes(nm)) list.push(nm);
+    }
     for (const r of rows) {
       if (!/^[A-Z][A-Z0-9]{0,4}(-[A-Z])?$/.test(r.symbol)) continue; // US-listed forms only (BRK-B ok; ENR.DE excluded)
-      const nm = String(r.name ?? '')
+      let nm = String(r.name ?? '')
         .replace(/\s+—.*$/, '')
         .trim(); // drop security title suffix
+      const vs = variants.get(r.symbol) ?? [];
+      if (junkName(nm)) nm = vs[0] ?? '';
       if (!names.has(r.symbol) && nm) names.set(r.symbol, nm);
-      heldNames.set(r.symbol, { name: nm, aum: r.aum });
+      heldNames.set(r.symbol, { name: nm, aum: r.aum, variants: vs });
     }
   } catch {
     /* fund tables not seeded yet */
@@ -84,10 +104,20 @@ export function politicalUniverse(db, { only = null } = {}) {
     for (const c of sample)
       if (c.ticker === symbol) defaultAliases(c.name).forEach((a) => set.add(a));
     if (heldNames.has(symbol))
-      defaultAliases(heldNames.get(symbol).name).forEach((a) => set.add(a));
-    return { symbol, aliases: [...set] };
+      for (const nm of [heldNames.get(symbol).name, ...heldNames.get(symbol).variants])
+        defaultAliases(nm).forEach((a) => set.add(a));
+    return { symbol, aliases: [...set].filter((a) => !junkName(a)) };
   });
-  return { symbols, entries, names, sameAs, aliasIndex: buildAliasIndex(entries) };
+  // Alias collisions make every exact match ambiguous (and silently dropped) — surface them so they get a
+  // `sameAs` (share class, preferred, ticker change) or a curated alias instead of a lost PAC.
+  const byAlias = new Map();
+  for (const e of entries)
+    for (const a of new Set(e.aliases.map(normOrg)))
+      (byAlias.get(a) ?? byAlias.set(a, new Set()).get(a)).add(e.symbol);
+  const collisions = [...byAlias]
+    .filter(([, set]) => set.size > 1)
+    .map(([alias, set]) => ({ alias, symbols: [...set].sort() }));
+  return { symbols, entries, names, sameAs, collisions, aliasIndex: buildAliasIndex(entries) };
 }
 
 // ------------------------------------------------------------------ FEC
@@ -102,10 +132,17 @@ export async function seedFec(
   } = {},
 ) {
   const uni = politicalUniverse(db, { only });
+  if (uni.collisions.length)
+    out(
+      `  ! alias collisions (exact matches on these are ambiguous and dropped — add sameAs/aliases): ${uni.collisions.map((c) => `${c.alias}→${c.symbols.join('/')}`).join('; ')}`,
+    );
   const overrides = readJson(OVERRIDES_PATH, {});
   const excludeEmployers = new Set(overrides.excludeEmployerStrings ?? []);
   const summary = { cycles: [], committees: 0, pacRows: 0, employeeMatched: 0, skipped: [] };
   const computedAt = now();
+  // With --only, touch only those companies' rows; a full run replaces the cycle.
+  const scope = only ? ` AND company_symbol IN (${only.map(() => '?').join(',')})` : '';
+  const scopeArgs = only ?? [];
   const insCommittee = db.prepare(
     `INSERT OR REPLACE INTO political_committee (company_symbol, committee_id, committee_name, connected_org, org_type, designation, match_method, cycle_seen) VALUES (?,?,?,?,?,?,?,?)`,
   );
@@ -137,7 +174,10 @@ export async function seedFec(
     const matched = matchCommittees(ref.committees, uni.aliasIndex, overrides);
     const committeeToSymbol = new Map();
     db.exec('BEGIN');
-    db.prepare('DELETE FROM political_committee WHERE cycle_seen = ?').run(cycle);
+    db.prepare('DELETE FROM political_committee WHERE cycle_seen = ?' + scope).run(
+      cycle,
+      ...scopeArgs,
+    );
     for (const m of matched) {
       committeeToSymbol.set(m.committeeId, m.symbol);
       insCommittee.run(
@@ -163,9 +203,9 @@ export async function seedFec(
     });
     if (pac) {
       db.exec('BEGIN');
-      db.prepare("DELETE FROM political_contribution WHERE cycle = ? AND channel = 'pac'").run(
-        cycle,
-      );
+      db.prepare(
+        "DELETE FROM political_contribution WHERE cycle = ? AND channel = 'pac'" + scope,
+      ).run(cycle, ...scopeArgs);
       for (const [k, t] of pac.totals) {
         const [symbol, party] = k.split('|');
         insContribution.run(
@@ -198,16 +238,14 @@ export async function seedFec(
       );
       if (emp) {
         db.exec('BEGIN');
-        db.prepare(
-          "DELETE FROM political_contribution WHERE cycle = ? AND channel = 'employee'",
-        ).run(cycle);
-        db.prepare('DELETE FROM political_employer_match WHERE cycle = ?').run(cycle);
-        db.prepare(
-          "DELETE FROM political_contribution WHERE cycle = ? AND channel = 'pac-inflow'",
-        ).run(cycle);
-        db.prepare(
-          "DELETE FROM political_contribution WHERE cycle = ? AND channel = 'executive'",
-        ).run(cycle);
+        for (const ch of ['employee', 'pac-inflow', 'executive'])
+          db.prepare(
+            `DELETE FROM political_contribution WHERE cycle = ? AND channel = '${ch}'` + scope,
+          ).run(cycle, ...scopeArgs);
+        db.prepare('DELETE FROM political_employer_match WHERE cycle = ?' + scope).run(
+          cycle,
+          ...scopeArgs,
+        );
         for (const [k, t] of emp.execTotals ?? []) {
           const [symbol, party] = k.split('|');
           insContribution.run(

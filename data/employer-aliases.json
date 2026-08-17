@@ -1,6 +1,31 @@
 {
-  "note": "Curated org-name variants used to match FEC connected-org / employer strings and LDA client names to tickers. Add variants freely; keep them exact organization names, not descriptions. Matching is exact-after-normalization or a whole-word prefix (\u22655 chars); every match is written to the DB with its method for audit. A value of {\"sameAs\": \"TICKER\"} marks a second share class (GOOG\u2192GOOGL) whose facts are copied from the canonical ticker.",
+  "note": "Curated org-name variants used to match FEC connected-org / employer strings and LDA client names to tickers. Add variants freely; keep them exact organization names, not descriptions. Matching is exact-after-normalization or a whole-word prefix (≥5 chars); every match is written to the DB with its method for audit. A value of {\"sameAs\": \"TICKER\"} marks a second share class (GOOG→GOOGL) whose facts are copied from the canonical ticker.",
   "aliases": {
+    "AAPL": ["Apple", "Apple Inc", "Apple Computer", "Apple Inc.", "Apple Computer Inc"],
+    "ABBV": ["AbbVie", "AbbVie Inc", "Allergan"],
+    "ABNB": ["Airbnb", "Airbnb Inc"],
+    "ABT": ["Abbott Laboratories", "Abbott", "Abbott Laboratories Inc", "Abbott Labs"],
+    "ACI": [
+      "Albertsons",
+      "Albertsons Companies",
+      "Safeway",
+      "Safeway Inc",
+      "Albertsons Companies Inc",
+      "Albertsons LLC",
+      "Safeway Stores"
+    ],
+    "ACN": ["Accenture", "Accenture LLP", "Accenture Federal Services", "Accenture plc"],
+    "ADBE": ["Adobe", "Adobe Inc", "Adobe Systems", "Adobe Systems Inc", "Adobe Inc."],
+    "AIG": ["AIG", "American International Group", "American International Group Inc", "AIG Inc"],
+    "ALL": [
+      "Allstate",
+      "The Allstate Corporation",
+      "Allstate Insurance Company",
+      "Allstate Insurance"
+    ],
+    "AMAT": ["Applied Materials", "Applied Materials Inc"],
+    "AMD": ["Advanced Micro Devices", "AMD", "Advanced Micro Devices Inc", "AMD Inc"],
+    "AMGN": ["Amgen", "Amgen Inc"],
     "AMZN": [
       "Amazon",
       "Amazon.com",
@@ -21,8 +46,163 @@
       "Audible",
       "Twitch"
     ],
-    "AAPL": ["Apple", "Apple Inc", "Apple Computer", "Apple Inc.", "Apple Computer Inc"],
-    "MSFT": ["Microsoft", "Microsoft Corporation", "Microsoft Corp", "LinkedIn", "GitHub"],
+    "AVGO": ["Broadcom", "Broadcom Inc"],
+    "AXP": ["American Express", "American Express Company", "American Express Co"],
+    "BA": ["Boeing", "The Boeing Company", "Boeing Company", "Boeing Co"],
+    "BAC": [
+      "Bank of America",
+      "Bank of America Corporation",
+      "Merrill Lynch",
+      "Merrill",
+      "BofA Securities",
+      "Bank of America Securities",
+      "Bank of America N.A.",
+      "Bank of America Merrill Lynch",
+      "Merrill Lynch Pierce Fenner & Smith"
+    ],
+    "BAPA": {
+      "sameAs": "BA"
+    },
+    "BK": {
+      "sameAs": "BNY"
+    },
+    "BKNG": ["Booking Holdings", "Booking.com", "Priceline", "Booking Holdings Inc"],
+    "BLK": ["BlackRock", "BlackRock Financial Management", "BlackRock Inc"],
+    "BMY": [
+      "Bristol Myers Squibb",
+      "Bristol-Myers Squibb",
+      "Bristol-Myers Squibb Company",
+      "Bristol Myers Squibb Company"
+    ],
+    "BRK-A": {
+      "sameAs": "BRK-B"
+    },
+    "BRK-B": [
+      "Berkshire Hathaway",
+      "GEICO",
+      "Government Employees Insurance Company",
+      "BNSF Railway",
+      "BNSF",
+      "Berkshire Hathaway Inc",
+      "Berkshire Hathaway Energy"
+    ],
+    "C": [
+      "Citigroup",
+      "Citi",
+      "Citibank",
+      "Citibank N.A.",
+      "Citibank NA",
+      "Citigroup Global Markets",
+      "Citigroup Inc",
+      "Citi Group"
+    ],
+    "CAT": ["Caterpillar", "Caterpillar Inc"],
+    "CI": ["The Cigna Group", "Cigna", "Cigna Corporation", "Cigna Healthcare", "Express Scripts"],
+    "CMCSA": [
+      "Comcast",
+      "Comcast Corporation",
+      "NBCUniversal",
+      "Comcast Cable",
+      "Comcast Cable Communications",
+      "Comcast Corp",
+      "Comcast Spectacor",
+      "Comcast (CC) of Willow Grove",
+      "NBCUniversal Media"
+    ],
+    "CMG": ["Chipotle", "Chipotle Mexican Grill", "Chipotle Mexican Grill Inc"],
+    "COF": [
+      "Capital One",
+      "Capital One Financial",
+      "Capital One Bank",
+      "Capital One Financial Corporation",
+      "Capital One Services",
+      "Capital One N.A."
+    ],
+    "COP": ["ConocoPhillips", "ConocoPhillips Company"],
+    "COST": ["Costco", "Costco Wholesale", "Costco Wholesale Corporation", "Costco Wholesale Corp"],
+    "CRM": ["Salesforce", "Salesforce.com", "Salesforce Inc", "Salesforce.com Inc"],
+    "CSCO": ["Cisco", "Cisco Systems", "Cisco Systems Inc"],
+    "CVS": [
+      "CVS Health",
+      "CVS Pharmacy",
+      "CVS",
+      "CVS Caremark",
+      "Aetna",
+      "CVS Health Corporation",
+      "CVS Caremark Corporation",
+      "Aetna Inc",
+      "CVS Pharmacy Inc"
+    ],
+    "CVX": ["Chevron", "Chevron Corporation", "Chevron Corp", "Chevron USA", "Chevron U.S.A. Inc"],
+    "DE": [
+      "Deere & Company",
+      "John Deere",
+      "Deere",
+      "John Deere Shared Services",
+      "Deere and Company"
+    ],
+    "DG": ["Dollar General", "Dollar General Corporation"],
+    "DHR": ["Danaher", "Danaher Corporation"],
+    "DIS": [
+      "Walt Disney",
+      "The Walt Disney Company",
+      "Disney",
+      "Walt Disney Company",
+      "ESPN",
+      "Hulu",
+      "TWDC Enterprises 18 Corp",
+      "Walt Disney Co",
+      "The Walt Disney Co",
+      "Disney Worldwide Services",
+      "Walt Disney World",
+      "Disneyland"
+    ],
+    "DUK": [
+      "Duke Energy",
+      "Duke Energy Business Services",
+      "Duke Energy Carolinas",
+      "Duke Energy Progress",
+      "Duke Energy Florida",
+      "Duke Energy Corp"
+    ],
+    "ELV": [
+      "Elevance Health",
+      "Anthem",
+      "The Elevance Health Companies",
+      "Elevance Health Companies",
+      "Anthem Inc",
+      "Anthem Blue Cross"
+    ],
+    "F": ["Ford", "Ford Motor Company", "Ford Motor", "Ford Motor Co", "Ford Motor Credit"],
+    "FDX": [
+      "FedEx",
+      "Federal Express",
+      "FedEx Express",
+      "FedEx Corporate",
+      "FedEx Services",
+      "FedEx Ground",
+      "FedEx Freight",
+      "FedEx Corporation",
+      "FedEx Office"
+    ],
+    "GE": [
+      "General Electric",
+      "GE Aerospace",
+      "General Electric Company",
+      "General Electric Co",
+      "GE"
+    ],
+    "GILD": ["Gilead Sciences", "Gilead", "Gilead Sciences Inc"],
+    "GM": [
+      "General Motors",
+      "GM",
+      "General Motors Company",
+      "General Motors Corporation",
+      "GM Financial"
+    ],
+    "GOOG": {
+      "sameAs": "GOOGL"
+    },
     "GOOGL": [
       "Alphabet",
       "Alphabet Inc",
@@ -36,29 +216,46 @@
       "DeepMind",
       "Verily"
     ],
-    "GOOG": {
-      "sameAs": "GOOGL"
-    },
-    "META": [
-      "Meta Platforms",
-      "Meta",
-      "Facebook",
-      "Facebook Inc",
-      "Instagram",
-      "Meta Platforms Inc",
-      "Facebook Inc.",
-      "WhatsApp"
+    "GS": [
+      "Goldman Sachs",
+      "The Goldman Sachs Group",
+      "Goldman Sachs & Co",
+      "Goldman Sachs Group",
+      "Goldman Sachs & Co. LLC",
+      "Goldman, Sachs & Co"
     ],
-    "NVDA": ["NVIDIA", "NVIDIA Corporation", "NVIDIA Corp", "Nvidia"],
-    "TSLA": ["Tesla", "Tesla Inc", "Tesla Motors", "Tesla Motors Inc", "Tesla Inc."],
-    "BRK-B": [
-      "Berkshire Hathaway",
-      "GEICO",
-      "Government Employees Insurance Company",
-      "BNSF Railway",
-      "BNSF",
-      "Berkshire Hathaway Inc",
-      "Berkshire Hathaway Energy"
+    "HD": [
+      "Home Depot",
+      "The Home Depot",
+      "Home Depot USA",
+      "Home Depot U.S.A.",
+      "Home Depot U.S.A., Inc.",
+      "Home Depot Management Company"
+    ],
+    "HON": [
+      "Honeywell",
+      "Honeywell International",
+      "Honeywell International Inc",
+      "Honeywell Aerospace"
+    ],
+    "HUM": ["Humana", "Humana Inc"],
+    "IBM": [
+      "IBM",
+      "International Business Machines",
+      "IBM Corporation",
+      "IBM Corp",
+      "International Business Machines Corp"
+    ],
+    "INTC": ["Intel", "Intel Corporation", "Intel Corp"],
+    "INTU": ["Intuit", "Intuit Inc"],
+    "ISRG": ["Intuitive Surgical", "Intuitive Surgical Inc"],
+    "JNJ": [
+      "Johnson & Johnson",
+      "Johnson and Johnson",
+      "Johnson & Johnson Services",
+      "Johnson & Johnson Services Inc",
+      "Janssen",
+      "Janssen Pharmaceuticals"
     ],
     "JPM": [
       "JPMorgan Chase",
@@ -74,16 +271,240 @@
       "JPMorgan Securities",
       "J.P. Morgan Chase"
     ],
-    "BAC": [
-      "Bank of America",
-      "Bank of America Corporation",
-      "Merrill Lynch",
-      "Merrill",
-      "BofA Securities",
-      "Bank of America Securities",
-      "Bank of America N.A.",
-      "Bank of America Merrill Lynch",
-      "Merrill Lynch Pierce Fenner & Smith"
+    "KO": [
+      "Coca-Cola",
+      "The Coca-Cola Company",
+      "Coca Cola",
+      "Coca-Cola Company",
+      "Coca Cola Company"
+    ],
+    "KR": ["Kroger", "The Kroger Co", "Kroger Company", "The Kroger Company", "Kroger Co"],
+    "LIN": ["Linde", "Linde Inc", "Linde plc"],
+    "LLY": [
+      "Eli Lilly",
+      "Eli Lilly and Company",
+      "Lilly",
+      "Eli Lilly & Company",
+      "Eli Lilly & Co",
+      "Lilly USA"
+    ],
+    "LMT": ["Lockheed Martin", "Lockheed Martin Corporation", "Lockheed Martin Corp", "Lockheed"],
+    "LOW": [
+      "Lowe's",
+      "Lowes",
+      "Lowe's Companies",
+      "Lowe's Home Centers",
+      "Lowes Home Centers",
+      "Lowe's Home Improvement"
+    ],
+    "MA": ["Mastercard", "MasterCard", "Mastercard International", "Mastercard Incorporated"],
+    "MCD": [
+      "McDonald's",
+      "McDonalds",
+      "McDonald's Corporation",
+      "McDonald's Corp",
+      "McDonalds Corporation",
+      "McDonald's USA"
+    ],
+    "MDLZ": ["Mondelez", "Mondelez International", "Mondelez International Inc"],
+    "MDT": ["Medtronic", "Medtronic Inc", "Medtronic plc"],
+    "MET": ["MetLife", "MetLife Group", "MetLife Inc", "Metropolitan Life Insurance Company"],
+    "META": [
+      "Meta Platforms",
+      "Meta",
+      "Facebook",
+      "Facebook Inc",
+      "Instagram",
+      "Meta Platforms Inc",
+      "Facebook Inc.",
+      "WhatsApp"
+    ],
+    "MMM": ["3M", "3M Company", "3M Co"],
+    "MO": [
+      "Altria",
+      "Altria Group",
+      "Altria Client Services",
+      "Altria Group Distribution Company",
+      "Altria Group Distribution Co",
+      "Philip Morris USA"
+    ],
+    "MRK": ["Merck", "Merck & Co", "Merck Sharp & Dohme", "Merck Sharp and Dohme", "MSD"],
+    "MS": [
+      "Morgan Stanley",
+      "Morgan Stanley & Co",
+      "Morgan Stanley Smith Barney",
+      "Morgan Stanley Wealth Management"
+    ],
+    "MSFT": ["Microsoft", "Microsoft Corporation", "Microsoft Corp", "LinkedIn", "GitHub"],
+    "MU": ["Micron", "Micron Technology", "Micron Technology Inc"],
+    "NEE": [
+      "NextEra Energy",
+      "Florida Power & Light",
+      "NextEra Energy Resources",
+      "NextEra Energy Marketing",
+      "NextEra Energy Inc",
+      "FPL"
+    ],
+    "NFLX": ["Netflix", "Netflix Inc", "Netflix Inc."],
+    "NKE": ["Nike", "Nike Inc", "Nike Inc."],
+    "NOW": ["ServiceNow", "ServiceNow Inc"],
+    "NVDA": ["NVIDIA", "NVIDIA Corporation", "NVIDIA Corp", "Nvidia"],
+    "ORCL": ["Oracle", "Oracle Corporation", "Oracle America", "Oracle Corp", "Oracle America Inc"],
+    "OXY": [
+      "Occidental Petroleum",
+      "Occidental",
+      "Occidental Oil and Gas Corp",
+      "Occidental Oil and Gas",
+      "Oxy"
+    ],
+    "PEP": ["PepsiCo", "Pepsi", "Frito-Lay", "PepsiCo Inc", "Pepsi Co", "Pepsico"],
+    "PFE": ["Pfizer", "Pfizer Inc", "Pfizer Inc.", "Pfizer Pharmaceuticals"],
+    "PG": [
+      "Procter & Gamble",
+      "Procter and Gamble",
+      "P&G",
+      "Procter & Gamble Company",
+      "Procter & Gamble Co",
+      "The Procter & Gamble Company"
+    ],
+    "PGR": [
+      "Progressive",
+      "The Progressive Corporation",
+      "Progressive Insurance",
+      "Progressive Insurance Company",
+      "Progressive Casualty Insurance"
+    ],
+    "PLNT": ["Planet Fitness", "Planet Fitness Inc"],
+    "PM": ["Philip Morris International", "Philip Morris", "Philip Morris International Inc"],
+    "PNC": [
+      "PNC Financial Services",
+      "PNC Bank",
+      "PNC",
+      "PNC Bank N.A.",
+      "PNC Financial Services Group",
+      "The PNC Financial Services Group"
+    ],
+    "PRU": [
+      "Prudential Financial",
+      "Prudential",
+      "Prudential Financial Inc",
+      "Prudential Insurance"
+    ],
+    "PYPL": ["PayPal", "PayPal Holdings", "PayPal Inc", "PayPal Holdings Inc"],
+    "QCOM": ["Qualcomm", "Qualcomm Technologies", "Qualcomm Inc"],
+    "RTX": [
+      "RTX",
+      "Raytheon",
+      "Raytheon Technologies",
+      "Raytheon Company",
+      "Pratt & Whitney",
+      "Collins Aerospace",
+      "RTX Corporation"
+    ],
+    "SBUX": [
+      "Starbucks",
+      "Starbucks Corporation",
+      "Starbucks Coffee Company",
+      "Starbucks Coffee",
+      "Starbucks Corp"
+    ],
+    "SCHW": [
+      "Charles Schwab",
+      "The Charles Schwab Corporation",
+      "Charles Schwab & Co",
+      "Charles Schwab & Co Inc",
+      "Schwab",
+      "Charles Schwab Corporation"
+    ],
+    "SHEL": [
+      "Shell",
+      "Shell Oil Company",
+      "Shell USA",
+      "Shell plc",
+      "Royal Dutch Shell",
+      "Shell Oil",
+      "Shell USA Inc",
+      "Shell Energy"
+    ],
+    "SO": [
+      "Southern Company",
+      "The Southern Company",
+      "Southern Company Services",
+      "Georgia Power",
+      "Georgia Power Company",
+      "Alabama Power",
+      "Alabama Power Company",
+      "Mississippi Power",
+      "Southern Nuclear"
+    ],
+    "SPGI": [
+      "S&P Global",
+      "S&P Global Inc",
+      "S&P Global Ratings",
+      "S&P Global Market Intelligence"
+    ],
+    "SPOT": ["Spotify", "Spotify USA", "Spotify USA Inc", "Spotify AB"],
+    "T": [
+      "AT&T",
+      "AT&T Inc",
+      "AT&T Services",
+      "AT&T Services Inc",
+      "AT&T Mobility",
+      "AT&T Corp",
+      "AT & T"
+    ],
+    "TFC": [
+      "Truist",
+      "Truist Financial",
+      "Truist Bank",
+      "Truist Financial Corporation",
+      "Truist Securities"
+    ],
+    "TGT": ["Target", "Target Corporation", "Target Corp", "Target Corp."],
+    "TJX": [
+      "TJX Companies",
+      "TJX",
+      "TJ Maxx",
+      "The TJX Companies",
+      "TJX Companies Inc",
+      "Marshalls",
+      "HomeGoods"
+    ],
+    "TMO": ["Thermo Fisher Scientific", "Thermo Fisher", "Thermo Fisher Scientific Inc"],
+    "TMUS": ["T-Mobile", "T-Mobile US", "T-Mobile USA", "T-Mobile USA Inc", "T-Mobile US Inc"],
+    "TSLA": ["Tesla", "Tesla Inc", "Tesla Motors", "Tesla Motors Inc", "Tesla Inc."],
+    "TXN": ["Texas Instruments", "Texas Instruments Inc", "Texas Instruments Incorporated"],
+    "UBER": ["Uber", "Uber Technologies", "Uber Technologies Inc"],
+    "UNH": [
+      "UnitedHealth Group",
+      "UnitedHealthcare",
+      "Optum",
+      "Optum Services",
+      "Optum Services Inc",
+      "OptumRx",
+      "UnitedHealthcare Services",
+      "United HealthCare Services Inc",
+      "United Health Group"
+    ],
+    "UPS": ["UPS", "United Parcel Service", "United Parcel Service Inc", "UPS Inc"],
+    "USB": ["U.S. Bancorp", "US Bancorp", "US Bank", "U.S. Bank", "U.S. Bank National Association"],
+    "V": ["Visa", "Visa Inc", "Visa USA", "Visa U.S.A.", "Visa U.S.A. Inc."],
+    "VZ": [
+      "Verizon",
+      "Verizon Communications",
+      "Verizon Wireless",
+      "Verizon Corp Rsrcs Group LLC",
+      "Verizon Corporate Resources Group",
+      "Verizon Business",
+      "Verizon Corporate Services"
+    ],
+    "WBA": [
+      "Walgreens",
+      "Walgreens Boots Alliance",
+      "Walgreen Co",
+      "Walgreens Boots Alliance Inc",
+      "Walgreen Company",
+      "Walgreens Co"
     ],
     "WFC": [
       "Wells Fargo",
@@ -95,14 +516,6 @@
       "Wells Fargo Advisors",
       "Wells Fargo Securities",
       "Wells Fargo & Co"
-    ],
-    "COF": [
-      "Capital One",
-      "Capital One Financial",
-      "Capital One Bank",
-      "Capital One Financial Corporation",
-      "Capital One Services",
-      "Capital One N.A."
     ],
     "WMT": [
       "Walmart",
@@ -117,59 +530,6 @@
       "Sams Club",
       "Walmart.com"
     ],
-    "TGT": ["Target", "Target Corporation", "Target Corp", "Target Corp."],
-    "COST": ["Costco", "Costco Wholesale", "Costco Wholesale Corporation", "Costco Wholesale Corp"],
-    "KR": ["Kroger", "The Kroger Co", "Kroger Company", "The Kroger Company", "Kroger Co"],
-    "ACI": [
-      "Albertsons",
-      "Albertsons Companies",
-      "Safeway",
-      "Safeway Inc",
-      "Albertsons Companies Inc",
-      "Albertsons LLC",
-      "Safeway Stores"
-    ],
-    "HD": [
-      "Home Depot",
-      "The Home Depot",
-      "Home Depot USA",
-      "Home Depot U.S.A.",
-      "Home Depot U.S.A., Inc.",
-      "Home Depot Management Company"
-    ],
-    "LOW": [
-      "Lowe's",
-      "Lowes",
-      "Lowe's Companies",
-      "Lowe's Home Centers",
-      "Lowes Home Centers",
-      "Lowe's Home Improvement"
-    ],
-    "SBUX": [
-      "Starbucks",
-      "Starbucks Corporation",
-      "Starbucks Coffee Company",
-      "Starbucks Coffee",
-      "Starbucks Corp"
-    ],
-    "MCD": [
-      "McDonald's",
-      "McDonalds",
-      "McDonald's Corporation",
-      "McDonald's Corp",
-      "McDonalds Corporation",
-      "McDonald's USA"
-    ],
-    "CMG": ["Chipotle", "Chipotle Mexican Grill", "Chipotle Mexican Grill Inc"],
-    "YUM": [
-      "Yum! Brands",
-      "Yum Brands",
-      "Taco Bell",
-      "KFC",
-      "Pizza Hut",
-      "Yum! Brands Inc",
-      "Yum Brands Inc"
-    ],
     "XOM": [
       "ExxonMobil",
       "Exxon Mobil",
@@ -179,365 +539,14 @@
       "ExxonMobil Corporation",
       "Exxonmobil"
     ],
-    "CVX": ["Chevron", "Chevron Corporation", "Chevron Corp", "Chevron USA", "Chevron U.S.A. Inc"],
-    "SHEL": [
-      "Shell",
-      "Shell Oil Company",
-      "Shell USA",
-      "Shell plc",
-      "Royal Dutch Shell",
-      "Shell Oil",
-      "Shell USA Inc",
-      "Shell Energy"
-    ],
-    "NFLX": ["Netflix", "Netflix Inc", "Netflix Inc."],
-    "SPOT": ["Spotify", "Spotify USA", "Spotify USA Inc", "Spotify AB"],
-    "DIS": [
-      "Walt Disney",
-      "The Walt Disney Company",
-      "Disney",
-      "Walt Disney Company",
-      "ESPN",
-      "Hulu",
-      "TWDC Enterprises 18 Corp",
-      "Walt Disney Co",
-      "The Walt Disney Co",
-      "Disney Worldwide Services",
-      "Walt Disney World",
-      "Disneyland"
-    ],
-    "VZ": [
-      "Verizon",
-      "Verizon Communications",
-      "Verizon Wireless",
-      "Verizon Corp Rsrcs Group LLC",
-      "Verizon Corporate Resources Group",
-      "Verizon Business",
-      "Verizon Corporate Services"
-    ],
-    "CVS": [
-      "CVS Health",
-      "CVS Pharmacy",
-      "CVS",
-      "CVS Caremark",
-      "Aetna",
-      "CVS Health Corporation",
-      "CVS Caremark Corporation",
-      "Aetna Inc",
-      "CVS Pharmacy Inc"
-    ],
-    "WBA": [
-      "Walgreens",
-      "Walgreens Boots Alliance",
-      "Walgreen Co",
-      "Walgreens Boots Alliance Inc",
-      "Walgreen Company",
-      "Walgreens Co"
-    ],
-    "PLNT": ["Planet Fitness", "Planet Fitness Inc"],
-    "UNH": [
-      "UnitedHealth Group",
-      "UnitedHealthcare",
-      "Optum",
-      "Optum Services",
-      "Optum Services Inc",
-      "OptumRx",
-      "UnitedHealthcare Services",
-      "United HealthCare Services Inc",
-      "United Health Group"
-    ],
-    "JNJ": [
-      "Johnson & Johnson",
-      "Johnson and Johnson",
-      "Johnson & Johnson Services",
-      "Johnson & Johnson Services Inc",
-      "Janssen",
-      "Janssen Pharmaceuticals"
-    ],
-    "PG": [
-      "Procter & Gamble",
-      "Procter and Gamble",
-      "P&G",
-      "Procter & Gamble Company",
-      "Procter & Gamble Co",
-      "The Procter & Gamble Company"
-    ],
-    "V": ["Visa", "Visa Inc", "Visa USA", "Visa U.S.A.", "Visa U.S.A. Inc."],
-    "MA": ["Mastercard", "MasterCard", "Mastercard International", "Mastercard Incorporated"],
-    "AVGO": ["Broadcom", "Broadcom Inc"],
-    "LLY": [
-      "Eli Lilly",
-      "Eli Lilly and Company",
-      "Lilly",
-      "Eli Lilly & Company",
-      "Eli Lilly & Co",
-      "Lilly USA"
-    ],
-    "PFE": ["Pfizer", "Pfizer Inc", "Pfizer Inc.", "Pfizer Pharmaceuticals"],
-    "MRK": ["Merck", "Merck & Co", "Merck Sharp & Dohme", "Merck Sharp and Dohme", "MSD"],
-    "ABBV": ["AbbVie", "AbbVie Inc", "Allergan"],
-    "PEP": ["PepsiCo", "Pepsi", "Frito-Lay", "PepsiCo Inc", "Pepsi Co", "Pepsico"],
-    "KO": [
-      "Coca-Cola",
-      "The Coca-Cola Company",
-      "Coca Cola",
-      "Coca-Cola Company",
-      "Coca Cola Company"
-    ],
-    "T": [
-      "AT&T",
-      "AT&T Inc",
-      "AT&T Services",
-      "AT&T Services Inc",
-      "AT&T Mobility",
-      "AT&T Corp",
-      "AT & T"
-    ],
-    "CSCO": ["Cisco", "Cisco Systems", "Cisco Systems Inc"],
-    "INTC": ["Intel", "Intel Corporation", "Intel Corp"],
-    "AMD": ["Advanced Micro Devices", "AMD", "Advanced Micro Devices Inc", "AMD Inc"],
-    "ORCL": ["Oracle", "Oracle Corporation", "Oracle America", "Oracle Corp", "Oracle America Inc"],
-    "CRM": ["Salesforce", "Salesforce.com", "Salesforce Inc", "Salesforce.com Inc"],
-    "ADBE": ["Adobe", "Adobe Inc", "Adobe Systems", "Adobe Systems Inc", "Adobe Inc."],
-    "BA": ["Boeing", "The Boeing Company", "Boeing Company", "Boeing Co"],
-    "LMT": ["Lockheed Martin", "Lockheed Martin Corporation", "Lockheed Martin Corp", "Lockheed"],
-    "RTX": [
-      "RTX",
-      "Raytheon",
-      "Raytheon Technologies",
-      "Raytheon Company",
-      "Pratt & Whitney",
-      "Collins Aerospace",
-      "RTX Corporation"
-    ],
-    "GE": [
-      "General Electric",
-      "GE Aerospace",
-      "General Electric Company",
-      "General Electric Co",
-      "GE"
-    ],
-    "F": ["Ford", "Ford Motor Company", "Ford Motor", "Ford Motor Co", "Ford Motor Credit"],
-    "GM": [
-      "General Motors",
-      "GM",
-      "General Motors Company",
-      "General Motors Corporation",
-      "GM Financial"
-    ],
-    "UPS": ["UPS", "United Parcel Service", "United Parcel Service Inc", "UPS Inc"],
-    "FDX": [
-      "FedEx",
-      "Federal Express",
-      "FedEx Express",
-      "FedEx Corporate",
-      "FedEx Services",
-      "FedEx Ground",
-      "FedEx Freight",
-      "FedEx Corporation",
-      "FedEx Office"
-    ],
-    "CAT": ["Caterpillar", "Caterpillar Inc"],
-    "DE": [
-      "Deere & Company",
-      "John Deere",
-      "Deere",
-      "John Deere Shared Services",
-      "Deere and Company"
-    ],
-    "MMM": ["3M", "3M Company", "3M Co"],
-    "HON": [
-      "Honeywell",
-      "Honeywell International",
-      "Honeywell International Inc",
-      "Honeywell Aerospace"
-    ],
-    "GS": [
-      "Goldman Sachs",
-      "The Goldman Sachs Group",
-      "Goldman Sachs & Co",
-      "Goldman Sachs Group",
-      "Goldman Sachs & Co. LLC",
-      "Goldman, Sachs & Co"
-    ],
-    "MS": [
-      "Morgan Stanley",
-      "Morgan Stanley & Co",
-      "Morgan Stanley Smith Barney",
-      "Morgan Stanley Wealth Management"
-    ],
-    "C": [
-      "Citigroup",
-      "Citi",
-      "Citibank",
-      "Citibank N.A.",
-      "Citibank NA",
-      "Citigroup Global Markets",
-      "Citigroup Inc",
-      "Citi Group"
-    ],
-    "AXP": ["American Express", "American Express Company", "American Express Co"],
-    "BLK": ["BlackRock", "BlackRock Financial Management", "BlackRock Inc"],
-    "SCHW": [
-      "Charles Schwab",
-      "The Charles Schwab Corporation",
-      "Charles Schwab & Co",
-      "Charles Schwab & Co Inc",
-      "Schwab",
-      "Charles Schwab Corporation"
-    ],
-    "MU": ["Micron", "Micron Technology", "Micron Technology Inc"],
-    "QCOM": ["Qualcomm", "Qualcomm Technologies", "Qualcomm Inc"],
-    "TXN": ["Texas Instruments", "Texas Instruments Inc", "Texas Instruments Incorporated"],
-    "AMAT": ["Applied Materials", "Applied Materials Inc"],
-    "IBM": [
-      "IBM",
-      "International Business Machines",
-      "IBM Corporation",
-      "IBM Corp",
-      "International Business Machines Corp"
-    ],
-    "UBER": ["Uber", "Uber Technologies", "Uber Technologies Inc"],
-    "ABNB": ["Airbnb", "Airbnb Inc"],
-    "PYPL": ["PayPal", "PayPal Holdings", "PayPal Inc", "PayPal Holdings Inc"],
-    "CMCSA": [
-      "Comcast",
-      "Comcast Corporation",
-      "NBCUniversal",
-      "Comcast Cable",
-      "Comcast Cable Communications",
-      "Comcast Corp",
-      "Comcast Spectacor",
-      "Comcast (CC) of Willow Grove",
-      "NBCUniversal Media"
-    ],
-    "TMUS": ["T-Mobile", "T-Mobile US", "T-Mobile USA", "T-Mobile USA Inc", "T-Mobile US Inc"],
-    "NKE": ["Nike", "Nike Inc", "Nike Inc."],
-    "TJX": [
-      "TJX Companies",
-      "TJX",
-      "TJ Maxx",
-      "The TJX Companies",
-      "TJX Companies Inc",
-      "Marshalls",
-      "HomeGoods"
-    ],
-    "DG": ["Dollar General", "Dollar General Corporation"],
-    "BKNG": ["Booking Holdings", "Booking.com", "Priceline", "Booking Holdings Inc"],
-    "MDLZ": ["Mondelez", "Mondelez International", "Mondelez International Inc"],
-    "PM": ["Philip Morris International", "Philip Morris", "Philip Morris International Inc"],
-    "MO": [
-      "Altria",
-      "Altria Group",
-      "Altria Client Services",
-      "Altria Group Distribution Company",
-      "Altria Group Distribution Co",
-      "Philip Morris USA"
-    ],
-    "DUK": [
-      "Duke Energy",
-      "Duke Energy Business Services",
-      "Duke Energy Carolinas",
-      "Duke Energy Progress",
-      "Duke Energy Florida",
-      "Duke Energy Corp"
-    ],
-    "SO": [
-      "Southern Company",
-      "The Southern Company",
-      "Southern Company Services",
-      "Georgia Power",
-      "Georgia Power Company",
-      "Alabama Power",
-      "Alabama Power Company",
-      "Mississippi Power",
-      "Southern Nuclear"
-    ],
-    "NEE": [
-      "NextEra Energy",
-      "Florida Power & Light",
-      "NextEra Energy Resources",
-      "NextEra Energy Marketing",
-      "NextEra Energy Inc",
-      "FPL"
-    ],
-    "COP": ["ConocoPhillips", "ConocoPhillips Company"],
-    "OXY": [
-      "Occidental Petroleum",
-      "Occidental",
-      "Occidental Oil and Gas Corp",
-      "Occidental Oil and Gas",
-      "Oxy"
-    ],
-    "TMO": ["Thermo Fisher Scientific", "Thermo Fisher", "Thermo Fisher Scientific Inc"],
-    "ABT": ["Abbott Laboratories", "Abbott", "Abbott Laboratories Inc", "Abbott Labs"],
-    "DHR": ["Danaher", "Danaher Corporation"],
-    "AMGN": ["Amgen", "Amgen Inc"],
-    "GILD": ["Gilead Sciences", "Gilead", "Gilead Sciences Inc"],
-    "BMY": [
-      "Bristol Myers Squibb",
-      "Bristol-Myers Squibb",
-      "Bristol-Myers Squibb Company",
-      "Bristol Myers Squibb Company"
-    ],
-    "MDT": ["Medtronic", "Medtronic Inc", "Medtronic plc"],
-    "ISRG": ["Intuitive Surgical", "Intuitive Surgical Inc"],
-    "ELV": [
-      "Elevance Health",
-      "Anthem",
-      "The Elevance Health Companies",
-      "Elevance Health Companies",
-      "Anthem Inc",
-      "Anthem Blue Cross"
-    ],
-    "CI": ["The Cigna Group", "Cigna", "Cigna Corporation", "Cigna Healthcare", "Express Scripts"],
-    "HUM": ["Humana", "Humana Inc"],
-    "SPGI": [
-      "S&P Global",
-      "S&P Global Inc",
-      "S&P Global Ratings",
-      "S&P Global Market Intelligence"
-    ],
-    "NOW": ["ServiceNow", "ServiceNow Inc"],
-    "INTU": ["Intuit", "Intuit Inc"],
-    "LIN": ["Linde", "Linde Inc", "Linde plc"],
-    "ACN": ["Accenture", "Accenture LLP", "Accenture Federal Services", "Accenture plc"],
-    "PGR": [
-      "Progressive",
-      "The Progressive Corporation",
-      "Progressive Insurance",
-      "Progressive Insurance Company",
-      "Progressive Casualty Insurance"
-    ],
-    "ALL": [
-      "Allstate",
-      "The Allstate Corporation",
-      "Allstate Insurance Company",
-      "Allstate Insurance"
-    ],
-    "MET": ["MetLife", "MetLife Group", "MetLife Inc", "Metropolitan Life Insurance Company"],
-    "PRU": [
-      "Prudential Financial",
-      "Prudential",
-      "Prudential Financial Inc",
-      "Prudential Insurance"
-    ],
-    "AIG": ["AIG", "American International Group", "American International Group Inc", "AIG Inc"],
-    "USB": ["U.S. Bancorp", "US Bancorp", "US Bank", "U.S. Bank", "U.S. Bank National Association"],
-    "PNC": [
-      "PNC Financial Services",
-      "PNC Bank",
-      "PNC",
-      "PNC Bank N.A.",
-      "PNC Financial Services Group",
-      "The PNC Financial Services Group"
-    ],
-    "TFC": [
-      "Truist",
-      "Truist Financial",
-      "Truist Bank",
-      "Truist Financial Corporation",
-      "Truist Securities"
+    "YUM": [
+      "Yum! Brands",
+      "Yum Brands",
+      "Taco Bell",
+      "KFC",
+      "Pizza Hut",
+      "Yum! Brands Inc",
+      "Yum Brands Inc"
     ]
   }
 }

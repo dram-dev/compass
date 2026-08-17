@@ -50,8 +50,8 @@ expensive scale-up only after the decisive κ test.
 |---|---|---|
 | A | **done** (2026-08-17) | A1 streams in export + card · A2 executive tier (`isExecutiveOccupation`, channel `executive`) · A3 cycles 2020/2022/2024 · A4 `npm run validate:political` + `docs/political-benchmark.md`; export test asserts no donor-level fields |
 | C | **done** (2026-08-17) | C1 P1 any/weighted (`lobbying-topics.mjs`) · C2 keyword-v1 topic screen (`lobbying_filing_topic`) · C3 `protectionActivity` export block · C4 "Lobbying topics — activity, not position" panel |
-| B | next | needs the 40-firm sample + hand-recorded comparators |
-| D | next | codebook + rating page |
+| B | **machine parts done** (2026-08-17) — waiting on ~5 h human | B1 `validate-political.mjs sample` → `data/validation/political-sample.json` (40 firms) · B2 template `comparators.csv` (our %R prefilled, OpenSecrets/GUU columns blank) · B3 template `match-review.csv` (1,290 rows, 154 fuzzy first) · B4 `validate` → ρ/κ → `docs/political-validation.md`. Also fixed while sampling: alias collisions (Boeing/BAPA, BK/BNY, BRK-A/B) and junk `n/a` names had silently dropped Boeing's and Dell's PACs — `sameAs` + name variants + collision log |
+| D | **machine parts done** (2026-08-17) — waiting on ~5 h human | D1 `docs/codebook-lobbying-position.md` · D2 `position-sample` → 190 activities over 33 firms (TRD 97 · TAX 47 · BUD 25 · LBR 9 · TAR 6 · CPT 6) + local rating page `data/validation/rate-positions.html` · D3 `position-kappa` (pairwise κ, confusion, κ by code, decision rule) |
 | E, F | pending | E after C; F conditional on D |
 
 ## Phases

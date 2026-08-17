@@ -145,6 +145,7 @@ else the default row.
 | 11 | Political streams (PAC / employees / executives) | `scripts/seed/fec.mjs#isExecutiveOccupation`, `political.mjs#streamLean`, `PoliticalFactsPanel.tsx` | Data §06 fact cards — three bars, each with its own lean beside the pooled one |
 | 12 | Lobbying topics + P1 (Axis-2 inputs, activity not position) | `scripts/seed/lobbying-topics.mjs`, `db/schema.sql#lobbying_filing_topic`, `PoliticalFactsPanel.tsx#ProtectionPanel` | Data §06 "Lobbying topics" panel — weighted vs any-code trade/tariff share, topic chips, filing links |
 | 13 | Political benchmark harness | `scripts/seed/validate-political.mjs`, `docs/political-benchmark.md` | `npm run validate:political` |
+| 14 | 40-firm validation + position-coding kit (Phases B/D) | `scripts/seed/validation-lib.mjs`, `validate-political.mjs sample / review-template / validate / position-sample / position-kappa`, `data/validation/*`, `docs/codebook-lobbying-position.md`, `docs/political-validation.md` | `data/validation/README.md` — human steps; results in `docs/political-validation.md` |
 
 ## Research database (company financials + fund concentration graph)
 

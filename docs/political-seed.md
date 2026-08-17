@@ -101,6 +101,16 @@ matcher or the party resolver is broken (`--strict` exits 1). Our universe — t
 firms — is narrower than the benchmark by construction; that is a warning, not a failure, and the
 40-firm hand check (docs/PLAN-political-axes.md, Phase B) is the real test.
 
+### Hand validation kit (`data/validation/`)
+
+`node scripts/seed/validate-political.mjs sample` writes the 40-firm sample, a comparator sheet (our
+per-stream %R prefilled; OpenSecrets / Goods Unite Us columns to be recorded by hand — validation only,
+never shipped) and the match-review sheet (fuzzy rows first) for two independent reviewers; `validate`
+turns the filled sheets into Spearman ρ and Cohen's κ (`docs/political-validation.md`; pass ρ ≥ 0.7 on the
+PAC stream, κ ≥ 0.8). `position-sample` + `data/validation/rate-positions.html` +
+`docs/codebook-lobbying-position.md` + `position-kappa` are the position-coding experiment (Phase D).
+Step-by-step: `data/validation/README.md`.
+
 ## Lobbying topics and P1 (Axis-2 inputs — activity, not position)
 
 There is no validated published pro-/anti-competition score for companies (docs/research-political-axes.md),

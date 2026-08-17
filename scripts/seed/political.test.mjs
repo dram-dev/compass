@@ -17,7 +17,21 @@ import {
 import { normalizeFilings, summarizeLobbying } from './lda.mjs';
 import { composeSourceHint, computeLean, MIN_PARTISAN_USD, streamLean } from './political.mjs';
 import { summarizeProtection, topicsForFiling } from './lobbying-topics.mjs';
-import { describe as stats, judgePac, republicanShares } from './validate-political.mjs';
+import {
+  describe as stats,
+  judgePac,
+  republicanShares,
+  validateComparators,
+  validateMatchReview,
+} from './validate-political.mjs';
+import {
+  cohenKappa,
+  parseCsv,
+  pickPositionItems,
+  spearman,
+  stratifiedSample,
+  toCsv,
+} from './validation-lib.mjs';
 import { openDb } from './db.mjs';
 import {
   computePoliticalFacts,
@@ -655,5 +669,212 @@ describe('validation harness (A4 benchmark)', () => {
     expect(judgePac({ n: 200, mean: 54, p25: 50, p75: 52 }).ok).toBe(false); // near-uniform
     expect(judgePac({ n: 200, mean: 80, p25: 60, p75: 95 }).ok).toBe(false); // mean far off
     expect(judgePac({ n: 10, mean: 47, p25: 21, p75: 72 }).ok).toBe(false); // too few
+  });
+});
+
+describe('validation library (Phases B/D)', () => {
+  it('csv round-trips quotes and commas', () => {
+    const rows = [
+      { a: '1', b: 'x,"y"' },
+      { a: '2', b: 'line\nbreak' },
+    ];
+    expect(parseCsv(toCsv(rows, ['a', 'b']))).toEqual(rows);
+    expect(parseCsv('a,b\r\n1,2\r\n')).toEqual([{ a: '1', b: '2' }]);
+  });
+  it('spearman handles ties and short input; cohenKappa matches hand computation', () => {
+    expect(spearman([1, 2, 3, 4, 5], [2, 1, 4, 3, 5])).toEqual({ rho: 0.8, n: 5 });
+    expect(spearman([1, 2, 3], [3, 2, 1]).rho).toBe(-1);
+    expect(spearman([1, 2], [1, 2])).toEqual({ rho: null, n: 2 });
+    expect(spearman([1, NaN, 3, 4], [1, 2, 3, 4]).n).toBe(3);
+    const k = cohenKappa(['a', 'b', 'a', 'c', 'b'], ['a', 'b', 'b', 'c', 'b']);
+    expect(k).toMatchObject({ kappa: 0.688, agreement: 0.8, n: 5 }); // po=.8, pe=.36
+    expect(cohenKappa(['a', 'a'], ['a', 'a']).kappa).toBe(1);
+    expect(cohenKappa(['a', ''], ['a', 'b']).n).toBe(1);
+  });
+  it('stratifiedSample: brands first (mixing PAC / no-PAC), then no-PAC slots, then sectors round-robin; sameAs skipped', () => {
+    const mk = (symbol, pacUsd, sector, extra = {}) => ({
+      symbol,
+      name: symbol,
+      streams: {
+        pac: { D: pacUsd / 2, R: pacUsd / 2, partisanUsd: pacUsd },
+        executive: { D: 0, R: 0 },
+        employee: { D: 100, R: 300 },
+      },
+      lean: { totalPartisanUsd: pacUsd + 400, r: 0.5, leanScore: -1 },
+      sector,
+      ...extra,
+    });
+    const facts = [
+      mk('B1', 1e6, 'Retail'),
+      mk('B2', 0, 'Retail'),
+      mk('B3', 5e5, 'Finance'),
+      mk('H1', 1e6, 'Tech'),
+      mk('H2', 1e6, 'Tech'),
+      mk('H3', 1e6, 'Energy'),
+      mk('H4', 0, 'Energy'),
+      mk('H5', 1e6, 'Retail'),
+      mk('H6', 1e6, 'Retail', { sameAs: 'H5' }),
+    ];
+    const held = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'B1'].map((s, i) => ({
+      symbol: s,
+      sector: facts.find((f) => f.symbol === s).sector,
+      aumRank: i + 1,
+    }));
+    const out = stratifiedSample(facts, held, ['B1', 'B2', 'B3', 'B9'], {
+      brandCount: 3,
+      heldCount: 4,
+      noPacSlots: 1,
+    });
+    expect(out.map((r) => r.symbol)).toEqual(['B1', 'B3', 'B2', 'H4', 'H1', 'H3', 'H5']);
+    expect(out.map((r) => r.stratum)).toEqual([
+      'brand',
+      'brand',
+      'brand',
+      'held',
+      'held',
+      'held',
+      'held',
+    ]);
+    expect(out[0]).toMatchObject({
+      hasPac: 'yes',
+      our_pac_pctR: 50,
+      our_employee_pctR: 75,
+      our_pooled_pctR: 75,
+    });
+    expect(out.find((r) => r.symbol === 'H4').hasPac).toBe('no');
+    expect(out.some((r) => r.symbol === 'H6')).toBe(false); // sameAs share class never sampled
+  });
+  it('pickPositionItems: only position codes, dedupe by text, priority TAR/TRD > relevant topic > other, per-company cap, stable ids', () => {
+    const acts = [];
+    const add = (symbol, code, text, topics = [], year = 2024) =>
+      acts.push({
+        symbol,
+        company: symbol,
+        filing_uuid: `${symbol}-${acts.length}`,
+        year,
+        period: 'q1',
+        registrant: 'R',
+        kind: 'in-house',
+        code,
+        codeDisplay: code,
+        text,
+        topics,
+        url: null,
+      });
+    add(
+      'A',
+      'TRD',
+      'Section 232 tariffs on imported steel and aluminum products; exclusion process',
+    );
+    add('A', 'TAX', 'General corporate tax provisions in the reconciliation bill and depreciation');
+    add('A', 'TAX', 'General corporate tax provisions in the reconciliation bill and depreciation'); // dup text
+    add('A', 'ENV', 'Clean water rules affecting manufacturing operations across several states'); // not a position code
+    add('A', 'BUD', 'Appropriations for the Department of Commerce and related agencies programs', [
+      'procurement',
+    ]);
+    add('A', 'LBR', 'short');
+    add('B', 'TAX', 'Renewable energy production tax credits under the Inflation Reduction Act', [
+      'subsidy',
+    ]);
+    const items = pickPositionItems(acts, { perCompany: 2, total: 10 });
+    expect(items.map((i) => i.symbol + ':' + i.code).sort()).toEqual(['A:BUD', 'A:TRD', 'B:TAX']);
+    const a = items.filter((i) => i.symbol === 'A');
+    expect(a.map((i) => i.code)).toEqual(expect.arrayContaining(['TRD', 'BUD'])); // TRD (3) and BUD w/ topic (2) beat TAX (1)
+    expect(items.every((i) => /^A-|^B-/.test(i.id) && i.order >= 1)).toBe(true);
+    expect(pickPositionItems(acts, { perCompany: 2, total: 10 }).map((i) => i.id)).toEqual(
+      items.map((i) => i.id),
+    ); // deterministic
+  });
+  it('validateComparators computes ρ from Dem/Rep % pairs; validateMatchReview computes κ, rejected and disputed', () => {
+    const rows = [
+      {
+        our_pac_pctR: '60',
+        our_exec_pctR: '',
+        our_employee_pctR: '30',
+        our_pooled_pctR: '55',
+        opensecrets_dem_pct: '40',
+        opensecrets_rep_pct: '60',
+        guu_dem_pct: '',
+        guu_rep_pct: '',
+      },
+      {
+        our_pac_pctR: '50',
+        our_exec_pctR: '',
+        our_employee_pctR: '40',
+        our_pooled_pctR: '48',
+        opensecrets_dem_pct: '52',
+        opensecrets_rep_pct: '48',
+        guu_dem_pct: '',
+        guu_rep_pct: '',
+      },
+      {
+        our_pac_pctR: '70',
+        our_exec_pctR: '',
+        our_employee_pctR: '60',
+        our_pooled_pctR: '68',
+        opensecrets_dem_pct: '30',
+        opensecrets_rep_pct: '70',
+        guu_dem_pct: '',
+        guu_rep_pct: '',
+      },
+      {
+        our_pac_pctR: '40',
+        our_exec_pctR: '',
+        our_employee_pctR: '20',
+        our_pooled_pctR: '35',
+        opensecrets_dem_pct: '',
+        opensecrets_rep_pct: '',
+        guu_dem_pct: '',
+        guu_rep_pct: '',
+      },
+    ];
+    const v = validateComparators(rows);
+    expect(v.recorded).toEqual({ opensecrets: 3, guu: 0, total: 4 });
+    expect(v.rho.opensecrets.our_pac_pctR).toEqual({ rho: 1, n: 3 });
+    expect(v.rho.guu.our_pac_pctR.rho).toBeNull();
+    expect(v.pass).toBe(true);
+    const review = validateMatchReview([
+      {
+        kind: 'fec-committee',
+        symbol: 'A',
+        id: '1',
+        name: 'A PAC',
+        fuzzy: 'yes',
+        reviewer1: 'accept',
+        reviewer2: 'accept',
+      },
+      {
+        kind: 'lda-client',
+        symbol: 'A',
+        id: '2',
+        name: 'A LLC',
+        fuzzy: 'yes',
+        reviewer1: 'reject',
+        reviewer2: 'reject',
+      },
+      {
+        kind: 'lda-client',
+        symbol: 'B',
+        id: '3',
+        name: 'B INC',
+        fuzzy: 'no',
+        reviewer1: 'y',
+        reviewer2: 'n',
+      },
+      {
+        kind: 'lda-client',
+        symbol: 'B',
+        id: '4',
+        name: 'B2 INC',
+        fuzzy: 'no',
+        reviewer1: '',
+        reviewer2: 'accept',
+      },
+    ]);
+    expect(review.reviewed).toBe(3);
+    expect(review.rejected).toEqual(['lda-client A 2 A LLC']);
+    expect(review.disputed).toEqual(['lda-client B 3 B INC']);
+    expect(review.fuzzy.kappa).toBe(1);
+    expect(review.all.agreement).toBeCloseTo(0.667, 2);
   });
 });
