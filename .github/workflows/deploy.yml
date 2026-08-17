@@ -1,0 +1,53 @@
+# Publishes the built SPA to GitHub Pages. The app is local-first: everything it needs is in the
+# bundle (generated JSON exports), it makes no network calls at runtime, and it stores user data
+# only in that browser's localStorage. Nothing server-side is deployed.
+name: Deploy to GitHub Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never cancel a running deploy; queue instead.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+      - name: Guard — no validation comparators in the bundle
+        run: |
+          # OpenSecrets (CC BY-NC-SA) and Goods Unite Us (proprietary) figures live in data/validation
+          # and must never ship. Bare "goodsuniteus.com" is fine: it is an outbound verify link.
+          if grep -rqE 'opensecrets_(pac_)?dem|guu_dem_pct|match-review\.csv|position-sample' dist/; then
+            echo "::error::validation comparator data found in dist/" && exit 1
+          fi
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
