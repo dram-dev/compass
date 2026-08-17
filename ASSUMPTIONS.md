@@ -199,3 +199,28 @@ Numbered, append-only. Each entry: decision · rationale · phase.
     "Via listed parent Amazon (AMZN)" prefix in its hint. (POL)
 53. **Anonymous LDA access** (~10–15 req/min) is used by default; `LDA_API_KEY` is optional. The FEC
     `indiv` files (≈4.2 GB per cycle) are streamed through yauzl + readline, never held in memory. (POL)
+
+## Research DB — second pass (fund graph live, SEC-first)
+
+54. **SEC N-PORT is the primary holdings source for ETFs too** (most ETFs are '40-Act funds); Alpha
+    Vantage `ETF_PROFILE` is enrichment (expense ratio, yield) within the 25/day free budget. Latest
+    filing per series is located with EDGAR full-text search (multi-series trusts file dozens of N-PORTs);
+    grantor trusts (SPY, GLD, DIA…) are only reachable via Alpha Vantage. (RDB2)
+55. **Filing tickers are local exchange symbols** → non-US holdings are suffixed with the ISIN/`invCountry`
+    country (`ENR.DE` ≠ Energizer `ENR`); share classes normalized to `BRK-B`. A merge-key bug (empty CUSIP
+    as a key) collapsed all ISIN-only holdings of international funds into one row and was caught by a
+    weight > 90% audit before shipping. (RDB2)
+56. **Company graph = corporate equity/preferred/debt only** (`issuer_cat CORP`, `asset_cat` EC/EP/DBT);
+    governments, cash vehicles, derivatives and unresolved funds are excluded from concentration but
+    reported as `nonCompany` in look-through. Fund-of-funds positions expand one level. (RDB2)
+57. **SEC XBRL `companyfacts` is the primary statements source** (annual 10-K FY + quarterly 10-Q Q1–Q3;
+    latest-filed fact per period end wins; flow concepts must span ~a year/quarter; documented concept
+    fallback chains; EBITDA = operating income + D&A when both exist). `dei:EntityPublicFloat` is stored as a
+    floor for market cap; true market cap still comes from Alpha Vantage as budget allows. Sector = a
+    coarse mapping of SIC ranges (documented in `sec-xbrl.mjs`), industry = SIC description. (RDB2)
+58. **Political universe extended** to the top-500 held companies (US-listed ticker forms only), with
+    issuer names from the filings as aliases: 342 companies with facts, 323 with a lean at this run.
+    Fund `leanExposure` and the "beyond top-250 → Unknown" rule follow. (RDB2)
+59. **`.env` holds the Alpha Vantage key and the SEC User-Agent** (the account e-mail as contact, per SEC's
+    fair-access policy); both git-ignored. The SEC WAF rejects User-Agents containing URLs — use
+    `Name/1.0 (email)`. (RDB2)

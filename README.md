@@ -146,10 +146,13 @@ else the default row.
 ## Research database (company financials + fund concentration graph)
 
 `scripts/seed/` builds an **offline** SQLite database (`db/compass.sqlite`, git-ignored) of real company
-financials and a connection graph from the ~200 most-held ETFs/mutual funds (ranked by net assets) to
-the companies they hold, then exports `src/data/generated/fund-concentration.json` for the app's
-**Data → Fund look-through** panel (which companies the fund universe concentrates in; who holds a
-given company; a fund's top holdings). The app never fetches at runtime — seeding is a maintainer step.
+financials (SEC XBRL filings, Alpha Vantage enrichment) and a connection graph from the ~200 most-held
+ETFs/mutual funds (SEC N-PORT holdings, ranked by net assets) to the companies they hold — with
+fund-of-funds look-through — then exports `src/data/generated/fund-concentration.json` for the app's
+**Data → Fund look-through** panel: which companies the fund universe concentrates in, who holds a given
+company, a fund's top holdings, and each fund's **political exposure** (share of assets in Aligned / Mixed /
+Opposed / Unknown companies relative to your preference, from the FEC/LDA leans). The app never fetches at
+runtime — seeding is a maintainer step; the shipped exports were generated 2026-08-17.
 
 ```bash
 cp .env.example .env     # ALPHAVANTAGE_API_KEY (ETF profiles, company data) + SEC_USER_AGENT (mutual-fund N-PORT holdings)
