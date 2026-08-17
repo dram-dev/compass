@@ -44,7 +44,10 @@ export function CsvImportPanel({ onDone }: { onDone?: () => void }) {
   const [error, setError] = useState<string | null>(null);
   const [applied, setApplied] = useState<string | null>(null);
   const [showAllMerchants, setShowAllMerchants] = useState(false);
-  const [tick, setTick] = useState(0); // re-render after mutating group overrides
+  /** Review decisions, keyed by merchant group key — kept in state rather than mutating the summary. */
+  const [overrides, setOverrides] = useState<
+    Record<string, { bucketOverride?: BucketId; categoryOverride?: string; skip?: boolean }>
+  >({});
 
   const catLabel = (id: string) => categories.find((c) => c.id === id)?.label ?? id;
   const knownCategories = new Set(categories.map((c) => c.id));
@@ -90,19 +93,22 @@ export function CsvImportPanel({ onDone }: { onDone?: () => void }) {
   }
 
   const months = monthsOverride ?? summary?.months ?? 1;
-  const plan = useMemo(
-    () => (summary ? buildPlan(summary, months) : []),
-    // `tick` forces recompute after in-place override edits
-    [summary, months, tick],
+  /** The summary with review decisions applied — the single source the preview and Apply both read. */
+  const reviewed = useMemo<ImportSummary | null>(
+    () =>
+      summary
+        ? { ...summary, groups: summary.groups.map((g) => ({ ...g, ...(overrides[g.key] ?? {}) })) }
+        : null,
+    [summary, overrides],
   );
+  const plan = useMemo(() => (reviewed ? buildPlan(reviewed, months) : []), [reviewed, months]);
   const planTotal = plan.reduce((a, r) => a + r.monthlySpend, 0);
-  const unmatched = summary?.groups.filter((g) => g.method === 'unmatched' && !g.skip) ?? [];
+  const unmatched = reviewed?.groups.filter((g) => g.method === 'unmatched' && !g.skip) ?? [];
   const unmatchedTotal = unmatched.reduce((a, g) => a + g.total, 0);
-  const spendTotal = summary?.groups.reduce((a, g) => a + (g.skip ? 0 : g.total), 0) ?? 0;
+  const spendTotal = reviewed?.groups.reduce((a, g) => a + (g.skip ? 0 : g.total), 0) ?? 0;
 
   function setGroup(g: MerchantGroup, patch: Partial<MerchantGroup>) {
-    Object.assign(g, patch);
-    setTick((t) => t + 1);
+    setOverrides((o) => ({ ...o, [g.key]: { ...o[g.key], ...patch } }));
   }
 
   function reset() {
@@ -111,6 +117,7 @@ export function CsvImportPanel({ onDone }: { onDone?: () => void }) {
     setMonthsOverride(null);
     setError(null);
     setShowAllMerchants(false);
+    setOverrides({});
   }
 
   function apply() {

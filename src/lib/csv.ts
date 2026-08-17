@@ -56,7 +56,7 @@ export function sniffDelimiter(text: string): string {
 
 /** Parse delimited text into a header and rows. Never throws on malformed input. */
 export function parseDelimited(text: string, delimiter?: string): DelimitedTable {
-  const src = String(text).replace(/^﻿/, '');
+  const src = String(text).replace(/^\uFEFF/, ''); // strip a UTF-8 BOM
   const d = delimiter ?? sniffDelimiter(src);
   const rows: string[][] = [];
   let row: string[] = [];

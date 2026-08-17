@@ -10,7 +10,8 @@ import {
 } from '@/store/persistence';
 import { EXAMPLE_DATA_PACK, parseDataPack } from '@/data/dataPack';
 import { BucketDefaultsPanel } from './BucketDefaultsPanel';
-import { Section, sectionNumbers } from './Section';
+import { Section } from './Section';
+import { sectionNumbers } from '@/lib/sections';
 import { DetailOnly, ViewModeHint } from './ViewModeToggle';
 import { CsvImportPanel } from './CsvImportPanel';
 import { useIsDetailed } from '@/store/useViewMode';

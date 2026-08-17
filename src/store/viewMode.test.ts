@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { useViewStore, VIEW_STORAGE_KEY } from './useViewMode';
 import { STORAGE_KEY } from './schema';
 import { clampStep, stepNeighbour, visibleSteps } from '@/wizard/stepList';
-import { sectionNumbers } from '@/components/Section';
+import { sectionNumbers } from '@/lib/sections';
 
 beforeEach(() => {
   localStorage.clear();
