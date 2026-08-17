@@ -243,9 +243,11 @@ export function DataSourcesPage() {
         title="Political money facts (FEC + Senate LDA)"
         sub={
           <>
-            Public filings, computed offline: corporate PAC and employee contributions by recipient
-            party (FEC bulk data) and lobbying spend (Senate LDA), with a documented lean and verify
-            links. Load the bundled pack to use these leans in scoring.
+            Public filings, computed offline: corporate PAC, employee and senior-executive
+            contributions by recipient party (FEC bulk data, three cycles, each stream with its own
+            lean) and lobbying spend plus lobbying <em>topics</em> (Senate LDA — activity, never
+            position), with a documented lean and verify links. Load the bundled pack to use these
+            leans in scoring.
           </>
         }
       >

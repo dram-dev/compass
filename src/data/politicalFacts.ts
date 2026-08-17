@@ -8,16 +8,46 @@ export interface PartySplit {
   U: number;
   txns?: number;
 }
+/** One contribution stream on its own (same r, bins and $5k floor as the pooled lean; no confidence tier). */
+export interface StreamLean extends PartySplit {
+  r: number | null;
+  leanScore: number | null;
+  partisanUsd: number;
+  subsetOf?: 'employee';
+}
+/** Lobbying topics (subject, never position) and the P1 trade-protection share — docs/political-seed.md. */
+export interface ProtectionActivity {
+  years: number[];
+  lobbyTotalUsd: number;
+  filings: number;
+  tradeProtection: {
+    anyUsd: number;
+    weightedUsd: number;
+    anyShare: number | null;
+    weightedShare: number | null;
+    filings: number;
+    codes: Record<string, number>;
+  };
+  topics: Record<
+    string,
+    { filings: number; usdAny: number; share: number | null; kind: 'code' | 'keyword' }
+  >;
+  verify: string[];
+  method: string;
+}
 export interface PoliticalFact {
   symbol: string;
   name: string;
   sameAs?: string;
   pac: Record<string, PartySplit>; // by cycle
   employee: Record<string, PartySplit>;
+  executive?: Record<string, PartySplit>; // senior-executive subset of employee, by cycle
   pacInflow?: Record<string, number>; // employees' contributions to the company's own PAC, by cycle
-  totals: { pac: PartySplit; employee: PartySplit; pacInflow?: number };
+  totals: { pac: PartySplit; employee: PartySplit; executive?: PartySplit; pacInflow?: number };
+  streams?: { pac: StreamLean; employee: StreamLean; executive: StreamLean };
   lobbying: Record<string, number>; // by year, USD
   topIssues: { name: string; filings: number }[];
+  protectionActivity?: ProtectionActivity | null;
   committees: { id: string; name: string; method: string }[];
   clients: { id: number; name: string; method: string }[];
   employers: { employer: string; amount: number }[];
@@ -38,7 +68,13 @@ export interface PoliticalFactsDoc {
   generatedAt: string | null;
   cycles: number[];
   method: string;
-  counts: { companies: number; withLean: number; withLobbying: number };
+  counts: {
+    companies: number;
+    withLean: number;
+    withLobbying: number;
+    withExecutiveStream?: number;
+    withProtectionActivity?: number;
+  };
   companies: PoliticalFact[];
 }
 

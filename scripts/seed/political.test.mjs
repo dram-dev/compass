@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import { buildAliasIndex, defaultAliases, matchOrg, normOrg } from './orgmatch.mjs';
 import {
   inferPartiesFromRows,
+  isExecutiveOccupation,
   makeRecipientPartyResolver,
   matchCommittees,
   parseCm,
@@ -14,7 +15,9 @@ import {
   partyOf,
 } from './fec.mjs';
 import { normalizeFilings, summarizeLobbying } from './lda.mjs';
-import { composeSourceHint, computeLean, MIN_PARTISAN_USD } from './political.mjs';
+import { composeSourceHint, computeLean, MIN_PARTISAN_USD, streamLean } from './political.mjs';
+import { summarizeProtection, topicsForFiling } from './lobbying-topics.mjs';
+import { describe as stats, judgePac, republicanShares } from './validate-political.mjs';
 import { openDb } from './db.mjs';
 import {
   computePoliticalFacts,
@@ -369,6 +372,8 @@ describe('facts + pack export (in-memory DB)', () => {
     ins.run('AMZN', 2024, 'pac', 'R', 500000, 100, 't', 'now');
     ins.run('AMZN', 2022, 'employee', 'D', 900000, 3000, 't', 'now');
     ins.run('AMZN', 2022, 'employee', 'R', 100000, 300, 't', 'now');
+    ins.run('AMZN', 2022, 'executive', 'D', 200000, 40, 't', 'now'); // subset of employee
+    ins.run('AMZN', 2022, 'executive', 'R', 50000, 10, 't', 'now');
     ins.run('GOOGL', 2024, 'pac', 'D', 300000, 50, 't', 'now');
     ins.run('GOOGL', 2024, 'pac', 'R', 300000, 50, 't', 'now');
     db.prepare(
@@ -388,18 +393,36 @@ describe('facts + pack export (in-memory DB)', () => {
       '2024-04-01',
       4890000,
       'expenses',
-      '[{"code":"TAX","display":"Taxation"}]',
-      null,
+      '[{"code":"TAX","display":"Taxation","description":"Corporate tax provisions"},{"code":"TRD","display":"Trade","description":"Section 301 tariffs on imported goods; tariff exclusion requests"}]',
+      'https://lda.gov/filings/f1.pdf',
       0,
     );
     const r = computePoliticalFacts(db, { cycles: [2022, 2024] });
     const amzn = r.facts.AMZN;
     expect(amzn.totals.pac).toEqual({ D: 500000, R: 500000, O: 0, U: 0 });
     expect(amzn.totals.employee).toEqual({ D: 900000, R: 100000, O: 0, U: 0 });
-    expect(amzn.lean.leanScore).toBe(1); // r = (600k − 1.4M)/2M = −0.4
+    expect(amzn.totals.executive).toEqual({ D: 200000, R: 50000, O: 0, U: 0 });
+    expect(amzn.lean.leanScore).toBe(1); // r = (600k − 1.4M)/2M = −0.4 (executives are NOT added on top)
     expect(amzn.lean.confidence).toBe('high');
+    // streams reported separately: PAC balanced, employees +2, executives +1 (r = −0.6 → bin +2? no: r ≤ −0.6 → +2)
+    expect(amzn.streams.pac.leanScore).toBe(0);
+    expect(amzn.streams.employee.leanScore).toBe(2);
+    expect(amzn.streams.executive).toMatchObject({ leanScore: 2, subsetOf: 'employee' });
+    expect(amzn.sourceHint).toMatch(/of which senior executives \$250k \(D 80% \/ R 20%\)/);
     expect(amzn.lobbying).toEqual({ 2024: 4890000 });
     expect(amzn.topIssues[0].name).toBe('Taxation');
+    // Axis-2 activity block: one in-house filing, 2 codes, one of them TRD → weighted 50%, any 100%
+    expect(amzn.protectionActivity).toMatchObject({
+      years: [2024],
+      lobbyTotalUsd: 4890000,
+      filings: 1,
+      tradeProtection: { anyShare: 1, weightedShare: 0.5, weightedUsd: 2445000, codes: { TRD: 1 } },
+      verify: ['https://lda.gov/filings/f1.pdf'],
+    });
+    expect(Object.keys(amzn.protectionActivity.topics)).toEqual(
+      expect.arrayContaining(['TRD', 'TAX', 'tariff', 'tariff-exclusion']),
+    );
+    expect(r.facts.GOOGL.protectionActivity).toBeNull();
     expect(amzn.links.fec[0]).toContain('C00360354');
     expect(r.facts.GOOG).toBeDefined();
     expect(r.facts.GOOG.sameAs).toBe('GOOGL');
@@ -421,5 +444,216 @@ describe('facts + pack export (in-memory DB)', () => {
     expect(doc.companies.find((c) => c.id === 'co-googl')).toBeDefined();
     // no values ratings are asserted
     expect(doc.companies.every((c) => Object.keys(c.ratings).length === 0)).toBe(true);
+    // aggregates only (52 U.S.C. §30111(a)(4)): no donor-level fields anywhere in either export
+    const donorKey =
+      /^(donor|contributor|contributorName|address|street|zip|zipCode|city|firstName|lastName|occupation|transactionId|subId)$/i;
+    const walk = (v, seen = []) => {
+      if (Array.isArray(v)) return v.flatMap((x) => walk(x, seen));
+      if (v && typeof v === 'object')
+        return Object.entries(v).flatMap(([k, x]) => (donorKey.test(k) ? [k] : walk(x, seen)));
+      return [];
+    };
+    expect(walk(JSON.parse(readFileSync(facts.path, 'utf8')))).toEqual([]);
+    expect(walk(doc)).toEqual([]);
+    expect(JSON.parse(readFileSync(facts.path, 'utf8')).version).toBe(2);
+  });
+});
+
+describe('executive tier + per-stream lean', () => {
+  it('isExecutiveOccupation: senior titles in, plain VP/director/assistants/retired out', () => {
+    for (const o of [
+      'CEO',
+      'Chief Executive Officer',
+      'PRESIDENT & CEO',
+      'EXECUTIVE VICE PRESIDENT',
+      'Sr. Vice President',
+      'SVP',
+      'CO-FOUNDER',
+      'CHAIRMAN',
+      'MANAGING DIRECTOR',
+      'GENERAL PARTNER',
+      'CHIEF FINANCIAL OFFICER',
+      'BOARD MEMBER',
+      'VP, PRESIDENT DIVISION',
+    ])
+      expect(isExecutiveOccupation(o), o).toBe(true);
+    for (const o of [
+      'VICE PRESIDENT',
+      'AVP',
+      'DIRECTOR',
+      'OWNER',
+      'PRINCIPAL',
+      'ASSISTANT TO THE CEO',
+      'DEPUTY CHIEF',
+      'CHIEF PILOT',
+      'CHIEF ENGINEER',
+      'CHIEF OF STAFF',
+      'RETIRED CEO',
+      'ACCOUNT EXECUTIVE',
+      'SOFTWARE ENGINEER',
+      '',
+      null,
+    ])
+      expect(isExecutiveOccupation(o), String(o)).toBe(false);
+  });
+  it('streamLean uses the pooled bins and floor, no confidence', () => {
+    expect(streamLean({ D: 2000, R: 2000 })).toEqual({
+      r: null,
+      leanScore: null,
+      partisanUsd: 4000,
+    });
+    expect(streamLean({ D: 20000, R: 80000 })).toMatchObject({ r: 0.6, leanScore: -2 });
+    expect(streamLean({ D: 55000, R: 45000 })).toMatchObject({ leanScore: 0 }); // r = −0.1
+    expect(streamLean({ D: 80000, R: 20000 })).toMatchObject({ leanScore: 2 });
+    expect(streamLean({})).toMatchObject({ leanScore: null, partisanUsd: 0 });
+  });
+  it('the political_contribution CHECK accepts the executive channel', () => {
+    const db = openDb(':memory:');
+    expect(() =>
+      db
+        .prepare(
+          'INSERT INTO political_contribution (company_symbol,cycle,channel,party,amount_usd,txn_count,source,computed_at) VALUES (?,?,?,?,?,?,?,?)',
+        )
+        .run('X', 2024, 'executive', 'D', 1, 1, 't', 'now'),
+    ).not.toThrow();
+    expect(() =>
+      db
+        .prepare(
+          'INSERT INTO political_contribution (company_symbol,cycle,channel,party,amount_usd,txn_count,source,computed_at) VALUES (?,?,?,?,?,?,?,?)',
+        )
+        .run('X', 2024, 'donor', 'D', 1, 1, 't', 'now'),
+    ).toThrow();
+  });
+});
+
+describe('lobbying topics (Axis-2 inputs)', () => {
+  it('flags issue codes and keyword topics with evidence snippets; topic, not position', () => {
+    const flags = topicsForFiling({
+      issues_json: JSON.stringify([
+        {
+          code: 'TRD',
+          description: 'Section 232 steel tariffs; Buy American provisions in infrastructure bill',
+        },
+        { code: 'LBR', description: 'Antitrust enforcement; merger review guidelines' },
+        { code: 'ENV', description: 'Clean water rules' },
+      ]),
+    });
+    const byTopic = Object.fromEntries(flags.map((f) => [f.topic, f]));
+    expect(byTopic.TRD).toMatchObject({ kind: 'code', method: 'lda-issue-code', evidence: null });
+    expect(byTopic.LBR.kind).toBe('code');
+    expect(byTopic.ENV).toBeUndefined(); // only Axis-2-relevant codes are flagged
+    expect(byTopic.tariff).toMatchObject({ kind: 'keyword', method: 'keyword-v1' });
+    expect(byTopic.tariff.evidence).toMatch(/Section 232 steel tariffs/);
+    expect(byTopic['domestic-content'].evidence).toMatch(/Buy American/);
+    expect(byTopic.antitrust.evidence).toMatch(/Antitrust enforcement/);
+    expect(byTopic.subsidy).toBeUndefined();
+    expect(topicsForFiling({ issues_json: 'not json' })).toEqual([]);
+  });
+  it('summarizeProtection: in-house-first dollars, any vs issue-weighted shares, count fallback', () => {
+    const rows = [
+      // 2024 Q1: in-house report $1M with TAX+TRD (2 codes) and a retained firm $200k on TAX only
+      {
+        filing_uuid: 'a',
+        filing_year: 2024,
+        filing_period: 'first_quarter',
+        amount_usd: 1_000_000,
+        amount_kind: 'expenses',
+        issues_json:
+          '[{"code":"TAX","description":"tax"},{"code":"TRD","description":"tariffs on inputs"}]',
+        document_url: 'https://lda.gov/a.pdf',
+        superseded: 0,
+      },
+      {
+        filing_uuid: 'b',
+        filing_year: 2024,
+        filing_period: 'first_quarter',
+        amount_usd: 200_000,
+        amount_kind: 'income',
+        issues_json: '[{"code":"TAX","description":"tax"}]',
+        document_url: 'https://lda.gov/b.pdf',
+        superseded: 0,
+      },
+      // 2024 Q2: only "< $5,000" filings (amount 0): TAR-only filing and a BUD filing → count fallback 1/2
+      {
+        filing_uuid: 'c',
+        filing_year: 2024,
+        filing_period: 'second_quarter',
+        amount_usd: 0,
+        amount_kind: 'income',
+        issues_json: '[{"code":"TAR","description":"miscellaneous tariff bill"}]',
+        document_url: null,
+        superseded: 0,
+      },
+      {
+        filing_uuid: 'd',
+        filing_year: 2024,
+        filing_period: 'second_quarter',
+        amount_usd: 0,
+        amount_kind: 'income',
+        issues_json: '[{"code":"BUD","description":"appropriations"}]',
+        document_url: null,
+        superseded: 0,
+      },
+      {
+        filing_uuid: 'old',
+        filing_year: 2023,
+        filing_period: 'first_quarter',
+        amount_usd: 9e9,
+        amount_kind: 'income',
+        issues_json: '[{"code":"TAR"}]',
+        document_url: null,
+        superseded: 1,
+      },
+    ];
+    const p = summarizeProtection(rows);
+    // Q1 dedup total = $1M (in-house), reported = $1.2M; any share = 1.0M/1.2M; weighted = (1.0M×0.5)/1.2M
+    expect(p.lobbyTotalUsd).toBe(1_000_000);
+    expect(p.filings).toBe(4);
+    expect(p.tradeProtection.anyUsd).toBe(Math.round((1_000_000 / 1_200_000) * 1_000_000));
+    expect(p.tradeProtection.weightedUsd).toBe(Math.round((500_000 / 1_200_000) * 1_000_000));
+    expect(p.tradeProtection.filings).toBe(2); // a (TRD) + c (TAR)
+    expect(p.tradeProtection.codes).toEqual({ TRD: 1, TAR: 1 });
+    expect(p.years).toEqual([2024]);
+    expect(p.verify).toEqual(['https://lda.gov/a.pdf', 'https://lda.gov/b.pdf']);
+    expect(p.topics.TRD.filings).toBe(1);
+    expect(p.topics.tariff.filings).toBe(2); // "tariffs on inputs" + "miscellaneous tariff bill"
+    expect(p.method).toMatch(/Topic, not position/);
+    expect(summarizeProtection([rows[4]])).toBeNull();
+  });
+});
+
+describe('validation harness (A4 benchmark)', () => {
+  it('republicanShares per company and per company-cycle with the $5k floor; judgePac bounds', () => {
+    const rows = [
+      { company_symbol: 'A', cycle: 2022, channel: 'pac', party: 'D', amount_usd: 40000 },
+      { company_symbol: 'A', cycle: 2022, channel: 'pac', party: 'R', amount_usd: 60000 },
+      { company_symbol: 'A', cycle: 2024, channel: 'pac', party: 'D', amount_usd: 20000 },
+      { company_symbol: 'A', cycle: 2024, channel: 'pac', party: 'R', amount_usd: 80000 },
+      { company_symbol: 'A', cycle: 2024, channel: 'pac', party: 'U', amount_usd: 999999 },
+      { company_symbol: 'B', cycle: 2024, channel: 'pac', party: 'D', amount_usd: 1000 }, // under floor
+      { company_symbol: 'B', cycle: 2024, channel: 'employee', party: 'D', amount_usd: 9000 },
+    ];
+    const s = republicanShares(rows, 'pac');
+    expect(s.pooled).toEqual([70]); // A: 140k R of 200k; B excluded
+    expect(s.perCycle).toEqual([60, 80]);
+    expect(republicanShares(rows, 'employee').pooled).toEqual([0]);
+    expect(stats([10, 20, 30, 40, 50])).toMatchObject({
+      n: 5,
+      mean: 30,
+      median: 30,
+      p25: 20,
+      p75: 40,
+    });
+    expect(stats([])).toEqual({ n: 0 });
+    expect(judgePac({ n: 200, mean: 47, p25: 21, p75: 72 })).toMatchObject({
+      ok: true,
+      warnings: [],
+    });
+    const narrow = judgePac({ n: 200, mean: 54, p25: 49, p75: 61 });
+    expect(narrow.ok).toBe(true); // narrower than the benchmark is a composition warning, not a failure
+    expect(narrow.warnings[0]).toMatch(/narrower than the benchmark/);
+    expect(judgePac({ n: 200, mean: 54, p25: 50, p75: 52 }).ok).toBe(false); // near-uniform
+    expect(judgePac({ n: 200, mean: 80, p25: 60, p75: 95 }).ok).toBe(false); // mean far off
+    expect(judgePac({ n: 10, mean: 47, p25: 21, p75: 72 }).ok).toBe(false); // too few
   });
 });

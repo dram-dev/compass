@@ -42,9 +42,15 @@ export function openDb(dbPath = CONFIG.dbPath) {
   const pc = db
     .prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name='political_contribution'")
     .get();
-  if (pc && !String(pc.sql).includes('pac-inflow')) {
-    db.exec('DROP TABLE political_contribution');
+  if (pc && !String(pc.sql).includes("'executive'")) {
+    // Rebuild with the current CHECK constraint, keeping every row (only the allowed set widened).
+    db.exec('BEGIN');
+    db.exec('DROP VIEW IF EXISTS v_political_by_cycle'); // RENAME would rewrite the view to point at _old
+    db.exec('ALTER TABLE political_contribution RENAME TO political_contribution_old');
     db.exec(readFileSync(CONFIG.schemaPath, 'utf8'));
+    db.exec('INSERT INTO political_contribution SELECT * FROM political_contribution_old');
+    db.exec('DROP TABLE political_contribution_old');
+    db.exec('COMMIT');
   }
   return db;
 }

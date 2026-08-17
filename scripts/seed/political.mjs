@@ -12,6 +12,27 @@ export const LEAN_BINS = [0.6, 0.2];
 export const CONF_HIGH_USD = 250_000;
 export const CONF_MED_USD = 25_000;
 
+/** Bin r into the lean score (shared by the pooled lean and the per-stream leans). */
+export function binLean(r) {
+  if (r >= LEAN_BINS[0]) return -2;
+  if (r >= LEAN_BINS[1]) return -1;
+  if (r > -LEAN_BINS[1]) return 0;
+  if (r > -LEAN_BINS[0]) return 1;
+  return 2;
+}
+
+/**
+ * One stream (PAC, all employees, or senior executives) on its own: same r, bins and $5k floor as the
+ * pooled lean, no confidence tier. Streams are reported side by side because corporate PACs and
+ * executives are different signals (docs/research-political-axes.md, findings 2 and 7).
+ */
+export function streamLean({ D = 0, R = 0 }) {
+  const total = D + R;
+  if (total < MIN_PARTISAN_USD) return { r: null, leanScore: null, partisanUsd: total };
+  const r = (R - D) / total;
+  return { r, leanScore: binLean(r), partisanUsd: total };
+}
+
 export function computeLean({ pacD = 0, pacR = 0, empD = 0, empR = 0 }) {
   const D = pacD + empD;
   const R = pacR + empR;
@@ -19,12 +40,7 @@ export function computeLean({ pacD = 0, pacR = 0, empD = 0, empR = 0 }) {
   if (total < MIN_PARTISAN_USD)
     return { leanScore: null, r: null, totalPartisanUsd: total, confidence: 'low' };
   const r = (R - D) / total;
-  let leanScore = 0;
-  if (r >= LEAN_BINS[0]) leanScore = -2;
-  else if (r >= LEAN_BINS[1]) leanScore = -1;
-  else if (r > -LEAN_BINS[1]) leanScore = 0;
-  else if (r > -LEAN_BINS[0]) leanScore = 1;
-  else leanScore = 2;
+  const leanScore = binLean(r);
   const both = pacD + pacR > 0 && empD + empR > 0;
   const confidence =
     total >= CONF_HIGH_USD && both ? 'high' : total >= CONF_MED_USD ? 'med' : 'low';
@@ -49,6 +65,7 @@ export function composeSourceHint({
   cycles,
   pac,
   emp,
+  exec = null,
   lobbyingByYear,
   committees,
   computedAt,
@@ -63,6 +80,8 @@ export function composeSourceHint({
     parts.push(`PAC ${money(pac.O + pac.U)} to non-party recipients only`);
   if (empT > 0)
     parts.push(`employees ${money(empT)} to candidates/parties (${split(emp.D, emp.R)})`);
+  const exT = exec ? exec.D + exec.R : 0;
+  if (exT > 0) parts.push(`of which senior executives ${money(exT)} (${split(exec.D, exec.R)})`);
   const lobY = Object.keys(lobbyingByYear).map(Number).sort();
   const lobT = Object.values(lobbyingByYear).reduce((s, v) => s + v, 0);
   if (lobY.length && lobT > 0)

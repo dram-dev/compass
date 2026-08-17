@@ -18,7 +18,8 @@
     "seed:graph": "node scripts/seed/index.mjs graph",
     "seed:status": "node scripts/seed/index.mjs status",
     "universe": "node scripts/seed/gen-universe.mjs",
-    "seed:political": "node scripts/seed/index.mjs political"
+    "seed:political": "node scripts/seed/index.mjs political",
+    "validate:political": "node scripts/seed/validate-political.mjs benchmark"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.2.5",

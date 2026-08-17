@@ -11,8 +11,9 @@ pack). Nothing here is fetched by the app at runtime.
 
 | Channel | Source | Files / endpoints | Notes |
 |---|---|---|---|
-| Company PAC → candidates & parties | FEC bulk data | `cm` (committee master, incl. `CONNECTED_ORG_NM`), `cn` (candidate master, party), `ccl` (candidate↔committee links), `pas2` (committee→candidate contributions), `oth` (committee→committee) | Per two-year cycle (default 2022, 2024). Transaction types 24K/24Z only (direct contributions; independent expenditures 24A/24E excluded); memo rows skipped; SUB_ID de-duplicated across `pas2`/`oth`. |
-| Employees → candidates & parties | FEC bulk data | `indiv` (individual contributions, 4–5 GB/cycle, streamed) | Rows whose `EMPLOYER` string equals (after normalization) a curated alias of the company — this includes executives and founders, which is how FEC employer data works. Types 15/15E/15J/10/11 counted, 22Y refunds subtracted, memo rows skipped, entity type IND only. Conduit pass-through rows (24T/24I, ActBlue/WinRed) are excluded; the recipient's own 15E row carries the party. Contributions to the **company's own PAC** are split out as channel `pac-inflow` (already represented by the PAC's outgoing gifts). |
+| Company PAC → candidates & parties | FEC bulk data | `cm` (committee master, incl. `CONNECTED_ORG_NM`), `cn` (candidate master, party), `ccl` (candidate↔committee links), `pas2` (committee→candidate contributions), `oth` (committee→committee) | Per two-year cycle (default **2020, 2022, 2024** — three cycles pooled: elites are stable across cycles while PACs swing with majority control, and pooling blunts single-cycle gaming). Transaction types 24K/24Z only (direct contributions; independent expenditures 24A/24E excluded); memo rows skipped; SUB_ID de-duplicated across `pas2`/`oth`. |
+| Employees → candidates & parties | FEC bulk data | `indiv` (individual contributions, 4–6 GB/cycle, streamed) | Rows whose `EMPLOYER` string equals (after normalization) a curated alias of the company — this includes executives and founders, which is how FEC employer data works. Types 15/15E/15J/10/11 counted, 22Y refunds subtracted, memo rows skipped, entity type IND only. Conduit pass-through rows (24T/24I, ActBlue/WinRed) are excluded; the recipient's own 15E row carries the party. Contributions to the **company's own PAC** are split out as channel `pac-inflow` (already represented by the PAC's outgoing gifts). |
+| Senior executives (subset of employees) | same `indiv` rows | `OCCUPATION` free text | Channel `executive` = the employee rows whose stated occupation is a senior-executive title (below). Not additive — the pooled lean still uses PAC + employees; the executive stream is reported alongside so a Goods-Unite-Us-style "PAC + executives" figure exists next to "all employees". |
 | Lobbying | Senate LDA REST API (`lda.gov/api/v1`) | `clients/?client_name=` → `filings/?client_id=&filing_year=` | Quarterly reports Q1–Q4 (+ amendments; latest posting per registrant/client/period wins). Amount = `income` (hired firm) or `expenses` (in-house). **Per period, a company's own in-house expenses report already includes what it paid retained firms, so when one exists it is the number; otherwise the firms' income is summed** (`v_lobbying_period`; the same rule OpenSecrets uses — Apple 2023 reproduces its published $9.86M). Issue codes and agencies kept per filing. |
 
 Company ↔ entity matching (`scripts/seed/orgmatch.mjs`, `data/employer-aliases.json`,
@@ -32,6 +33,21 @@ Company ↔ entity matching (`scripts/seed/orgmatch.mjs`, `data/employer-aliases
   `match_method`; corrections go in `data/political-overrides.json` (force/exclude committee or client
   IDs, exclude employer strings) with a reason.
 - Second share classes (`GOOG` → `GOOGL`) are declared with `sameAs` and inherit the canonical facts.
+
+### Executive tier (`isExecutiveOccupation`, `scripts/seed/fec.mjs`)
+
+Deliberately narrow; false negatives are cheaper than counting a bank's thousands of VPs as executives.
+
+- **in**: C-suite (CEO/CFO/COO/CTO/CIO/CMO/CRO/CLO/CPO/CHRO/CISO/CDO/CSO/CAO, "CHIEF … OFFICER",
+  "CHIEF EXECUTIVE"), PRESIDENT (including divisional), CHAIRMAN/CHAIRWOMAN/CHAIRPERSON/CHAIR,
+  FOUNDER/CO-FOUNDER, GENERAL/MANAGING PARTNER, MANAGING DIRECTOR, EXECUTIVE/SENIOR VICE PRESIDENT
+  (EVP/SVP), BOARD MEMBER / BOARD OF DIRECTORS.
+- **out**: plain VICE PRESIDENT / VP / AVP, DIRECTOR, PRINCIPAL, OWNER (franchisees), anything
+  ASSISTANT/DEPUTY/ASSOCIATE/SECRETARY-to, RETIRED/FORMER, "chief" trades (chief engineer, chief pilot,
+  chief of staff), ACCOUNT/SALES EXECUTIVE.
+
+The literature flags executives by similar keyword lists (BBFTY App. A.7: Founder/Chairman/President/
+Chief/CEO/CFO… ≈ 23–31% of donors); Goods Unite Us goes down to VP. We stop above VP and say so.
 
 ## Party attribution
 
@@ -62,20 +78,65 @@ Aligned / Mixed / Opposed / Unknown in semantic colors. Most large corporate PAC
 land in **Mixed** — that is the honest answer, not a defect. Companies with no PAC and no exact
 employer matches stay **Unknown**; nothing is inferred.
 
-Each exported record's `sourceHint` states the cycles, PAC and employee totals with D/R split,
-lobbying totals and years, the lean with `r` and confidence, the computation date, this document,
+**Streams are also reported separately.** Corporate PACs and executives are different signals — more
+than three-quarters of corporate-elite dollars come from strong partisans versus 2–3% for PACs, which
+follow majority control (docs/research-political-axes.md, findings 2, 3, 7) — so each fact record
+carries `streams.pac`, `streams.employee` and `streams.executive`, each with its own `r` and
+`leanScore` (same bins and $5k floor, no confidence tier). This is exactly where OpenSecrets (blended)
+and Goods Unite Us (PAC + executives) diverge; users see both. The pooled `lean` above remains the
+single number the engine consumes.
+
+Each exported record's `sourceHint` states the cycles, PAC, employee and executive totals with D/R
+split, lobbying totals and years, the lean with `r` and confidence, the computation date, this document,
 and FEC committee links. Verify at fec.gov, lda.gov, and OpenSecrets before acting.
+
+### Distribution check (`npm run validate:political`)
+
+`scripts/seed/validate-political.mjs benchmark` prints each stream's Republican share of two-party
+dollars across the covered companies against the published corporate-PAC benchmark (Bertrand,
+Bombardini, Fisman, Trebbi & Yegen, RES 2025: mean 47.4% R, IQR 21–72%, 1980–2018) and writes
+`docs/political-benchmark.md` with `--write`. Most corporate PACs give near 50/50, so a wide IQR
+centred a little under 50% is the expected shape; a mean far off centre or a near-uniform IQR means the
+matcher or the party resolver is broken (`--strict` exits 1). Our universe — the largest, most-held
+firms — is narrower than the benchmark by construction; that is a warning, not a failure, and the
+40-firm hand check (docs/PLAN-political-axes.md, Phase B) is the real test.
+
+## Lobbying topics and P1 (Axis-2 inputs — activity, not position)
+
+There is no validated published pro-/anti-competition score for companies (docs/research-political-axes.md),
+so the protection ↔ open-market axis is built from transparent sub-scores. This stage ships the two that
+the LDA data already supports (`scripts/seed/lobbying-topics.mjs`, table `lobbying_filing_topic`,
+export block `protectionActivity`):
+
+- **Topic flags per filing.** `kind='code'`: the filing's LDA general issue codes that matter here
+  (TAR miscellaneous tariff bills, TRD trade, TAX, BUD, GOV, DEF, CPT, LBR — antitrust is filed under
+  LBR with labor, SMB). `kind='keyword'` (`method='keyword-v1'`): literal regex hits over the free-text
+  "specific lobbying issues" for tariff, tariff-exclusion, domestic-content (Buy American, Jones Act…),
+  antitrust/merger, licensing-certification, subsidy/tax-credit, procurement, trade-agreement — each
+  with a ≤ 200-char evidence snippet from the public filing. **A flag says the filing touched a subject,
+  never which way the company argued**; the position question is the Phase-D κ experiment.
+- **P1 trade-protection lobbying share.** Per period, the share of *reported* filing dollars (retained
+  firms' income + in-house expenses) on filings whose codes include TAR/TRD, applied to the period's
+  de-duplicated total (in-house-first rule) so P1 dollars never exceed the lobbying total shown
+  elsewhere. Two attributions: **any-code** (a filing counts fully if any code is TAR/TRD — an upper
+  bound, dominated by big in-house filings that list twenty codes) and **issue-weighted** (filing $ ×
+  TAR/TRD codes ÷ distinct codes on the filing — the discriminating number; the UI leads with it).
+  When a period has only "< $5,000" filings (amount 0) the share falls back to filing counts.
+- Companies with no matched LDA client stay **Unknown** for this block (`protectionActivity: null`).
+
+## Running
 
 ## Running
 
 ```bash
-npm run seed:political                       # FEC (2022, 2024; PAC + employees) → LDA (2023–2025) → lean + exports
+npm run seed:political                       # FEC (2020, 2022, 2024; PAC + employees + executive tier) → LDA (2023–2025) → topics, lean + exports
 node scripts/seed/index.mjs political:fec --cycles 2024 --skip-employees   # quick PAC-only pass
 node scripts/seed/index.mjs political:lda --only AMZN,WMT
-node scripts/seed/index.mjs political:export
+node scripts/seed/index.mjs political:export  # rebuilds lobbying_filing_topic, computes streams + P1, writes both exports
+npm run validate:political -- --write        # stream distributions vs the published benchmark → docs/political-benchmark.md
 ```
 
-Downloads are cached under `db/cache/fec/<cycle>/` (`indiv` ≈ 4.2 GB per cycle) and `db/cache/lda/`.
+Downloads are cached under `db/cache/fec/<cycle>/` (`indiv` ≈ 4.2–5.9 GB per cycle) and `db/cache/lda/`.
 The Senate API allows ~15 anonymous requests/minute; set `LDA_API_KEY` (free registration) for ~100/min.
 Everything is resumable. Companies covered = research-DB companies ∪ shipped sample-brand tickers ∪
 `data/employer-aliases.json` keys.

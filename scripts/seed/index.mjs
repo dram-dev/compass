@@ -7,7 +7,7 @@
  *   node scripts/seed/index.mjs companies  [--overview N] [--statements N] [--only AAPL,MSFT] [--offline] [--refresh]
  *   node scripts/seed/index.mjs graph
  *   node scripts/seed/index.mjs all        (funds → rank → companies → graph)
- *   node scripts/seed/index.mjs political  [--cycles 2022,2024] [--years 2023,2024,2025] [--skip-employees] [--only AMZN,WMT] [--offline]
+ *   node scripts/seed/index.mjs political  [--cycles 2020,2022,2024] [--years 2023,2024,2025] [--skip-employees] [--only AMZN,WMT] [--offline]
  *   node scripts/seed/index.mjs political:fec | political:lda | political:export   (individual stages)
  *   node scripts/seed/index.mjs status
  *
@@ -20,6 +20,7 @@ import { seedCompanies, seedCompaniesSec } from './seed-companies.mjs';
 import { buildGraph, exportGraph } from './build-graph.mjs';
 import { avCallsThisRun } from './alphavantage.mjs';
 import {
+  DEFAULT_CYCLES,
   computePoliticalFacts,
   exportPoliticalFacts,
   exportPoliticalPack,
@@ -111,7 +112,7 @@ async function main() {
         );
     }
   }
-  const cycles = list(opt('cycles'))?.map(Number) ?? [2022, 2024];
+  const cycles = list(opt('cycles'))?.map(Number) ?? DEFAULT_CYCLES;
   const years = list(opt('years'))?.map(Number) ?? [2023, 2024, 2025];
   if (cmd === 'political' || cmd === 'political:fec') {
     console.log('\n== political: FEC bulk (PAC + employees)');

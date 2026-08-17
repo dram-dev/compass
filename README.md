@@ -142,6 +142,9 @@ else the default row.
 | 8 | JSON export/import | `src/store/persistence.ts`, `validate.ts`, `migrations.ts` | Data → Export JSON / Import JSON (file or paste); malformed input → specific error |
 | 9 | Community data-pack import | `docs/data-pack-schema.md`, `src/data/dataPack.ts`, `DataSourcesPage.tsx` | Data → Community data packs (import / example download); records badged Imported · source |
 | 10 | CSV transaction import (stretch) | `steps/Step4Current.tsx` | "Import CSV — coming soon" affordance (see ASSUMPTIONS #15) |
+| 11 | Political streams (PAC / employees / executives) | `scripts/seed/fec.mjs#isExecutiveOccupation`, `political.mjs#streamLean`, `PoliticalFactsPanel.tsx` | Data §06 fact cards — three bars, each with its own lean beside the pooled one |
+| 12 | Lobbying topics + P1 (Axis-2 inputs, activity not position) | `scripts/seed/lobbying-topics.mjs`, `db/schema.sql#lobbying_filing_topic`, `PoliticalFactsPanel.tsx#ProtectionPanel` | Data §06 "Lobbying topics" panel — weighted vs any-code trade/tariff share, topic chips, filing links |
+| 13 | Political benchmark harness | `scripts/seed/validate-political.mjs`, `docs/political-benchmark.md` | `npm run validate:political` |
 
 ## Research database (company financials + fund concentration graph)
 
@@ -162,11 +165,15 @@ npm run seed:status
 
 Full details, schema, rate-limit strategy and ranking rules: `docs/research-db.md`.
 
-**Political-money facts** (`npm run seed:political`, no key needed): FEC bulk data — corporate PAC
-and employee contributions by recipient party — plus Senate LDA lobbying filings, matched to companies
-with an auditable, conservative name matcher, reduced to a documented lean (`docs/political-seed.md`),
-and exported both as facts for the **Data → Political money facts** panel and as a standard data pack the
-user loads on click (Imported badges + verify links; nothing fetched at runtime).
+**Political-money facts** (`npm run seed:political`, no key needed): FEC bulk data — corporate PAC,
+employee and senior-executive contributions by recipient party over three cycles — plus Senate LDA
+lobbying filings, matched to companies with an auditable, conservative name matcher, reduced to a
+documented lean with the three streams also shown separately (`docs/political-seed.md`), plus lobbying
+**topic** flags and the P1 trade-protection share (activity, never position — the Axis-2 inputs from
+`docs/PLAN-political-axes.md`), and exported both as facts for the **Data → Political money facts** panel
+and as a standard data pack the user loads on click (Imported badges + verify links; nothing fetched at
+runtime). `npm run validate:political` checks the stream distributions against the published
+corporate-PAC benchmark.
 
 ## Testing
 

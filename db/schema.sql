@@ -187,7 +187,8 @@ CREATE TABLE IF NOT EXISTS political_committee (
 CREATE TABLE IF NOT EXISTS political_contribution (
   company_symbol  TEXT NOT NULL,
   cycle           INTEGER NOT NULL,
-  channel         TEXT NOT NULL CHECK (channel IN ('pac','employee','pac-inflow')),
+  channel         TEXT NOT NULL CHECK (channel IN ('pac','employee','executive','pac-inflow')),
+                                                -- executive = subset of employee (senior-executive OCCUPATION keywords)
   party           TEXT NOT NULL CHECK (party IN ('D','R','O','U')),
   amount_usd      REAL NOT NULL,
   txn_count       INTEGER NOT NULL,
@@ -231,6 +232,19 @@ CREATE TABLE IF NOT EXISTS lobbying_filing (
   superseded      INTEGER NOT NULL DEFAULT 0    -- 1 when a later amendment for the same registrant/client/period exists
 );
 CREATE INDEX IF NOT EXISTS idx_lobbying_company ON lobbying_filing(company_symbol, filing_year);
+
+-- Topic flags per filing (Axis-2 inputs): LDA general issue codes that matter for protection-seeking
+-- (kind='code': TAR, TRD, …) and keyword hits over the specific-issue text (kind='keyword', method
+-- 'keyword-v1'). Topic, not position: a flag says the filing touched the subject, never which way.
+CREATE TABLE IF NOT EXISTS lobbying_filing_topic (
+  filing_uuid     TEXT NOT NULL,
+  topic           TEXT NOT NULL,
+  kind            TEXT NOT NULL CHECK (kind IN ('code','keyword')),
+  method          TEXT NOT NULL,
+  evidence        TEXT,                         -- ≤ 200-char snippet of the specific-issue text (public filing)
+  PRIMARY KEY (filing_uuid, topic)
+);
+CREATE INDEX IF NOT EXISTS idx_filing_topic ON lobbying_filing_topic(topic);
 
 -- Per period: a company's own in-house `expenses` report already includes what it paid retained firms, so
 -- when one exists it is THE number; otherwise sum the retained firms' `income`. (Same rule OpenSecrets uses.)

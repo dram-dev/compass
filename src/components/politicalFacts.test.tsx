@@ -1,7 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { PoliticalFactCard, PoliticalFactsPanel } from './PoliticalFactsPanel';
-import { hasPoliticalFacts, POLITICAL_PACK_SIZE, type PoliticalFact } from '@/data/politicalFacts';
+import {
+  hasPoliticalFacts,
+  POLITICAL_FACTS,
+  POLITICAL_PACK_SIZE,
+  type PoliticalFact,
+} from '@/data/politicalFacts';
 import { parseDataPack } from '@/data/dataPack';
 import { POLITICAL_PACK_JSON } from '@/data/politicalFacts';
 
@@ -46,9 +51,43 @@ describe('Political facts export', () => {
       totals: {
         pac: { D: 500000, R: 500000, O: 0, U: 100000 },
         employee: { D: 900000, R: 100000, O: 0, U: 0 },
+        executive: { D: 200000, R: 50000, O: 0, U: 0 },
+      },
+      streams: {
+        pac: { D: 500000, R: 500000, O: 0, U: 100000, r: 0, leanScore: 0, partisanUsd: 1e6 },
+        employee: { D: 900000, R: 100000, O: 0, U: 0, r: -0.8, leanScore: 2, partisanUsd: 1e6 },
+        executive: {
+          D: 200000,
+          R: 50000,
+          O: 0,
+          U: 0,
+          r: -0.6,
+          leanScore: 2,
+          partisanUsd: 250000,
+          subsetOf: 'employee',
+        },
       },
       lobbying: { 2024: 19_000_000 },
       topIssues: [{ name: 'Taxation', filings: 4 }],
+      protectionActivity: {
+        years: [2023, 2024],
+        lobbyTotalUsd: 38_000_000,
+        filings: 120,
+        tradeProtection: {
+          anyUsd: 30_000_000,
+          weightedUsd: 3_800_000,
+          anyShare: 0.79,
+          weightedShare: 0.1,
+          filings: 40,
+          codes: { TRD: 40 },
+        },
+        topics: {
+          TRD: { filings: 40, usdAny: 30_000_000, share: 0.79, kind: 'code' },
+          antitrust: { filings: 12, usdAny: 9_000_000, share: 0.24, kind: 'keyword' },
+        },
+        verify: ['https://lda.gov/filings/abc.pdf'],
+        method: 'P1 … Topic, not position',
+      },
       committees: [{ id: 'C00360354', name: 'AMAZON PAC', method: 'name-prefix' }],
       clients: [{ id: 50892, name: 'AMAZON.COM SERVICES LLC', method: 'exact' }],
       employers: [{ employer: 'AMAZON.COM', amount: 800000 }],
@@ -77,11 +116,48 @@ describe('Political facts export', () => {
     expect(
       screen.getByRole('img', { name: /Employees\*: to Democrats 90%, Republicans 10%/ }),
     ).toBeInTheDocument();
+    // executive subset shown as its own stream with its own lean; pooled lean unchanged (+1)
+    expect(
+      screen.getByRole('img', { name: /senior execs†: to Democrats 80%, Republicans 20%/ }),
+    ).toBeInTheDocument();
+    expect(screen.getAllByText(/· lean \+2/).length).toBe(2); // employees and executives streams
+    expect(screen.getByText(/· lean 0/)).toBeInTheDocument(); // PAC stream
+    // Axis-2 activity panel: labelled as activity, weighted share leads, any-code is the ceiling
+    expect(screen.getByText('activity, not position')).toBeInTheDocument();
+    expect(
+      screen.getByRole('img', {
+        name: /Trade and tariff lobbying: 10% issue-weighted, up to 79% of filings dollars/,
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/trade \(TRD\) 40/)).toBeInTheDocument();
+    expect(screen.getByText(/antitrust 12/)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /filing 1/ })).toHaveAttribute(
+      'href',
+      'https://lda.gov/filings/abc.pdf',
+    );
     expect(screen.getByText(/\$19\.0M/)).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /FEC/ })).toHaveAttribute(
       'href',
       'https://www.fec.gov/data/committee/C00360354/',
     );
     expect(screen.getByRole('link', { name: /OpenSecrets/ })).toBeInTheDocument();
+  });
+
+  it('shipped facts carry aggregates only — never donor-level fields (52 U.S.C. §30111(a)(4))', () => {
+    const donorKey =
+      /^(donor|contributor|contributorName|address|street|zip|zipCode|city|firstName|lastName|occupation|transactionId|subId)$/i;
+    const offenders: string[] = [];
+    const walk = (v: unknown, at: string) => {
+      if (Array.isArray(v)) v.forEach((x, i) => walk(x, `${at}[${i}]`));
+      else if (v && typeof v === 'object')
+        for (const [k, x] of Object.entries(v as Record<string, unknown>)) {
+          if (donorKey.test(k)) offenders.push(`${at}.${k}`);
+          else walk(x, `${at}.${k}`);
+        }
+    };
+    walk(POLITICAL_FACTS, 'facts');
+    expect(offenders).toEqual([]);
+    // employer strings are exact alias matches of company names by construction — and top-40 aggregates
+    for (const c of POLITICAL_FACTS.companies) expect(c.employers.length).toBeLessThanOrEqual(12);
   });
 });

@@ -389,8 +389,36 @@ export async function aggregatePac(cycle, committeeToSymbol, resolveParty, candi
 }
 
 /**
+ * Senior-executive sub-tier from the free-text OCCUPATION field (docs/political-seed.md, "Executive tier").
+ * Deliberately narrow — the tier exists so a Goods-Unite-Us-comparable "PAC + executives" figure can be shown
+ * next to "all employees"; false negatives are cheaper than counting a bank's thousands of VPs as executives.
+ *   in:  C-suite (CEO/CFO/COO/CTO/…, "CHIEF … OFFICER", "CHIEF EXECUTIVE"), PRESIDENT (incl. divisional),
+ *        CHAIRMAN/CHAIRWOMAN/CHAIRPERSON/CHAIR, FOUNDER/CO-FOUNDER, GENERAL/MANAGING PARTNER, MANAGING DIRECTOR,
+ *        EXECUTIVE/SENIOR VICE PRESIDENT (EVP/SVP), BOARD MEMBER / BOARD OF DIRECTORS
+ *   out: plain VICE PRESIDENT / VP, DIRECTOR, PRINCIPAL, OWNER (franchisees), ASSISTANT/DEPUTY/ASSOCIATE-to-…,
+ *        RETIRED/FORMER, "CHIEF" trades (chief engineer, chief pilot, chief of staff)
+ */
+export function isExecutiveOccupation(occupation) {
+  const s = String(occupation ?? '')
+    .toUpperCase()
+    .replace(/[^A-Z0-9]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (!s) return false;
+  if (/\b(RETIRED|FORMER|ASSISTANT|ASST|DEPUTY|ASSOCIATE|SECRETARY|OFFICE OF|TO THE)\b/.test(s))
+    return false;
+  if (/\b(EXECUTIVE|EXEC|SENIOR|SR) (VICE PRESIDENT|VP)\b/.test(s) || /\b(EVP|SVP)\b/.test(s))
+    return true;
+  const t = s.replace(/\b(VICE PRESIDENT|VP|AVP)\b/g, ' ');
+  return /\b(CEO|CFO|COO|CTO|CIO|CMO|CRO|CLO|CPO|CHRO|CISO|CDO|CSO|CAO)\b|\bCHIEF EXECUTIVE\b|\bCHIEF [A-Z ]{0,30}OFFICER\b|\bPRESIDENT\b|\bCHAIR(MAN|WOMAN|PERSON)?\b|\bCO ?FOUNDER\b|\bFOUNDER\b|\b(GENERAL|MANAGING) PARTNER\b|\bMANAGING DIRECTOR\b|\bBOARD (MEMBER|OF DIRECTORS|DIRECTOR)\b/.test(
+    t,
+  );
+}
+
+/**
  * Employee channel: stream indiv for a cycle; EMPLOYER exact-normalized match → (symbol, recipient party).
  * Refunds (22Y) subtract. Memo rows skipped (earmark double counts). Keeps top raw employer strings per company.
+ * `execTotals` is the senior-executive subset of `totals` (same rows, filtered by isExecutiveOccupation).
  */
 export async function aggregateEmployees(
   cycle,
@@ -400,10 +428,12 @@ export async function aggregateEmployees(
   { excludeEmployers = new Set(), onProgress, ownCommittees = new Map() } = {},
 ) {
   const totals = new Map();
+  const execTotals = new Map();
   const employers = new Map(); // `${symbol}|${employerRaw}` → { amount, count }
   const indiv = await downloadBulk(cycle, 'indiv', opts);
   if (!indiv.path) return null;
   const matchCache = new Map();
+  const execCache = new Map();
   let matched = 0;
   const lines = await streamZipLines(indiv.path, (f, n) => {
     if (onProgress && n % 2_000_000 === 0) onProgress(n);
@@ -425,6 +455,17 @@ export async function aggregateEmployees(
     t.amount += amount;
     t.count += 1;
     totals.set(k, t);
+    let ex = execCache.get(r.occupation);
+    if (ex === undefined) {
+      ex = isExecutiveOccupation(r.occupation);
+      if (execCache.size < 200_000) execCache.set(r.occupation, ex);
+    }
+    if (ex && party !== 'PAC') {
+      const x = execTotals.get(k) ?? { amount: 0, count: 0 };
+      x.amount += amount;
+      x.count += 1;
+      execTotals.set(k, x);
+    }
     const ek = `${m}|${r.employer}`;
     const e = employers.get(ek) ?? { amount: 0, count: 0 };
     e.amount += amount;
@@ -432,5 +473,5 @@ export async function aggregateEmployees(
     employers.set(ek, e);
     matched++;
   });
-  return { totals, employers, lines, matched };
+  return { totals, execTotals, employers, lines, matched };
 }

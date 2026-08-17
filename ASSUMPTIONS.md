@@ -224,3 +224,37 @@ Numbered, append-only. Each entry: decision · rationale · phase.
 59. **`.env` holds the Alpha Vantage key and the SEC User-Agent** (the account e-mail as contact, per SEC's
     fair-access policy); both git-ignored. The SEC WAF rejects User-Agents containing URLs — use
     `Name/1.0 (email)`. (RDB2)
+60. **Contribution streams are reported separately; the pooled lean is unchanged.** `streams.pac`,
+    `streams.employee`, `streams.executive` each carry their own `r`/`leanScore` (same bins, same $5k
+    floor, no confidence tier); the engine still consumes the pooled PAC + employee lean, so every
+    ground-truth number and the data-pack contract are untouched. Rationale: PACs and executives are
+    different signals (docs/research-political-axes.md, findings 2/7). (PA)
+61. **Executive tier = keyword classification of FEC `OCCUPATION`, stopping above VP.** C-suite,
+    president, chair, founder, general/managing partner, managing director, EVP/SVP, board; plain VP,
+    director, principal, owner, assistants/deputies, retired/former and "chief" trades excluded. It is a
+    subset of the employee channel (never added on top). Goods Unite Us goes down to VP; we do not,
+    because at banks VP is a junior title. (PA)
+62. **Three cycles pooled (2020, 2022, 2024)**; the confidence thresholds ($250k high with both
+    channels, $25k med) are kept as absolute pooled amounts rather than rescaled per cycle — pooling
+    raises totals, so slightly more companies reach "high"; the sourceHint states the span. (PA)
+63. **`political_contribution` migration keeps rows** (rename → recreate → copy → drop) instead of
+    dropping, and drops/recreates the dependent view around the rename because `ALTER TABLE … RENAME`
+    rewrites view references. (PA)
+64. **P1 attribution rule.** Topic dollars = share of *reported* filing dollars on TAR/TRD filings ×
+    the period's in-house-first total, so P1 never exceeds the lobbying total shown elsewhere. Any-code
+    is reported as an upper bound (dominated by omnibus in-house filings that list ~20 codes); the
+    issue-weighted share (TAR/TRD codes ÷ distinct codes) is the number the UI leads with. Periods with
+    only "< $5,000" filings fall back to filing counts. (PA)
+65. **keyword-v1 is a screen, not a classifier**: literal regexes over the specific-issue text with an
+    evidence snippet per hit, stored in a table (`lobbying_filing_topic`) rather than the view proposed
+    in the plan so the audit trail (method + snippet) persists. Everything it produces is labelled
+    "activity, not position" in the export method string and in the UI; position coding is Phase D. (PA)
+66. **Benchmark judgement**: mean %R outside 35–60 or IQR under 8 pts fails; an IQR narrower than the
+    published 21–72 only warns, because our universe (largest, most-held firms; recipients include party
+    committees) is more bipartisan by construction. Spot checks (Nike ~22% R, Valero 96%, Home Depot
+    60%, Microsoft/Google 50/50, Deere 70–75%) match public profiles. (PA)
+67. **Generated exports are excluded from Prettier** (`src/data/generated`, `.claude`): they are minified
+    machine output; formatting them would triple their size. The political facts export is now ~1.5 MB
+    (streams + protectionActivity for 356 companies) and is bundled statically — the app bundle is
+    ~3.4 MB (674 kB gzip); code-splitting the facts JSON is a follow-up, not a gate item. (PA)
+

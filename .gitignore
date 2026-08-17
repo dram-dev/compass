@@ -8,3 +8,4 @@ node_modules/.tmp/
 db/*.sqlite
 db/*.sqlite-*
 db/cache/
+*.log

@@ -17,7 +17,8 @@ import {
   normalizeFilings,
   summarizeLobbying,
 } from './lda.mjs';
-import { composeSourceHint, computeLean } from './political.mjs';
+import { composeSourceHint, computeLean, streamLean } from './political.mjs';
+import { computeProtectionActivity, refreshFilingTopics } from './lobbying-topics.mjs';
 import { SAMPLE_TICKERS } from './sample-tickers.mjs';
 
 const readJson = (p, fallback) => {
@@ -33,6 +34,8 @@ export const SAMPLE_PATH = path.join(CONFIG.root, 'src', 'data', 'companies.samp
 export const FACTS_EXPORT =
   process.env.COMPASS_POLITICAL_EXPORT ??
   path.join(CONFIG.root, 'src', 'data', 'generated', 'political-facts.json');
+/** Three cycles pooled (docs/research-political-axes.md: elites are stable across cycles, PACs swing with control). */
+export const DEFAULT_CYCLES = [2020, 2022, 2024];
 export const PACK_EXPORT =
   process.env.COMPASS_POLITICAL_PACK ??
   path.join(CONFIG.root, 'src', 'data', 'generated', 'political-pack.json');
@@ -91,7 +94,7 @@ export function politicalUniverse(db, { only = null } = {}) {
 export async function seedFec(
   db,
   {
-    cycles = [2022, 2024],
+    cycles = DEFAULT_CYCLES,
     offline = false,
     skipEmployees = false,
     only = null,
@@ -202,6 +205,22 @@ export async function seedFec(
         db.prepare(
           "DELETE FROM political_contribution WHERE cycle = ? AND channel = 'pac-inflow'",
         ).run(cycle);
+        db.prepare(
+          "DELETE FROM political_contribution WHERE cycle = ? AND channel = 'executive'",
+        ).run(cycle);
+        for (const [k, t] of emp.execTotals ?? []) {
+          const [symbol, party] = k.split('|');
+          insContribution.run(
+            symbol,
+            cycle,
+            'executive',
+            party,
+            Math.round(t.amount),
+            t.count,
+            `fec-bulk:indiv${String(cycle).slice(-2)}:occupation`,
+            computedAt,
+          );
+        }
         for (const [k, t] of emp.totals) {
           const [symbol, party] = k.split('|');
           if (party === 'PAC')
@@ -240,7 +259,10 @@ export async function seedFec(
             .forEach((e) => insEmployer.run(symbol, e.raw, cycle, Math.round(e.amount), e.count));
         db.exec('COMMIT');
         summary.employeeMatched += emp.matched;
-        out(`    individual rows scanned: ${emp.lines} · matched to companies: ${emp.matched}`);
+        const execN = [...(emp.execTotals ?? new Map()).values()].reduce((a, t) => a + t.count, 0);
+        out(
+          `    individual rows scanned: ${emp.lines} · matched to companies: ${emp.matched} · of which senior-executive occupations: ${execN}`,
+        );
       } else summary.skipped.push(`${cycle}:indiv`);
     }
     log(db, 'fec', 'bulk', String(cycle), 'ok', JSON.stringify({ committees: matched.length }));
@@ -305,7 +327,7 @@ export async function seedLobbying(
 }
 
 // ------------------------------------------------------------------ lean + exports
-export function computePoliticalFacts(db, { cycles = [2022, 2024] } = {}) {
+export function computePoliticalFacts(db, { cycles = DEFAULT_CYCLES } = {}) {
   const computedAt = now();
   const uni = politicalUniverse(db);
   const contrib = db
@@ -332,6 +354,8 @@ export function computePoliticalFacts(db, { cycles = [2022, 2024] } = {}) {
       'SELECT company_symbol, employer_raw, SUM(amount_usd) AS amount FROM political_employer_match GROUP BY company_symbol, employer_raw ORDER BY amount DESC',
     )
     .all();
+  refreshFilingTopics(db);
+  const protection = computeProtectionActivity(db);
 
   const facts = {};
   const get = (s) =>
@@ -340,8 +364,10 @@ export function computePoliticalFacts(db, { cycles = [2022, 2024] } = {}) {
       name: uni.names.get(s) ?? s,
       pac: {},
       employee: {},
+      executive: {},
       pacInflow: {},
       lobbying: {},
+      protectionActivity: null,
       topIssues: [],
       committees: [],
       clients: [],
@@ -389,6 +415,7 @@ export function computePoliticalFacts(db, { cycles = [2022, 2024] } = {}) {
     if (f.employers.length < 12)
       f.employers.push({ employer: e.employer_raw, amount: Math.round(e.amount) });
   }
+  for (const [s, block] of protection) get(s).protectionActivity = block;
   // second share classes (GOOG → GOOGL) inherit the canonical ticker's facts
   for (const [alias, canonical] of Object.entries(uni.sameAs)) {
     if (facts[canonical] && !facts[alias])
@@ -407,11 +434,20 @@ export function computePoliticalFacts(db, { cycles = [2022, 2024] } = {}) {
       );
     const pac = sum('pac');
     const emp = sum('employee');
+    const exec = sum('executive');
     const lean = computeLean({ pacD: pac.D, pacR: pac.R, empD: emp.D, empR: emp.R });
     f.totals = {
       pac,
       employee: emp,
+      executive: exec,
       pacInflow: Object.values(f.pacInflow).reduce((a, b) => a + b, 0),
+    };
+    // The two streams are different signals (PACs follow control; executives are partisans) — reported
+    // side by side; the pooled lean below stays the single number the engine consumes.
+    f.streams = {
+      pac: { ...pac, ...streamLean(pac) },
+      employee: { ...emp, ...streamLean(emp) },
+      executive: { ...exec, ...streamLean(exec), subsetOf: 'employee' },
     };
     f.lean = {
       ...lean,
@@ -422,6 +458,7 @@ export function computePoliticalFacts(db, { cycles = [2022, 2024] } = {}) {
       cycles,
       pac,
       emp,
+      exec,
       lobbyingByYear: f.lobbying,
       committees: f.committees.map((c) => c.id),
       computedAt,
@@ -442,15 +479,17 @@ export function exportPoliticalFacts(result, outPath = FACTS_EXPORT) {
   );
   const doc = {
     schema: 'compass-political-facts',
-    version: 1,
+    version: 2,
     generatedAt: result.computedAt,
     cycles: result.cycles,
     method:
-      'FEC bulk (PAC via CONNECTED_ORG_NM + pas2/oth; employees via EMPLOYER exact-normalized match on indiv) and Senate LDA quarterly filings (latest amendment per registrant/client/period). Lean r=(R−D)/(R+D) binned ±0.2/±0.6; null below $5k partisan. Facts are public filings; the lean is a Compass derivation — verify at fec.gov / lda.gov / OpenSecrets.',
+      'FEC bulk (PAC via CONNECTED_ORG_NM + pas2/oth; employees via EMPLOYER exact-normalized match on indiv; senior executives = employee rows whose OCCUPATION matches a documented keyword set) and Senate LDA quarterly filings (latest amendment per registrant/client/period). Lean r=(R−D)/(R+D) binned ±0.2/±0.6; null below $5k partisan; PAC, employee and executive streams also reported separately. Lobbying topics (issue codes + keyword-v1) describe subject, not position. Facts are public filings; leans are Compass derivations — verify at fec.gov / lda.gov / OpenSecrets.',
     counts: {
       companies: companies.length,
       withLean: companies.filter((c) => c.lean?.leanScore !== null).length,
       withLobbying: companies.filter((c) => Object.keys(c.lobbying).length).length,
+      withExecutiveStream: companies.filter((c) => c.streams?.executive?.leanScore !== null).length,
+      withProtectionActivity: companies.filter((c) => c.protectionActivity).length,
     },
     companies,
   };

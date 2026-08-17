@@ -38,11 +38,21 @@ expensive scale-up only after the decisive κ test.
 
 | Asset | State |
 |---|---|
-| FEC PAC + employee aggregates | 342 companies, cycles 2022 + 2024, indiv files cached locally (9.5 GB) — 2020 not yet downloaded |
-| LDA lobbying | 12,208 filings, 174 clients, 162 companies with filings; each filing stores issue codes **and specific-issue text**; extended crawl (342-company universe) still running |
-| Issue-code coverage | 102 filings tagged TAR, 2,253 tagged TRD — P1 is computable today |
+| FEC PAC + employee aggregates | 357 companies with facts, 341 with a lean, cycles 2020 + 2022 + 2024 (all indiv files cached locally); executive stream for 258 |
+| LDA lobbying | 16,276 filings, 5,676 clients, 308 companies crawled (285 with non-superseded filings); each filing stores issue codes **and specific-issue text**; `lobbying_filing_topic` flags rebuilt on every export |
+| Issue-code coverage | P1 exported for all 285 companies with filings (`protectionActivity`) |
 | SEC XBRL revenue | 313 companies — denominators for P3/P4 exist |
-| App | `leanScore` pooled; PoliticalFactCard + FundLookthroughPanel show FEC lean; no lobbying-topic display yet |
+| App | pooled `leanScore` for the engine; fact card shows PAC / employee / executive streams with their own leans and the "Lobbying topics — activity, not position" panel |
+
+## Status
+
+| Phase | State | Notes |
+|---|---|---|
+| A | **done** (2026-08-17) | A1 streams in export + card · A2 executive tier (`isExecutiveOccupation`, channel `executive`) · A3 cycles 2020/2022/2024 · A4 `npm run validate:political` + `docs/political-benchmark.md`; export test asserts no donor-level fields |
+| C | **done** (2026-08-17) | C1 P1 any/weighted (`lobbying-topics.mjs`) · C2 keyword-v1 topic screen (`lobbying_filing_topic`) · C3 `protectionActivity` export block · C4 "Lobbying topics — activity, not position" panel |
+| B | next | needs the 40-firm sample + hand-recorded comparators |
+| D | next | codebook + rating page |
+| E, F | pending | E after C; F conditional on D |
 
 ## Phases
 

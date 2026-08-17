@@ -8,6 +8,8 @@ import {
   POLITICAL_PACK_SOURCE,
   type PartySplit,
   type PoliticalFact,
+  type ProtectionActivity,
+  type StreamLean,
 } from '@/data/politicalFacts';
 import { parseDataPack } from '@/data/dataPack';
 import { useCompassStore } from '@/store/useCompassStore';
@@ -22,8 +24,10 @@ const money = (n: number) =>
         : `$${Math.round(n)}`;
 const pct = (a: number, t: number) => (t > 0 ? `${Math.round((a / t) * 100)}%` : '—');
 
+const leanLabel = (l: number | null) => (l === null ? 'n/a' : `${l > 0 ? '+' : ''}${l}`);
+
 /** Orientation-neutral bar: share of partisan dollars by class, plus non-partisan/other in grey. */
-function SplitBar({ s, label }: { s: PartySplit; label: string }) {
+function SplitBar({ s, label, lean }: { s: PartySplit; label: string; lean?: StreamLean }) {
   const total = s.D + s.R + s.O + s.U;
   if (total <= 0) return null;
   const seg = (v: number, color: string, title: string) => (
@@ -34,7 +38,7 @@ function SplitBar({ s, label }: { s: PartySplit; label: string }) {
     />
   );
   return (
-    <div className="grid grid-cols-[110px_1fr_170px] items-center gap-2 text-[11.5px]">
+    <div className="grid grid-cols-[110px_1fr_230px] items-center gap-2 text-[11.5px]">
       <span className="text-faint">{label}</span>
       <div
         className="flex h-3 overflow-hidden rounded-sm border border-rule"
@@ -48,7 +52,107 @@ function SplitBar({ s, label }: { s: PartySplit; label: string }) {
       </div>
       <span className="font-mono text-faint">
         {money(total)} · D {pct(s.D, s.D + s.R)} / R {pct(s.R, s.D + s.R)}
+        {lean && (
+          <span title="This stream on its own: same r and bins as the pooled lean">
+            {' '}
+            · lean {leanLabel(lean.leanScore)}
+          </span>
+        )}
       </span>
+    </div>
+  );
+}
+
+const topicLabel: Record<string, string> = {
+  TAR: 'tariff bills (TAR)',
+  TRD: 'trade (TRD)',
+  TAX: 'taxation (TAX)',
+  BUD: 'appropriations (BUD)',
+  GOV: 'government issues (GOV)',
+  DEF: 'defense (DEF)',
+  CPT: 'IP (CPT)',
+  LBR: 'labor / antitrust (LBR)',
+  SMB: 'small business (SMB)',
+};
+
+/**
+ * Lobbying topics + P1 trade-protection share. Deliberately labelled as activity: LDA issue codes and
+ * keyword hits say what a company lobbied about, never which way it argued (docs/political-seed.md).
+ */
+function ProtectionPanel({ p }: { p: ProtectionActivity }) {
+  const w = p.tradeProtection.weightedShare;
+  const a = p.tradeProtection.anyShare;
+  const topics = Object.entries(p.topics).slice(0, 8);
+  return (
+    <div className="mt-2 rounded border border-dashed border-rule px-3 py-2 text-[12px]">
+      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+        <b>Lobbying topics</b>
+        <span className="chip">activity, not position</span>
+        <span className="text-faint">
+          {p.years[0]}–{p.years[p.years.length - 1]} · {money(p.lobbyTotalUsd)} · {p.filings}{' '}
+          filings (Senate LDA)
+        </span>
+      </div>
+      <div className="mt-1.5 grid grid-cols-[110px_1fr_230px] items-center gap-2 text-[11.5px]">
+        <span className="text-faint" title="Share of lobbying dollars on filings coded TAR/TRD">
+          Trade / tariff $
+        </span>
+        <div
+          className="relative flex h-3 overflow-hidden rounded-sm border border-rule"
+          role="img"
+          aria-label={`Trade and tariff lobbying: ${w === null ? 'not computable' : `${Math.round(w * 100)}% issue-weighted`}, up to ${a === null ? 'n/a' : `${Math.round(a * 100)}%`} of filings dollars touched TAR/TRD`}
+        >
+          {a !== null && (
+            <span
+              className="absolute inset-y-0 left-0 bg-unknown"
+              style={{ width: `${Math.round(a * 100)}%` }}
+              title={`Any-code upper bound ${Math.round(a * 100)}%`}
+            />
+          )}
+          {w !== null && (
+            <span
+              className="absolute inset-y-0 left-0 bg-ink"
+              style={{ width: `${Math.round(w * 100)}%` }}
+              title={`Issue-weighted ${Math.round(w * 100)}%`}
+            />
+          )}
+        </div>
+        <span className="font-mono text-faint">
+          {w === null ? '—' : `${Math.round(w * 100)}%`} weighted · ≤{' '}
+          {a === null ? '—' : `${Math.round(a * 100)}%`} any-code
+        </span>
+      </div>
+      {topics.length > 0 && (
+        <div className="mt-1.5 flex flex-wrap items-center gap-1.5 text-[11px]">
+          <span className="text-faint">topics:</span>
+          {topics.map(([t, v]) => (
+            <span
+              key={t}
+              className="chip"
+              title={`${v.filings} filings · ${v.share === null ? '' : `${Math.round(v.share * 100)}% of $ · `}${v.kind === 'code' ? 'LDA issue code' : 'keyword-v1 over specific-issue text'}`}
+            >
+              {topicLabel[t] ?? t} {v.filings}
+            </span>
+          ))}
+        </div>
+      )}
+      <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[11px] text-faint">
+        <span>
+          Codes and keywords describe the subject of a filing, not the company's position. Blocking
+          lobbying leaves no footprint here.
+        </span>
+        {p.verify.slice(0, 3).map((u, i) => (
+          <a
+            key={u}
+            className="chip hover:border-ink hover:text-ink"
+            href={u}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            filing {i + 1} ↗
+          </a>
+        ))}
+      </div>
     </div>
   );
 }
@@ -70,8 +174,11 @@ export function PoliticalFactCard({ f }: { f: PoliticalFact }) {
         <span className="chip">FEC cycles {f.lean.cycles.join(', ')}</span>
       </div>
       <div className="mt-2 grid gap-1.5">
-        <SplitBar s={f.totals.pac} label="Company PAC" />
-        <SplitBar s={f.totals.employee} label="Employees*" />
+        <SplitBar s={f.totals.pac} label="Company PAC" lean={f.streams?.pac} />
+        <SplitBar s={f.totals.employee} label="Employees*" lean={f.streams?.employee} />
+        {f.totals.executive && (
+          <SplitBar s={f.totals.executive} label="…senior execs†" lean={f.streams?.executive} />
+        )}
         {(f.totals.pacInflow ?? 0) > 0 && (
           <div className="text-[11.5px] text-faint">
             Employees also gave <span className="font-mono">{money(f.totals.pacInflow ?? 0)}</span>{' '}
@@ -106,10 +213,22 @@ export function PoliticalFactCard({ f }: { f: PoliticalFact }) {
           )}
         </div>
       )}
+      {f.protectionActivity ? (
+        <ProtectionPanel p={f.protectionActivity} />
+      ) : (
+        f.clients.length === 0 && (
+          <div className="mt-2 text-[11.5px] text-faint">
+            No Senate LDA client matched — lobbying topics unknown.
+          </div>
+        )
+      )}
       <p className="mt-1.5 text-[11px] text-faint">
-        *Individuals who listed the company as employer — including executives and founders. Grey =
-        non-party recipients (the company's own PAC, bipartisan groups); the lean uses only dollars
-        to Democratic vs Republican candidates, parties, and their aligned committees.
+        *Individuals who listed the company as employer — including executives and founders. †Subset
+        whose stated occupation is a senior-executive title (C-suite, president, chair, founder,
+        EVP/SVP, managing partner/director, board) — corporate PACs and executives are different
+        signals, so each stream carries its own lean next to the pooled one. Grey = non-party
+        recipients (the company's own PAC, bipartisan groups); leans use only dollars to Democratic
+        vs Republican candidates, parties, and their aligned committees.
       </p>
       <details className="mt-2 text-[11.5px] text-faint">
         <summary className="cursor-pointer hover:text-ink">
