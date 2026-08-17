@@ -3,12 +3,15 @@ import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { DashboardPage } from './DashboardPage';
 import { useCompassStore } from '@/store/useCompassStore';
+import { useViewStore } from '@/store/useViewMode';
 import { loadJordan } from '@/data/fixtures/jordan';
 
 // Recharts ResponsiveContainer needs a size in jsdom.
 beforeEach(() => {
   localStorage.clear();
   useCompassStore.getState().resetAll();
+  // These assertions cover the full panel set; simple mode is asserted separately below.
+  useViewStore.setState({ viewMode: 'detailed', viewModeTouched: true });
   vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(800);
   vi.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockReturnValue(360);
   HTMLElement.prototype.getBoundingClientRect = () =>
@@ -97,5 +100,30 @@ describe('Dashboard', () => {
         name: /Current political exposure: Aligned 0%, Mixed 0%, Opposed 0%, Unknown 100%/,
       }),
     ).toBeInTheDocument();
+  });
+
+  it('simple mode hides the dense panels, renumbers what is left, and offers the switch', () => {
+    act(() => useCompassStore.getState().loadState(loadJordan()));
+    useViewStore.setState({ viewMode: 'simple', viewModeTouched: false });
+    renderDash();
+    // kept: flows, category gaps, the plan — numbered 01–03 with no gaps
+    expect(screen.getByRole('heading', { name: 'Where the money flows' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Category gaps' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'The plan' })).toBeInTheDocument();
+    expect(screen.getByText('01')).toBeInTheDocument();
+    expect(screen.getByText('02')).toBeInTheDocument();
+    expect(screen.getByText('03')).toBeInTheDocument();
+    expect(screen.queryByText('04')).not.toBeInTheDocument();
+    // hidden: political exposure, principles coverage, tradeoffs
+    expect(screen.queryByRole('heading', { name: 'Political exposure' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Principles coverage' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Tradeoffs' })).not.toBeInTheDocument();
+    // the dial and the headline numbers stay — simple is not empty
+    expect(screen.getByRole('img', { name: /Alignment index dial: 42.0/ })).toBeInTheDocument();
+    // and the hint points at the switch
+    fireEvent.click(screen.getByRole('button', { name: /Switch to Detailed/ }));
+    expect(useViewStore.getState().viewMode).toBe('detailed');
+    expect(screen.getByRole('heading', { name: 'Political exposure' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Switch to Detailed/ })).not.toBeInTheDocument();
   });
 });

@@ -1,10 +1,12 @@
-import { useMemo } from 'react';
+import { useMemo, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { useCompassStore } from '@/store/useCompassStore';
 import { useCompanies, useScores } from '@/store/scoring';
 import { GOAL_MODE_PRESETS } from '@/data/goalModePresets';
 import { GoalModeToggle } from '@/components/GoalModeToggle';
 import { Section } from '@/components/Section';
+import { ViewModeHint } from '@/components/ViewModeToggle';
+import { useIsDetailed } from '@/store/useViewMode';
 import { NumberTick } from '@/components/NumberTick';
 import { Dial } from './Dial';
 import { Sankey } from './Sankey';
@@ -17,6 +19,7 @@ import { fmt1, fmtMoney, fmtMoneyK, signed1 } from '@/lib/format';
 /** §8 — single scrolling dashboard with a sticky goal toggle (R4). */
 export function DashboardPage() {
   const scores = useScores();
+  const detailed = useIsDetailed();
   const companies = useCompanies();
   const mode = useCompassStore((s) => s.goalMode);
   const categories = useCompassStore((s) => s.categories);
@@ -133,76 +136,108 @@ export function DashboardPage() {
         </div>
       </section>
 
-      <Section
-        no="01"
-        title="Where the money flows"
-        sub="Every dollar, traced to its destination — monthly spending or the portfolio itself. Switch the lens, then the state. Hover a flow for dollars, band and named merchants."
-      >
-        <Sankey categories={categories} companies={companies} investments={scores.investments} />
-      </Section>
-
-      <Section
-        no="02"
-        title="Category gaps"
-        sub={
-          <>
-            Alignment index per category, current <span className="font-mono">●</span> to optimal{' '}
-            <span className="font-mono text-brass">◆</span>, under the selected goal mode. Sorted by
-            distance to close.
-          </>
-        }
-      >
-        <SlopeChart current={scores.current.categories} target={scores.target.categories} />
-      </Section>
-
-      <Section
-        no="03"
-        title="Political exposure"
-        sub={
-          <>
-            Share of spend by political-support profile, <em>relative to your stated preference</em>{' '}
-            — Compass never assumes a direction, and never hides what it can't assess.
-          </>
-        }
-      >
-        <PoliticalExposurePanel
-          current={scores.political.current}
-          target={scores.political.target}
-          companies={companies}
-        />
-      </Section>
-
-      <Section
-        no="04"
-        title="Principles coverage"
-        sub="How well today's spend (and your optimal) serve each weighted principle, 0–100. Unknown portions count as neutral."
-      >
-        <PrinciplesRadar points={scores.radar} principles={principles} />
-      </Section>
-
-      <Section
-        no="05"
-        title="Tradeoffs"
-        sub="Every recommended swap, plotted: what it gains you against what it costs. Bubble size is dollars affected. Free wins are exactly what they sound like — click one to open it in the plan."
-      >
-        <ParetoScatter swaps={scores.swaps} categoryLabels={catLabels} />
-      </Section>
-
-      <Section
-        no="06"
-        title="The plan"
-        sub="Swaps packed into stage gates by priority within each gate's effort budget, with a projected trajectory."
-      >
-        <div className="mt-4 flex flex-wrap items-center gap-4">
-          <Link to="/plan" className="btn btn-pri">
-            Open the plan →
-          </Link>
-          <span className="font-mono text-[12px] text-faint">
-            {scores.plan.swaps.filter((s) => s.gateId).length} actions scheduled · projected{' '}
-            {fmt1(scores.plan.finalIndex)} after {scores.plan.gates.length} gates
-          </span>
-        </div>
-      </Section>
+      {SECTIONS.filter((sec) => detailed || !sec.detailOnly).map((sec, i) => (
+        <Section key={sec.key} no={String(i + 1).padStart(2, '0')} title={sec.title} sub={sec.sub}>
+          {sec.render({ scores, companies, categories, principles, catLabels })}
+        </Section>
+      ))}
+      <ViewModeHint what="political exposure by profile, principles coverage and the tradeoff scatter" />
     </div>
   );
 }
+
+type SectionCtx = {
+  scores: ReturnType<typeof useScores>;
+  companies: ReturnType<typeof useCompanies>;
+  categories: ReturnType<typeof useCompassStore.getState>['categories'];
+  principles: ReturnType<typeof useCompassStore.getState>['principles'];
+  catLabels: Record<string, string>;
+};
+
+/**
+ * Dashboard sections in order. `detailOnly` panels are hidden in simple mode (the reviewer feedback
+ * was data overload); numbering is derived from what is actually visible, so simple mode reads
+ * 01–03 rather than 01, 02, 06.
+ */
+const SECTIONS: {
+  key: string;
+  title: string;
+  sub: ReactNode;
+  detailOnly?: boolean;
+  render: (ctx: SectionCtx) => ReactNode;
+}[] = [
+  {
+    key: 'flows',
+    title: 'Where the money flows',
+    sub: 'Every dollar, traced to its destination — monthly spending or the portfolio itself. Switch the lens, then the state. Hover a flow for dollars, band and named merchants.',
+    render: ({ scores, companies, categories }) => (
+      <Sankey categories={categories} companies={companies} investments={scores.investments} />
+    ),
+  },
+  {
+    key: 'gaps',
+    title: 'Category gaps',
+    sub: (
+      <>
+        Alignment index per category, current <span className="font-mono">●</span> to optimal{' '}
+        <span className="font-mono text-brass">◆</span>, under the selected goal mode. Sorted by
+        distance to close.
+      </>
+    ),
+    render: ({ scores }) => (
+      <SlopeChart current={scores.current.categories} target={scores.target.categories} />
+    ),
+  },
+  {
+    key: 'political',
+    title: 'Political exposure',
+    detailOnly: true,
+    sub: (
+      <>
+        Share of spend by political-support profile, <em>relative to your stated preference</em> —
+        Compass never assumes a direction, and never hides what it can't assess.
+      </>
+    ),
+    render: ({ scores, companies }) => (
+      <PoliticalExposurePanel
+        current={scores.political.current}
+        target={scores.political.target}
+        companies={companies}
+      />
+    ),
+  },
+  {
+    key: 'principles',
+    title: 'Principles coverage',
+    detailOnly: true,
+    sub: "How well today's spend (and your optimal) serve each weighted principle, 0–100. Unknown portions count as neutral.",
+    render: ({ scores, principles }) => (
+      <PrinciplesRadar points={scores.radar} principles={principles} />
+    ),
+  },
+  {
+    key: 'tradeoffs',
+    title: 'Tradeoffs',
+    detailOnly: true,
+    sub: 'Every recommended swap, plotted: what it gains you against what it costs. Bubble size is dollars affected. Free wins are exactly what they sound like — click one to open it in the plan.',
+    render: ({ scores, catLabels }) => (
+      <ParetoScatter swaps={scores.swaps} categoryLabels={catLabels} />
+    ),
+  },
+  {
+    key: 'plan',
+    title: 'The plan',
+    sub: "Swaps packed into stage gates by priority within each gate's effort budget, with a projected trajectory.",
+    render: ({ scores }) => (
+      <div className="mt-4 flex flex-wrap items-center gap-4">
+        <Link to="/plan" className="btn btn-pri">
+          Open the plan →
+        </Link>
+        <span className="font-mono text-[12px] text-faint">
+          {scores.plan.swaps.filter((s) => s.gateId).length} actions scheduled · projected{' '}
+          {fmt1(scores.plan.finalIndex)} after {scores.plan.gates.length} gates
+        </span>
+      </div>
+    ),
+  },
+];

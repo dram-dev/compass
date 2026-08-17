@@ -291,4 +291,20 @@ Numbered, append-only. Each entry: decision · rationale · phase.
     links there as a verify source. `noindex` meta + disallow-all `public/robots.txt` keep the review
     build out of search engines — remove both when it is ready to announce. The URL is public and
     unauthenticated; Pages offers no password protection. (PH)
+73. **Display density (`viewMode`) lives outside the plan state**, in its own `compass.ui.v1` key
+    (`store/useViewMode.ts`), because it is a per-device display preference rather than user data: an
+    exported plan must not dictate the reader's density, and the v1 export contract stays byte-stable.
+    New visitors default to **simple** (the reviewer feedback was data overload); the switch sits in the
+    header and a one-line hint names what the other mode adds until the user touches it. (VM)
+74. **What simple mode hides** — wizard: Principles, Political, Investments and Your-optimal steps
+    (their inputs fall back to the goal-mode preset the engine already applies, so scores stay valid);
+    dashboard: Political exposure, Principles coverage, Tradeoffs; plan: gate configuration; data page:
+    bucket defaults, fund look-through, political-money facts; fact cards: the executive stream and the
+    lobbying-topics panel. Nothing is *computed* differently — density is presentation only, and the
+    dial, index, band and plan are identical in both modes. (VM)
+75. **Wizard step ids stay canonical.** `wizard.step` and `#/wizard/<n>` always mean the same step
+    (1–7); simple mode navigates the visible subset (1 → 4 → 7) and displays positions (1/3, 2/3, 3/3),
+    and switching density while on a hidden step moves forward to the nearest visible one. Section
+    numbering on every page is derived from what is visible (`sectionNumbers`), so simple mode never
+    shows gaps like 01, 02, 06. (VM)
 

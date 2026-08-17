@@ -3,6 +3,7 @@ import { act, fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { DataSourcesPage } from './DataSourcesPage';
 import { useCompassStore } from '@/store/useCompassStore';
+import { useViewStore } from '@/store/useViewMode';
 import { loadJordan } from '@/data/fixtures/jordan';
 import { exportState, pickState } from '@/store/persistence';
 import { EXAMPLE_DATA_PACK } from '@/data/dataPack';
@@ -10,6 +11,8 @@ import { STORAGE_KEY } from '@/store/schema';
 import { ErrorBoundary } from './ErrorBoundary';
 
 beforeEach(() => {
+  // The Advanced/research panels are detail-only; simple-mode filtering is asserted below.
+  useViewStore.setState({ viewMode: 'detailed', viewModeTouched: true });
   localStorage.clear();
   useCompassStore.getState().resetAll();
 });
@@ -101,5 +104,29 @@ describe('ErrorBoundary', () => {
     expect(screen.getByRole('alert')).toHaveTextContent(/couldn't render \(Test\)/);
     expect(screen.getByRole('alert')).toHaveTextContent(/kaboom/);
     spy.mockRestore();
+  });
+
+  it('simple mode hides the research panels and renumbers the rest', () => {
+    useViewStore.setState({ viewMode: 'simple', viewModeTouched: false });
+    render(
+      <MemoryRouter>
+        <DataSourcesPage />
+      </MemoryRouter>,
+    );
+    expect(
+      screen.getByRole('heading', { name: /Data sources & how to verify/ }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /^Reset$/ })).toBeInTheDocument();
+    expect(
+      screen.queryByRole('heading', { name: /Advanced: bucket-default ratings/ }),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: /Fund look-through/ })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('heading', { name: /Political money facts/ }),
+    ).not.toBeInTheDocument();
+    // four visible sections, numbered without gaps
+    expect(screen.getByText('04')).toBeInTheDocument(); // Reset is 04, not 07
+    expect(screen.queryByText('05')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Switch to Detailed/ })).toBeInTheDocument();
   });
 });

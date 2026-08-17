@@ -10,7 +10,9 @@ import {
 } from '@/store/persistence';
 import { EXAMPLE_DATA_PACK, parseDataPack } from '@/data/dataPack';
 import { BucketDefaultsPanel } from './BucketDefaultsPanel';
-import { Section } from './Section';
+import { Section, sectionNumbers } from './Section';
+import { DetailOnly, ViewModeHint } from './ViewModeToggle';
+import { useIsDetailed } from '@/store/useViewMode';
 import { FundLookthroughPanel } from './FundLookthroughPanel';
 import { PoliticalFactsPanel } from './PoliticalFactsPanel';
 import { SAMPLE_COMPANIES } from '@/data/sampleCompanies';
@@ -19,6 +21,8 @@ type Notice = { kind: 'ok' | 'err'; text: string } | null;
 
 /** Data page: verification sources (§10.2), export/import (EF8), community packs (EF9), Advanced (§6.2), reset. */
 export function DataSourcesPage() {
+  const detailed = useIsDetailed();
+  const nos = sectionNumbers([false, false, false, true, true, true, false], detailed);
   const s = useCompassStore();
   const [notice, setNotice] = useState<Notice>(null);
   const [packNotice, setPackNotice] = useState<Notice>(null);
@@ -68,7 +72,7 @@ export function DataSourcesPage() {
       </p>
 
       <Section
-        no="01"
+        no={nos[0]!}
         title="Data sources & how to verify"
         sub="Sample company ratings and political leans are illustrative placeholders on fictional archetypes; real brands ship with structure only. Verify at the primary sources before acting."
       >
@@ -99,7 +103,7 @@ export function DataSourcesPage() {
       </Section>
 
       <Section
-        no="02"
+        no={nos[1]!}
         title="Export & import your data"
         sub="A single JSON file holds your complete state (schema-versioned). Import validates the whole file and never loads a partial state."
       >
@@ -145,7 +149,7 @@ export function DataSourcesPage() {
       </Section>
 
       <Section
-        no="03"
+        no={nos[2]!}
         title="Community data packs"
         sub={
           <>
@@ -216,46 +220,53 @@ export function DataSourcesPage() {
         )}
       </Section>
 
-      <Section
-        no="04"
-        title="Advanced: bucket-default ratings"
-        sub="The engine's fallback ratings for bucket portions without a named, rated merchant. Edit freely; the worked-example defaults are documented in the README."
-      >
-        <BucketDefaultsPanel />
-      </Section>
+      <DetailOnly>
+        <Section
+          no={nos[3]!}
+          title="Advanced: bucket-default ratings"
+          sub="The engine's fallback ratings for bucket portions without a named, rated merchant. Edit freely; the worked-example defaults are documented in the README."
+        >
+          <BucketDefaultsPanel />
+        </Section>
+      </DetailOnly>
 
-      <Section
-        no="05"
-        title="Fund look-through (research database)"
-        sub={
-          <>
-            Which companies the most-held ETFs and mutual funds concentrate in — from the offline
-            research DB (<code className="font-mono">scripts/seed</code>: Alpha Vantage + SEC
-            N-PORT). Look up a fund to see its top holdings, or a company to see who holds it.
-          </>
-        }
-      >
-        <FundLookthroughPanel />
-      </Section>
+      <DetailOnly>
+        <Section
+          no={nos[4]!}
+          title="Fund look-through (research database)"
+          sub={
+            <>
+              Which companies the most-held ETFs and mutual funds concentrate in — from the offline
+              research DB (<code className="font-mono">scripts/seed</code>: Alpha Vantage + SEC
+              N-PORT). Look up a fund to see its top holdings, or a company to see who holds it.
+            </>
+          }
+        >
+          <FundLookthroughPanel />
+        </Section>
+      </DetailOnly>
 
-      <Section
-        no="06"
-        title="Political money facts (FEC + Senate LDA)"
-        sub={
-          <>
-            Public filings, computed offline: corporate PAC, employee and senior-executive
-            contributions by recipient party (FEC bulk data, three cycles, each stream with its own
-            lean) and lobbying spend plus lobbying <em>topics</em> (Senate LDA — activity, never
-            position), with a documented lean and verify links. Load the bundled pack to use these
-            leans in scoring.
-          </>
-        }
-      >
-        <PoliticalFactsPanel />
-      </Section>
+      <DetailOnly>
+        <Section
+          no={nos[5]!}
+          title="Political money facts (FEC + Senate LDA)"
+          sub={
+            <>
+              Public filings, computed offline: corporate PAC, employee and senior-executive
+              contributions by recipient party (FEC bulk data, three cycles, each stream with its
+              own lean) and lobbying spend plus lobbying <em>topics</em> (Senate LDA — activity,
+              never position), with a documented lean and verify links. Load the bundled pack to use
+              these leans in scoring.
+            </>
+          }
+        >
+          <PoliticalFactsPanel />
+        </Section>
+      </DetailOnly>
 
+      <ViewModeHint what="bucket-default ratings, the fund look-through and the political-money facts" />
       <Section
-        no="07"
+        no={nos[6]!}
         title="Reset"
         sub="Erase everything stored on this device. Export first if you want to keep it."
       >

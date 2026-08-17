@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { fireEvent, render, screen, act } from '@testing-library/react';
+import { fireEvent, render, screen, act, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { WizardPage } from './WizardPage';
 import { useCompassStore } from '@/store/useCompassStore';
+import { useViewStore } from '@/store/useViewMode';
 import { loadJordan } from '@/data/fixtures/jordan';
 import { STORAGE_KEY } from '@/store/schema';
 
@@ -18,6 +19,8 @@ function renderWizard(path = '/wizard') {
 }
 
 beforeEach(() => {
+  // These walk the full 7-step path; the simple 3-step path is asserted separately below.
+  useViewStore.setState({ viewMode: 'detailed', viewModeTouched: true });
   localStorage.clear();
   useCompassStore.getState().resetAll();
 });
@@ -94,5 +97,41 @@ describe('Wizard', () => {
     renderWizard();
     expect(screen.getByRole('button', { name: /Build my plan/ })).toBeDisabled();
     expect(screen.getByText(/Enter at least one category/)).toBeInTheDocument();
+  });
+
+  it('simple mode walks Intent → Current mix → Review, renumbering and skipping the rest', () => {
+    useViewStore.setState({ viewMode: 'simple', viewModeTouched: true });
+    renderWizard();
+    expect(screen.getByText('STEP 1 / 3')).toBeInTheDocument();
+    // the rail shows only the three visible steps
+    const rail = screen.getByRole('navigation', { name: /Wizard progress/ });
+    expect(within(rail).getByRole('button', { name: /Intent/ })).toBeInTheDocument();
+    expect(within(rail).getByRole('button', { name: /Current mix/ })).toBeInTheDocument();
+    expect(within(rail).getByRole('button', { name: /Review/ })).toBeInTheDocument();
+    expect(within(rail).queryByRole('button', { name: /Principles/ })).not.toBeInTheDocument();
+    expect(within(rail).queryByRole('button', { name: /Political/ })).not.toBeInTheDocument();
+    expect(within(rail).queryByRole('button', { name: /Investments/ })).not.toBeInTheDocument();
+    // Continue jumps 1 → 4 (Current mix) → 7 (Review); ids stay canonical in the store
+    fireEvent.click(screen.getByRole('button', { name: /Continue/ }));
+    expect(useCompassStore.getState().wizard.step).toBe(4);
+    expect(screen.getByText('STEP 2 / 3')).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /Where does the money go today/ }),
+    ).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /Continue/ }));
+    expect(useCompassStore.getState().wizard.step).toBe(7);
+    expect(screen.getByText('STEP 3 / 3')).toBeInTheDocument();
+    // Back returns down the visible path
+    fireEvent.click(screen.getByRole('button', { name: /^Back$/ }));
+    expect(useCompassStore.getState().wizard.step).toBe(4);
+  });
+
+  it('switching to simple while on a hidden step moves to the nearest visible step', () => {
+    useViewStore.setState({ viewMode: 'detailed', viewModeTouched: true });
+    act(() => useCompassStore.getState().setWizardStep(5)); // Investments
+    renderWizard();
+    expect(useCompassStore.getState().wizard.step).toBe(5);
+    act(() => useViewStore.setState({ viewMode: 'simple', viewModeTouched: true }));
+    expect(useCompassStore.getState().wizard.step).toBe(7); // 5 and 6 are hidden → Review
   });
 });

@@ -1,5 +1,6 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { Footer } from './Footer';
+import { ViewModeToggle } from './ViewModeToggle';
 import { useCompassStore } from '@/store/useCompassStore';
 import { loadJordan } from '@/data/fixtures/jordan';
 
@@ -18,7 +19,7 @@ function DevTools() {
   return (
     <button
       type="button"
-      className="chip ml-auto border-dashed hover:border-ink hover:text-ink"
+      className="chip border-dashed hover:border-ink hover:text-ink"
       onClick={() => {
         loadState(loadJordan());
         nav('/dashboard');
@@ -62,6 +63,7 @@ export function Layout() {
               {n.label}
             </NavLink>
           ))}
+          <ViewModeToggle className="ml-auto" />
           <DevTools />
         </nav>
       </header>

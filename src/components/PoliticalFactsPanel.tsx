@@ -12,6 +12,7 @@ import {
   type StreamLean,
 } from '@/data/politicalFacts';
 import { parseDataPack } from '@/data/dataPack';
+import { useIsDetailed } from '@/store/useViewMode';
 import { useCompassStore } from '@/store/useCompassStore';
 
 const money = (n: number) =>
@@ -158,6 +159,7 @@ function ProtectionPanel({ p }: { p: ProtectionActivity }) {
 }
 
 export function PoliticalFactCard({ f }: { f: PoliticalFact }) {
+  const detailed = useIsDetailed();
   const lobY = Object.keys(f.lobbying).sort();
   return (
     <div className="card px-4 py-3 text-[13px]">
@@ -176,7 +178,7 @@ export function PoliticalFactCard({ f }: { f: PoliticalFact }) {
       <div className="mt-2 grid gap-1.5">
         <SplitBar s={f.totals.pac} label="Company PAC" lean={f.streams?.pac} />
         <SplitBar s={f.totals.employee} label="Employees*" lean={f.streams?.employee} />
-        {f.totals.executive && (
+        {detailed && f.totals.executive && (
           <SplitBar s={f.totals.executive} label="…senior execs†" lean={f.streams?.executive} />
         )}
         {(f.totals.pacInflow ?? 0) > 0 && (
@@ -213,9 +215,10 @@ export function PoliticalFactCard({ f }: { f: PoliticalFact }) {
           )}
         </div>
       )}
-      {f.protectionActivity ? (
+      {detailed && f.protectionActivity ? (
         <ProtectionPanel p={f.protectionActivity} />
       ) : (
+        detailed &&
         f.clients.length === 0 && (
           <div className="mt-2 text-[11.5px] text-faint">
             No Senate LDA client matched — lobbying topics unknown.
@@ -223,6 +226,8 @@ export function PoliticalFactCard({ f }: { f: PoliticalFact }) {
         )
       )}
       <p className="mt-1.5 text-[11px] text-faint">
+        {!detailed &&
+          'Company PAC and employee giving by recipient party, from FEC filings. Switch to Detailed for the senior-executive stream and lobbying topics. '}
         *Individuals who listed the company as employer — including executives and founders. †Subset
         whose stated occupation is a senior-executive title (C-suite, president, chair, founder,
         EVP/SVP, managing partner/director, board) — corporate PACs and executives are different

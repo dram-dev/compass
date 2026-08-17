@@ -5,6 +5,7 @@ import { useCompanies, useScores } from '@/store/scoring';
 import { GOAL_MODE_PRESETS } from '@/data/goalModePresets';
 import { VERIFY_SOURCES } from '@/data/verifySources';
 import { GateConfigPanel } from './GateConfig';
+import { DetailOnly, ViewModeHint } from '@/components/ViewModeToggle';
 import { ActionCard } from './ActionCard';
 import { Trajectory } from './Trajectory';
 import { PoliticalExposurePanel } from '@/dashboard/PoliticalExposure';
@@ -108,7 +109,10 @@ export function PlanPage() {
             {signed1(gain)} available
           </span>
         </div>
-        <GateConfigPanel />
+        <DetailOnly>
+          <GateConfigPanel />
+        </DetailOnly>
+        <ViewModeHint what="gate cadence, effort budgets and adding or removing gates" />
       </section>
 
       {total <= 0 && (

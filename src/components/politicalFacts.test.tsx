@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { PoliticalFactCard, PoliticalFactsPanel } from './PoliticalFactsPanel';
 import {
@@ -8,9 +8,81 @@ import {
   type PoliticalFact,
 } from '@/data/politicalFacts';
 import { parseDataPack } from '@/data/dataPack';
+import { useViewStore } from '@/store/useViewMode';
 import { POLITICAL_PACK_JSON } from '@/data/politicalFacts';
 
+function sampleFact(): PoliticalFact {
+  return {
+    symbol: 'AMZN',
+    name: 'Amazon',
+    pac: {},
+    employee: {},
+    totals: {
+      pac: { D: 500000, R: 500000, O: 0, U: 100000 },
+      employee: { D: 900000, R: 100000, O: 0, U: 0 },
+      executive: { D: 200000, R: 50000, O: 0, U: 0 },
+    },
+    streams: {
+      pac: { D: 500000, R: 500000, O: 0, U: 100000, r: 0, leanScore: 0, partisanUsd: 1e6 },
+      employee: { D: 900000, R: 100000, O: 0, U: 0, r: -0.8, leanScore: 2, partisanUsd: 1e6 },
+      executive: {
+        D: 200000,
+        R: 50000,
+        O: 0,
+        U: 0,
+        r: -0.6,
+        leanScore: 2,
+        partisanUsd: 250000,
+        subsetOf: 'employee',
+      },
+    },
+    lobbying: { 2024: 19_000_000 },
+    topIssues: [{ name: 'Taxation', filings: 4 }],
+    protectionActivity: {
+      years: [2023, 2024],
+      lobbyTotalUsd: 38_000_000,
+      filings: 120,
+      tradeProtection: {
+        anyUsd: 30_000_000,
+        weightedUsd: 3_800_000,
+        anyShare: 0.79,
+        weightedShare: 0.1,
+        filings: 40,
+        codes: { TRD: 40 },
+      },
+      topics: {
+        TRD: { filings: 40, usdAny: 30_000_000, share: 0.79, kind: 'code' },
+        antitrust: { filings: 12, usdAny: 9_000_000, share: 0.24, kind: 'keyword' },
+      },
+      verify: ['https://lda.gov/filings/abc.pdf'],
+      method: 'P1 … Topic, not position',
+    },
+    committees: [{ id: 'C00360354', name: 'AMAZON PAC', method: 'name-prefix' }],
+    clients: [{ id: 50892, name: 'AMAZON.COM SERVICES LLC', method: 'exact' }],
+    employers: [{ employer: 'AMAZON.COM', amount: 800000 }],
+    lean: {
+      leanScore: 1,
+      r: -0.4,
+      totalPartisanUsd: 2_000_000,
+      confidence: 'high',
+      cycles: [2022, 2024],
+      method: 'r',
+    },
+    sourceHint: 'FEC 2021–2024: …',
+    links: {
+      fec: ['https://www.fec.gov/data/committee/C00360354/'],
+      lda: [],
+      opensecrets: 'https://www.opensecrets.org/orgs/all-profiles?q=Amazon',
+    },
+  };
+}
+
 describe('Political facts export', () => {
+  beforeEach(() => {
+    // The card is compact in simple mode; these assertions cover the full card.
+    useViewStore.setState({ viewMode: 'detailed', viewModeTouched: true });
+  });
+
   it('renders the not-seeded state, or real facts + a valid bundled pack when seeded', () => {
     render(<PoliticalFactsPanel />);
     if (!hasPoliticalFacts()) {
@@ -43,69 +115,7 @@ describe('Political facts export', () => {
   });
 
   it('renders a fact card with neutral party splits, lobbying, and verify links', () => {
-    const f: PoliticalFact = {
-      symbol: 'AMZN',
-      name: 'Amazon',
-      pac: {},
-      employee: {},
-      totals: {
-        pac: { D: 500000, R: 500000, O: 0, U: 100000 },
-        employee: { D: 900000, R: 100000, O: 0, U: 0 },
-        executive: { D: 200000, R: 50000, O: 0, U: 0 },
-      },
-      streams: {
-        pac: { D: 500000, R: 500000, O: 0, U: 100000, r: 0, leanScore: 0, partisanUsd: 1e6 },
-        employee: { D: 900000, R: 100000, O: 0, U: 0, r: -0.8, leanScore: 2, partisanUsd: 1e6 },
-        executive: {
-          D: 200000,
-          R: 50000,
-          O: 0,
-          U: 0,
-          r: -0.6,
-          leanScore: 2,
-          partisanUsd: 250000,
-          subsetOf: 'employee',
-        },
-      },
-      lobbying: { 2024: 19_000_000 },
-      topIssues: [{ name: 'Taxation', filings: 4 }],
-      protectionActivity: {
-        years: [2023, 2024],
-        lobbyTotalUsd: 38_000_000,
-        filings: 120,
-        tradeProtection: {
-          anyUsd: 30_000_000,
-          weightedUsd: 3_800_000,
-          anyShare: 0.79,
-          weightedShare: 0.1,
-          filings: 40,
-          codes: { TRD: 40 },
-        },
-        topics: {
-          TRD: { filings: 40, usdAny: 30_000_000, share: 0.79, kind: 'code' },
-          antitrust: { filings: 12, usdAny: 9_000_000, share: 0.24, kind: 'keyword' },
-        },
-        verify: ['https://lda.gov/filings/abc.pdf'],
-        method: 'P1 … Topic, not position',
-      },
-      committees: [{ id: 'C00360354', name: 'AMAZON PAC', method: 'name-prefix' }],
-      clients: [{ id: 50892, name: 'AMAZON.COM SERVICES LLC', method: 'exact' }],
-      employers: [{ employer: 'AMAZON.COM', amount: 800000 }],
-      lean: {
-        leanScore: 1,
-        r: -0.4,
-        totalPartisanUsd: 2_000_000,
-        confidence: 'high',
-        cycles: [2022, 2024],
-        method: 'r',
-      },
-      sourceHint: 'FEC 2021–2024: …',
-      links: {
-        fec: ['https://www.fec.gov/data/committee/C00360354/'],
-        lda: [],
-        opensecrets: 'https://www.opensecrets.org/orgs/all-profiles?q=Amazon',
-      },
-    };
+    const f = sampleFact();
     render(<PoliticalFactCard f={f} />);
     expect(screen.getByText(/lean \+1 · high confidence/)).toBeInTheDocument();
     expect(
@@ -159,5 +169,19 @@ describe('Political facts export', () => {
     expect(offenders).toEqual([]);
     // employer strings are exact alias matches of company names by construction — and top-40 aggregates
     for (const c of POLITICAL_FACTS.companies) expect(c.employers.length).toBeLessThanOrEqual(12);
+  });
+
+  it('simple mode shows the pooled lean and the two headline streams, not the executive tier or topics', () => {
+    useViewStore.setState({ viewMode: 'simple', viewModeTouched: true });
+    const f = sampleFact();
+    render(<PoliticalFactCard f={f} />);
+    expect(screen.getByText(/lean \+1 · high confidence/)).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: /Company PAC:/ })).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: /Employees\*:/ })).toBeInTheDocument();
+    expect(screen.queryByRole('img', { name: /senior execs/ })).not.toBeInTheDocument();
+    expect(screen.queryByText('activity, not position')).not.toBeInTheDocument();
+    expect(
+      screen.getByText(/Switch to Detailed for the senior-executive stream/),
+    ).toBeInTheDocument();
   });
 });

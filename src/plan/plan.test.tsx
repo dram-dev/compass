@@ -3,10 +3,13 @@ import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { PlanPage } from './PlanPage';
 import { useCompassStore } from '@/store/useCompassStore';
+import { useViewStore } from '@/store/useViewMode';
 import { loadJordan } from '@/data/fixtures/jordan';
 import { computeScores } from '@/store/scoring';
 
 beforeEach(() => {
+  // Gate configuration is detail-only; simple mode is asserted at the end.
+  useViewStore.setState({ viewMode: 'detailed', viewModeTouched: true });
   localStorage.clear();
   useCompassStore.getState().resetAll();
   Element.prototype.scrollIntoView = vi.fn();
@@ -90,5 +93,14 @@ describe('Plan page', () => {
     expect(useCompassStore.getState().gates[0]!.effortBudget).toBe(2);
     fireEvent.click(screen.getByRole('button', { name: '+ add gate' }));
     expect(screen.getAllByTestId('gate-column')).toHaveLength(5);
+  });
+
+  it('simple mode keeps gates, actions and the trajectory but hides gate configuration', () => {
+    act(() => useCompassStore.getState().loadState(loadJordan()));
+    useViewStore.setState({ viewMode: 'simple', viewModeTouched: false });
+    renderPlan();
+    expect(screen.getByRole('heading', { name: /Projected trajectory/ })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: /Gate configuration/i })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Switch to Detailed/ })).toBeInTheDocument();
   });
 });
